@@ -1,6 +1,5 @@
 package com.flywhl.saa.httptool;
 
-import com.flywhl.saa.httptool.model.StockPrice;
 import org.springframework.ai.tool.annotation.Tool;
 import org.springframework.ai.tool.annotation.ToolParam;
 import org.springframework.beans.factory.annotation.Value;

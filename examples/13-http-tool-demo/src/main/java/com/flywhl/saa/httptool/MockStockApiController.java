@@ -1,6 +1,5 @@
 package com.flywhl.saa.httptool;
 
-import com.flywhl.saa.httptool.model.StockPrice;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;

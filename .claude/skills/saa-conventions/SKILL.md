@@ -21,6 +21,7 @@ Java 21 · Spring Boot 3.5.16 · SAA 1.1.2.2 · SAA Extensions 1.1.2.2 · Spring
 - Demo 端口：`examples/NN-名称` → `server.port=180NN`（example 29 → 18029）。
 - Server/Client 配对：Client 端口 = Server 端口 + 100（Server 18034 → Client 18134）。
 - 新建模块前先查 `examples/README.md` 与相邻章节 Demo，确认端口不冲突。
+- **小 DTO/record 优先与使用方同包**（`com.flywhl.saa.<mod>`）。仅被 1～2 个类使用时不要拆 `model` 子包——JDT 偶发解析不到 `*.model`，IDE 报「包不存在/找不到符号」而 `mvn compile` 仍绿（见 `13-http-tool-demo` / `StockPrice`）。多处复用或字段较多时再抽 `model`。
 
 ## 代码质量
 - `mvn spring-boot:run` 直接可跑；零 TODO、零伪代码、零"请自行补充"。

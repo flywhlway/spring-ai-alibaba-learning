@@ -40,6 +40,11 @@ bash scripts/spring-ai-2-readiness.sh .                    # 2.0 破坏点扫描
 - **starter 尚未真机编译**（Phase 2 沙箱限制）→ 落地第一件事：编译并跑通 starter 单测。
 - Milvus 冷启动 30~60s（依赖 etcd+MinIO 健康检查）。
 - Redis 向量/记忆需 `redis/redis-stack-server`（非普通 redis）。
+- **Demo 小 DTO 优先同包，勿盲目拆 `model` 子包**（2026-07-04，`13-http-tool-demo`）：
+  - 现象：IDE 报 `程序包 com.flywhl.saa.<mod>.model 不存在` / `找不到符号`，但 `mvn compile` 通过。
+  - 根因：JDT 语言服务偶发无法解析该 Demo 的 `model` 子包；出错类型会级联导致同包其它类也「找不到」（如 Controller 找不到 Tools）。
+  - 规避：仅被本模块 1～2 个类使用的 `record`/DTO，直接放在 `com.flywhl.saa.<mod>` 主包；多处复用、字段较多时再抽 `model`。
+  - 排查顺序：先 `mvn -f examples/NN-xxx clean compile` 确认真编译 → 再决定是否同包合并，勿在 Maven 已绿时重复造类。
 
 ## GSD 流程
 用户级已装 open-gsd（skill 形态，`~/.claude/skills/gsd-*/`）。命令用连字符 `/gsd-*`，以 `/gsd-help` 实际输出为准。
