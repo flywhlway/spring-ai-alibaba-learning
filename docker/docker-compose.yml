@@ -244,7 +244,7 @@ services:
   # cloud：注册中心 / 配置中心 / Prompt 热更新 / 分布式 MCP Registry
   # ---------------------------------------------------------------
   nacos:
-    image: nacos/nacos-server:v3.0.2
+    image: nacos/nacos-server:v3.2.2
     container_name: saa-nacos
     profiles: [ "cloud" ]
     environment:
