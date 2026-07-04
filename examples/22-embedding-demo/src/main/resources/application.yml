@@ -1,0 +1,13 @@
+server:
+  port: 18022
+
+spring:
+  application:
+    name: embedding-demo
+  ai:
+    dashscope:
+      api-key: ${AI_DASHSCOPE_API_KEY}
+      embedding:
+        options:
+          model: text-embedding-v4
+          dimensions: 1024

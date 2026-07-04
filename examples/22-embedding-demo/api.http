@@ -1,0 +1,2 @@
+### 22-embedding-demo · 维度与成本基准
+GET http://localhost:18022/embedding/benchmark?text=车辆OTA升级失败常见原因分析
