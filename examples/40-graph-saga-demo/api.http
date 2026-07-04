@@ -1,0 +1,5 @@
+### 40-graph-saga-demo · 成功路径（不补偿）
+GET http://localhost:18040/graph/saga?orderId=ORD-1&forceFail=false
+
+### 40-graph-saga-demo · 失败路径（触发 compensateInventory）
+GET http://localhost:18040/graph/saga?orderId=ORD-2&forceFail=true
