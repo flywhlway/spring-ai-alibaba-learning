@@ -1,16 +1,12 @@
 ---
-gsd_state_version: 1.0
-milestone: v1.0
-milestone_name: milestone
-status: executing
-last_updated: "2026-07-04T14:33:23.032Z"
-last_activity: 2026-07-04 -- Phase 3 planning complete
+gsd_state_version: '1.0'
+status: in_progress
 progress:
   total_phases: 7
-  completed_phases: 0
+  completed_phases: 2
   total_plans: 8
-  completed_plans: 3
-  percent: 0
+  completed_plans: 8
+  percent: 55
 ---
 
 # Project State
@@ -20,23 +16,22 @@ progress:
 See: .planning/PROJECT.md (updated 2026-07-04)
 
 **Core value:** 48 demos + 3 enterprise projects runnable via `mvn spring-boot:run`，通过 HANDOFF §7 质量门禁
-**Current focus:** Phase 3 — batch 2 plans ready (20~34 RAG/Embedding/VectorStore/MCP)
+**Current focus:** Phase 3 — batch 2 (20~34) compile gate passed; batch 3 (35~48) pending
 
 ## Current Position
 
 Phase: 3 of 7 (48 个独立 Demo)
-Plan: 4–8 of 8 planned (batch 2); 1–3 complete (batch 1)
-Status: Ready to execute batch 2 (plans 03-04~08)
-Last activity: 2026-07-04 — `/gsd-plan-phase 3 --auto` 完成次批 20~34 规划
+Plan: 8 of 8 complete (batch 1: 01~19; batch 2: 20~34)
+Status: Batch 2 compile gate green; need UAT / plans for batch 3 (35~48)
+Last activity: 2026-07-04 — batch 2 (20~34) execute complete, 16/16 compile PASS
 
-Progress: [████░░░░░░] 40%
+Progress: [█████░░░░░] 55%
 
 ## Performance Metrics
 
 **Velocity:**
-
-- Total plans completed: 3
-- Average duration: ~18min
+- Total plans completed: 8
+- Average duration: ~12min (batch 2)
 
 **By Phase:**
 
@@ -44,16 +39,18 @@ Progress: [████░░░░░░] 40%
 |-------|-------|-------|----------|
 | 1. 基座脚手架 | delivered | — | — |
 | 2. 教程与 starter | delivered | — | — |
-| 3. 48 Demo | 3 (batch 1 = 01~19) | TBD | ~18min |
+| 3. 48 Demo | 8 (batch1+2 = 01~34) | TBD | ~12–18min |
 
 ## Accumulated Context
 
 ### Decisions
 
-- Phase 3 首批范围 = ROADMAP 基础 + advisor/tool/memory = demos **01~19**
+- Phase 3 首批 = demos **01~19**；次批 = **20~34**（RAG/Embedding/VectorStore/MCP）
 - 17 用普通 Redis 自定义 `ChatMemoryRepository`（core profile 非 Redis Stack）
-- 13 HTTP Tool 自包含 Mock API，不依赖外网
+- 25 必须 `redis/redis-stack-server`（端口 6380 override），禁止复用 core 普通 redis
+- Embedding 一律 DashScope `text-embedding-v4`，dimensions=1024
 - 自定义 Advisor 一律 `CallAdvisor`/`StreamAdvisor`（禁用 `CallAroundAdvisor`）
+- Spring AI 1.1.2：结构化校验用 `StructuredOutputValidationAdvisor`；MCP 注解为 `org.springaicommunity.mcp.annotation.McpTool`
 
 ### Pending Todos
 
@@ -61,19 +58,19 @@ None.
 
 ### Blockers/Concerns
 
-- Phase 3 全量 48 Demo 尚未完成；20~48 待规划
-- 08/17/18 真机 curl 需对应中间件（cloud/core）
+- Phase 3 全量 48 Demo 尚未完成；35~48 待规划
+- 真机 curl 需对应中间件（core/vector/search/cloud）与 `AI_DASHSCOPE_API_KEY`
 
 ## Deferred Items
 
 | Category | Item | Status | Deferred At |
 |----------|------|--------|-------------|
-| Phase 3 batch 2 | Demo 20~34 RAG/MCP | plans ready (03-04~08) | 2026-07-04 |
-| Phase 3 batch 3+ | Demo 35~48 | pending plans | 2026-07-04 |
+| Phase 3 batch 2 UAT | 真机 curl / verify-work | pending | 2026-07-04 |
+| Phase 3 batch 3+ | Demo 35~48 Agent/Graph/best-practice | pending plans | 2026-07-04 |
 
 ## Session Continuity
 
 Last session: 2026-07-04
-Stopped at: Phase 3 batch 2 planned (03-04~08)
+Stopped at: Phase 3 batch 2 (20~34) compile gate complete
 Resume file: None
-Next: `/gsd-execute-phase 3 --auto` 执行次批（20~34）
+Next: `/gsd-verify-work`（次批 UAT）或 `/gsd-plan-phase 3` 规划再次批（35~48）
