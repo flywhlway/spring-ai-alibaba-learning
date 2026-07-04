@@ -1,0 +1,8 @@
+### 48-fallback-demo · 正常聊天
+GET http://localhost:18048/fallback/chat?message=用一句话介绍模型降级
+
+### 48-fallback-demo · 模拟主模型熔断（需 DEEPSEEK_API_KEY）
+GET http://localhost:18048/fallback/chat?message=你好&forceFail=true
+
+### 48-fallback-demo · 降级状态
+GET http://localhost:18048/fallback/status
