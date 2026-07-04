@@ -1,0 +1,2 @@
+### 39-graph-parallel-demo · 并行 fan-out/fan-in
+GET http://localhost:18039/graph/parallel?question=P0420故障码怎么处理
