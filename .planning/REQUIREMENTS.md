@@ -17,7 +17,7 @@ Brownfield registration: Phase 1–2 VALIDATED（已交付）。Active 工作从
 
 ### Phase 3 — 48 个独立 Demo（Active）
 
-- [ ] **REQ-phase-3-demos**: 将教程各章核心 API 落成 48 个可独立 `mvn spring-boot:run` 的最小 Demo；编号/命名/端口以 examples/README.md 为 SSOT，满足 HANDOFF §3 验收（独立 pom、端口 180NN、infra profiles、环境变量密钥、REST+curl+README+api.http、Testcontainers/EnabledIfEnvironmentVariable、复用 common/starter、零 TODO/零废弃 API）
+- [x] **REQ-phase-3-demos**: 将教程各章核心 API 落成 48 个可独立 `mvn spring-boot:run` 的最小 Demo；编号/命名/端口以 examples/README.md 为 SSOT，满足 HANDOFF §3 验收（独立 pom、端口 180NN、infra profiles、环境变量密钥、REST+curl+README+api.http、Testcontainers/EnabledIfEnvironmentVariable、复用 common/starter、零 TODO/零废弃 API）
 
 ### Phase 4 — 知识库问答（Active）
 

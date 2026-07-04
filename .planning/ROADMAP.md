@@ -71,8 +71,8 @@
 - [x] 03-05-PLAN.md — 次批 VectorStore（22~26）
 - [x] 03-06-PLAN.md — 次批 RAG（27~30）
 - [x] 03-07-PLAN.md — 次批 MCP（31~34）
-- [ ] 03-09-PLAN.md — Agent：ReactAgent / Skills / HITL（35~37）
-- [ ] 03-10-PLAN.md — Graph / Workflow：State / Parallel / Saga（38~40）
+- [x] 03-09-PLAN.md — Agent：ReactAgent / Skills / HITL（35~37）
+- [x] 03-10-PLAN.md — Graph / Workflow：State / Parallel / Saga（38~40）
 - [ ] 03-11-PLAN.md — Multi-Agent：四模式 / Supervisor / A2A-Nacos（41~43）
 - [ ] 03-12-PLAN.md — Stream + Observability + Logging（44~46，强制 starter）
 - [ ] 03-13-PLAN.md — Routing + Fallback（47~48，强制 starter）
@@ -178,7 +178,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 → 7
 |-------|----------------|--------|-----------|
 | 1. 基座脚手架 | delivered | Complete | 2026-07-03 |
 | 2. 教程与 starter | delivered | Complete | 2026-07-03 |
-| 3. 48 个独立 Demo | 14 plans（01~34 delivered; 35~48 plans 03-09~14 pending） | In progress | - |
+| 3. 48 个独立 Demo | 10/14 | In Progress|  |
 | 4. 知识库问答平台 | 0/TBD | Not started | - |
 | 5. 办公 Agent 助手 | 0/TBD | Not started | - |
 | 6. 智能客服平台 | 0/TBD | Not started | - |
