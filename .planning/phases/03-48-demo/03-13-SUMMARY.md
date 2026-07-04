@@ -64,7 +64,7 @@ completed: 2026-07-04
 1. **Task 1: 新建 47-routing-demo** - `3bac95e` (feat)
 2. **Task 2: 新建 48-fallback-demo** - `88b5144` (feat)
 
-**Plan metadata:** pending (docs commit)
+**Plan metadata:** `6936b56` (docs: complete plan)
 
 ## Files Created/Modified
 
