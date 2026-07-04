@@ -1,0 +1,21 @@
+server:
+  port: 18026
+
+spring:
+  application:
+    name: es-hybrid-demo
+  elasticsearch:
+    uris: http://localhost:9200
+  ai:
+    dashscope:
+      api-key: ${AI_DASHSCOPE_API_KEY}
+      embedding:
+        options:
+          model: text-embedding-v4
+          dimensions: 1024
+    vectorstore:
+      elasticsearch:
+        initialize-schema: true
+        index-name: saa-hybrid
+        dimensions: 1024
+        similarity: cosine

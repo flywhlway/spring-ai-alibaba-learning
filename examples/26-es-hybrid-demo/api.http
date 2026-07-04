@@ -1,0 +1,22 @@
+### 入库
+POST http://localhost:18026/documents
+Content-Type: application/json
+
+{
+  "content": "P0420故障码表示三元催化效率低于阈值",
+  "metadata": {
+    "department": "vehicle-diag"
+  }
+}
+
+### 纯向量检索
+GET http://localhost:18026/search?q=催化效率低&topK=3
+
+### 纯全文 match
+GET http://localhost:18026/search/fulltext?q=P0420&topK=3
+
+### RRF 混合检索
+GET http://localhost:18026/search/hybrid?q=P0420催化效率&topK=3
+
+### Metadata Filter
+GET http://localhost:18026/search/filter?q=催化效率&topK=3&department=vehicle-diag
