@@ -53,12 +53,13 @@
   3. 每个 Demo 具备独立 README、`api.http`、至少一个 REST 入口与 curl 验证命令及预期输出；`mvn spring-boot:run` 可跑，中间件依赖通过 `bash scripts/infra.sh up <profiles>` 声明
   4. 模型调用集成测试使用 `@EnabledIfEnvironmentVariable(named="AI_DASHSCOPE_API_KEY", matches=".+")`，中间件用 Testcontainers；复用 `saa-learning-common` 与 `saa-learning-starter`
   5. 全量 Demo 通过 HANDOFF §7 门禁：真实编译、version-audit 全绿、spring-ai-2-readiness 低位、无废弃 API/硬编码密钥/TODO/伪代码
-**Plans**: TBD
+**Plans**: 2/TBD（首批 01~08 已执行：03-01 审计续接、03-02 补齐 05/08）
 **Plan priority note** (for `/gsd-plan-phase 3`):
-  1. 首批：章节 01~08 基础（quickstart / autoconfig / multi-model / chat / retry / prompt / prompt-builder / prompt-nacos）及同批 advisor/tool/memory 主线（09~19）
-  2. 次批：RAG / Embedding / VectorStore / MCP（20~34）
-  3. 再次：Agent / Graph / Multi-Agent（35~43）
-  4. 末批：best-practice / migration 相关（44~48 stream/observability/logging/routing/fallback）
+  1. ~~首批：章节 01~08 基础（quickstart / autoconfig / multi-model / chat / retry / prompt / prompt-builder / prompt-nacos）~~ ✅ 2026-07-04
+  2. 次批：advisor/tool/memory 主线（09~19），含限额中断残留半成品收尾
+  3. 再次：RAG / Embedding / VectorStore / MCP（20~34）
+  4. 再次：Agent / Graph / Multi-Agent（35~43）
+  5. 末批：best-practice / migration 相关（44~48 stream/observability/logging/routing/fallback）
 
 **Demo inventory (SSOT: examples/README.md):**
 01 quickstart · 02 autoconfig · 03 multi-model · 04 chat · 05 retry · 06 prompt · 07 prompt-builder · 08 prompt-nacos · 09 advisor · 10 custom-advisor · 11 tool · 12 dynamic-tool · 13 http-tool · 14 db-tool · 15 tool-security · 16 memory · 17 redis-memory · 18 jdbc-memory · 19 summary-memory · 20 structured-output · 21 json-schema · 22 embedding · 23 pgvector · 24 milvus · 25 redis-vector · 26 es-hybrid · 27 rag · 28 advanced-rag · 29 hybrid-rag · 30 rag-eval · 31 mcp-server · 32 mcp-client · 33 mcp-auth · 34 mcp-nacos · 35 agent · 36 agent-skills · 37 agent-hitl · 38 workflow · 39 graph-parallel · 40 graph-saga · 41 multi-agent · 42 supervisor · 43 a2a-nacos · 44 stream · 45 observability · 46 logging · 47 routing · 48 fallback
@@ -115,7 +116,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 → 7
 |-------|----------------|--------|-----------|
 | 1. 基座脚手架 | delivered | Complete | 2026-07-03 |
 | 2. 教程与 starter | delivered | Complete | 2026-07-03 |
-| 3. 48 个独立 Demo | 0/TBD | Not started | - |
+| 3. 48 个独立 Demo | 2/TBD（batch1 01~08） | In progress | - |
 | 4. 知识库问答平台 | 0/TBD | Not started | - |
 | 5. 办公 Agent 助手 | 0/TBD | Not started | - |
 | 6. 智能客服平台 | 0/TBD | Not started | - |
