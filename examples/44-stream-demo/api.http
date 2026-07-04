@@ -1,0 +1,2 @@
+### 44-stream-demo · 统一 SSE 流式问答
+GET http://localhost:18044/chat/stream-unified?message=用一句话介绍Spring AI

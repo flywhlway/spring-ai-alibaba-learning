@@ -99,6 +99,11 @@
                 <artifactId>saa-learning-common</artifactId>
                 <version>${project.version}</version>
             </dependency>
+            <dependency>
+                <groupId>com.flywhl.saa</groupId>
+                <artifactId>saa-learning-starter</artifactId>
+                <version>${project.version}</version>
+            </dependency>
 
             <!-- API 文档 -->
             <dependency>
