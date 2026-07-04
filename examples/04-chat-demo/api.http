@@ -1,0 +1,12 @@
+### 04-chat-demo · 最简文本
+GET http://localhost:18004/chat/simple?message=你好
+
+### 完整用法：系统提示 + 温度覆盖 + Token 用量
+POST http://localhost:18004/chat
+Content-Type: application/json
+
+{
+  "system": "你是严谨的架构师",
+  "message": "用一句话解释三级配置覆盖",
+  "temperature": 0.1
+}

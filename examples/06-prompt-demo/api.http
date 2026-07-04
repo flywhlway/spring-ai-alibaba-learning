@@ -1,0 +1,17 @@
+### PromptTemplate 渲染
+POST http://localhost:18006/prompt/template
+Content-Type: application/json
+
+{
+  "domain": "车联网 OTA",
+  "log": "升级包下载超时，重试3次后失败"
+}
+
+### Few-shot
+GET http://localhost:18006/prompt/few-shot?dtcCode=P0420
+
+### CoT
+GET http://localhost:18006/prompt/cot?question=车辆频繁出现P0420故障码，可能是什么原因？
+
+### JSON 格式化输出
+GET http://localhost:18006/prompt/json?dtcCode=P0420

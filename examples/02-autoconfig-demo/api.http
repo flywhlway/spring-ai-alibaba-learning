@@ -1,0 +1,2 @@
+### 02-autoconfig-demo · 问候接口
+GET http://localhost:18002/greet?name=flywhl

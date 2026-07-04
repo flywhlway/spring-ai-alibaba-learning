@@ -1,0 +1,8 @@
+### 03-multi-model-demo · DashScope 通道
+GET http://localhost:18003/chat/dashscope?message=用一句话解释什么是自动装配
+
+### DeepSeek 通道
+GET http://localhost:18003/chat/deepseek?message=用一句话解释什么是自动装配
+
+### Token 用量
+GET http://localhost:18003/chat/usage?message=你好

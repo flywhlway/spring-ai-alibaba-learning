@@ -1,0 +1,8 @@
+### 05-retry-demo · 重试策略摘要
+GET http://localhost:18005/retry/policy
+
+### 正常问答（瞬态错误自动重试）
+GET http://localhost:18005/chat?message=用一句话介绍重试机制
+
+### RetryListener 累计统计
+GET http://localhost:18005/retry/stats

@@ -1,0 +1,2 @@
+### 08-prompt-nacos-demo · 故障码诊断（默认模板或 Nacos 热更新模板）
+GET http://localhost:18008/diagnosis?code=P0420

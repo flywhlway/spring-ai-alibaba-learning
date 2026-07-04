@@ -1,0 +1,13 @@
+server:
+  port: 18002
+
+spring:
+  application:
+    name: autoconfig-demo
+
+saa:
+  demo:
+    greeting:
+      prefix: "你好"
+      locale: "zh-CN"
+      enabled: true

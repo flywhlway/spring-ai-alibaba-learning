@@ -1,0 +1,41 @@
+### 注册 v1
+POST http://localhost:18007/prompts
+Content-Type: application/json
+
+{
+  "name": "greeting",
+  "version": "v1",
+  "template": "你好，我是{assistant_name}，很高兴为你服务。"
+}
+
+### 注册 v2
+POST http://localhost:18007/prompts
+Content-Type: application/json
+
+{
+  "name": "greeting",
+  "version": "v2",
+  "template": "Hi～我是{assistant_name}，有什么可以帮你？"
+}
+
+### 列出版本
+GET http://localhost:18007/prompts/greeting
+
+### 查询指定版本
+GET http://localhost:18007/prompts/greeting/v1
+
+### 仅渲染
+POST http://localhost:18007/prompts/greeting/v1/render
+Content-Type: application/json
+
+{
+  "params": {"assistant_name": "小艾"}
+}
+
+### 渲染并调用模型
+POST http://localhost:18007/prompts/greeting/v1/invoke
+Content-Type: application/json
+
+{
+  "params": {"assistant_name": "小艾"}
+}

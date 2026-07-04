@@ -1,0 +1,26 @@
+server:
+  port: 18008
+
+spring:
+  application:
+    name: prompt-nacos-demo
+  ai:
+    dashscope:
+      api-key: ${AI_DASHSCOPE_API_KEY}
+      chat:
+        options:
+          model: qwen-plus
+    # 开启后订阅 Nacos Data ID = spring.ai.alibaba.configurable.prompt
+    nacos:
+      prompt:
+        template:
+          enabled: true
+  cloud:
+    nacos:
+      server-addr: 127.0.0.1:8848
+      username: nacos
+      password: nacos
+
+logging:
+  level:
+    com.alibaba.cloud.ai: INFO

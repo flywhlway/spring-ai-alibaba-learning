@@ -1,0 +1,24 @@
+server:
+  port: 18003
+
+spring:
+  application:
+    name: multi-model-demo
+  ai:
+    retry:
+      max-attempts: 3
+      backoff:
+        initial-interval: 1000ms
+        multiplier: 2.0
+    dashscope:
+      api-key: ${AI_DASHSCOPE_API_KEY}
+      chat:
+        options:
+          model: qwen-plus
+          temperature: 0.7
+    deepseek:
+      api-key: ${DEEPSEEK_API_KEY}
+      chat:
+        options:
+          model: deepseek-chat
+          temperature: 0.7
