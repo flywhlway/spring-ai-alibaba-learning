@@ -1,0 +1,5 @@
+### 写入样例知识库
+POST http://localhost:18029/ingest
+
+### Hybrid RAG + Citation 问答（与教程 curl 一致）
+GET http://localhost:18029/ask?question=OTA升级失败一般是什么原因？
