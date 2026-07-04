@@ -1,0 +1,27 @@
+# GSD ingest manifest — brownfield register of existing roadmap
+# Phase 1-2 already complete; do not re-derive requirements from scratch.
+docs:
+  - path: HANDOFF-TO-CLAUDE-CODE.md
+    type: DOC
+    precedence: 1
+  - path: CLAUDE.md
+    type: DOC
+    precedence: 2
+  - path: docs/00-overview/01-学习路线.md
+    type: DOC
+    precedence: 3
+  - path: docs/00-overview/02-版本调研报告.md
+    type: DOC
+    precedence: 4
+  - path: docs/00-overview/03-总体架构与目录规划.md
+    type: DOC
+    precedence: 5
+  - path: docs/00-overview/04-技术选型ADR.md
+    type: ADR
+    precedence: 0
+  - path: examples/README.md
+    type: SPEC
+    precedence: 6
+  - path: projects/README.md
+    type: SPEC
+    precedence: 7

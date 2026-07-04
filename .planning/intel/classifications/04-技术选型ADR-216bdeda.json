@@ -1,0 +1,24 @@
+{
+  "source_path": "/Users/flywhl/dev/study/spring-ai-alibaba-learning/docs/00-overview/04-技术选型ADR.md",
+  "type": "ADR",
+  "confidence": "high",
+  "manifest_override": true,
+  "title": "技术选型决策记录（ADR）",
+  "summary": "Phase 1 锁定的六项架构决策（ADR-001～006），覆盖框架、Boot、模型、向量库、Maven BOM 与 API 文档选型。",
+  "scope": [
+    "Spring AI Alibaba",
+    "Spring Boot",
+    "DashScope",
+    "DeepSeek",
+    "Milvus",
+    "pgvector",
+    "Redis",
+    "Maven BOM",
+    "SpringDoc",
+    "Knife4j"
+  ],
+  "cross_refs": [],
+  "locked": true,
+  "precedence": 0,
+  "notes": ""
+}

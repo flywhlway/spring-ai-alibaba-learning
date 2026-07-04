@@ -1,0 +1,21 @@
+{
+  "source_path": "/Users/flywhl/dev/study/spring-ai-alibaba-learning/docs/00-overview/01-学习路线.md",
+  "type": "DOC",
+  "confidence": "high",
+  "manifest_override": true,
+  "title": "学习路线总览",
+  "summary": "面向有经验开发者的 SAA 1.1.x 七阶段学习路线，覆盖教程章节、Demo 与三个企业项目。",
+  "scope": [
+    "学习路线",
+    "Phase 1-7",
+    "22 章教程",
+    "Demo 工程",
+    "企业项目",
+    "Spring AI Alibaba",
+    "概念迁移映射"
+  ],
+  "cross_refs": [],
+  "locked": false,
+  "precedence": 3,
+  "notes": ""
+}

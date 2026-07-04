@@ -1,0 +1,32 @@
+{
+  "source_path": "/Users/flywhl/dev/study/spring-ai-alibaba-learning/docs/00-overview/02-版本调研报告.md",
+  "type": "DOC",
+  "confidence": "high",
+  "manifest_override": true,
+  "title": "版本调研报告（2026-07）",
+  "summary": "仓库版本选型 SSOT，锁定 JDK/Boot/Spring AI/SAA 及中间件组合并说明风险与升级路径。",
+  "scope": [
+    "JDK 21",
+    "Spring Boot 3.5.16",
+    "Spring AI 1.1.2",
+    "Spring AI Alibaba 1.1.2.2",
+    "spring-ai-alibaba-extensions-bom",
+    "DashScope",
+    "DeepSeek",
+    "Milvus",
+    "Nacos",
+    "父 POM"
+  ],
+  "cross_refs": [
+    "docs/tutorial/21-版本升级指南.md",
+    "https://github.com/agentscope-ai/agentscope-java",
+    "https://github.com/alibaba/spring-ai-alibaba/discussions/4030",
+    "https://java2ai.com/docs/versions",
+    "https://java2ai.com/en/blog/saa-1120-release/",
+    "https://github.com/alibaba/spring-ai-alibaba/releases/tag/v1.1.2.2",
+    "https://github.com/alibaba/spring-ai-alibaba/releases"
+  ],
+  "locked": false,
+  "precedence": 4,
+  "notes": ""
+}

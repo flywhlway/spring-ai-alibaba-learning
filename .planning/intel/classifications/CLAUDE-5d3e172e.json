@@ -1,0 +1,30 @@
+{
+  "source_path": "/Users/flywhl/dev/study/spring-ai-alibaba-learning/CLAUDE.md",
+  "type": "DOC",
+  "confidence": "high",
+  "manifest_override": true,
+  "title": "CLAUDE.md — spring-ai-alibaba-learning 项目记忆",
+  "summary": "Claude Code session memory for versions, engineering conventions, commands, and GSD workflow.",
+  "scope": [
+    "spring-ai-alibaba-learning",
+    "version lock",
+    "BOM",
+    "demo conventions",
+    "saa-learning-common",
+    "saa-learning-starter",
+    "deprecated APIs",
+    "GSD workflow",
+    "Phase 3 demos"
+  ],
+  "cross_refs": [
+    "docs/tutorial/NN-*.md",
+    "scripts/setup-env.sh",
+    "scripts/env-check.sh",
+    "scripts/infra.sh",
+    "scripts/version-audit.sh",
+    "scripts/spring-ai-2-readiness.sh"
+  ],
+  "locked": false,
+  "precedence": 2,
+  "notes": ""
+}

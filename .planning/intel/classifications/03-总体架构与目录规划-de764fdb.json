@@ -1,0 +1,32 @@
+{
+  "source_path": "/Users/flywhl/dev/study/spring-ai-alibaba-learning/docs/00-overview/03-总体架构与目录规划.md",
+  "type": "DOC",
+  "confidence": "high",
+  "manifest_override": true,
+  "title": "项目总体架构与目录规划",
+  "summary": "Defines repository layout, module dependencies, runtime architecture, SSOT sources, and coding conventions as structural constraints for all phases.",
+  "scope": [
+    "repository directory structure",
+    "common",
+    "starter",
+    "examples",
+    "projects",
+    "docker",
+    "SSOT",
+    "Result protocol",
+    "port allocation",
+    "Git conventions"
+  ],
+  "cross_refs": [
+    "docs/00-overview/02-版本调研报告.md",
+    "docs/README.md",
+    "examples/README.md",
+    "docker/docker-compose.yml",
+    "scripts/setup-env.example.sh",
+    "pom.xml",
+    "README.md"
+  ],
+  "locked": false,
+  "precedence": 5,
+  "notes": ""
+}

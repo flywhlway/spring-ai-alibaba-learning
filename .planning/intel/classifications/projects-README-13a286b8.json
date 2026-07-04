@@ -1,0 +1,27 @@
+{
+  "source_path": "/Users/flywhl/dev/study/spring-ai-alibaba-learning/projects/README.md",
+  "type": "SPEC",
+  "confidence": "high",
+  "manifest_override": true,
+  "title": "projects —— 企业级完整项目目录",
+  "summary": "Phase 4–6 三个企业项目的蓝图 SSOT：业务边界、技术映射与共用目录骨架。",
+  "scope": [
+    "knowledge-qa-platform",
+    "office-agent-assistant",
+    "smart-cs-platform",
+    "RAG",
+    "Agent Framework",
+    "MCP",
+    "Milvus",
+    "Redis ChatMemory",
+    "OpenAPI/Knife4j",
+    "docker-compose",
+    "Testcontainers"
+  ],
+  "cross_refs": [
+    "docker/docker-compose.yml"
+  ],
+  "locked": false,
+  "precedence": 7,
+  "notes": ""
+}

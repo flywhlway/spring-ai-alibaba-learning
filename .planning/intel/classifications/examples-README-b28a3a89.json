@@ -1,0 +1,20 @@
+{
+  "source_path": "/Users/flywhl/dev/study/spring-ai-alibaba-learning/examples/README.md",
+  "type": "SPEC",
+  "confidence": "high",
+  "manifest_override": true,
+  "title": "examples —— 独立 Demo 工程目录",
+  "summary": "SSOT catalog and conventions for 48 Phase 3 independent Demo projects, including ports, naming, and README template.",
+  "scope": [
+    "examples demos",
+    "Maven modules",
+    "port numbering",
+    "Demo README template",
+    "api.http",
+    "middleware profiles",
+    "Phase 3"
+  ],
+  "cross_refs": [],
+  "locked": false,
+  "precedence": 6
+}
