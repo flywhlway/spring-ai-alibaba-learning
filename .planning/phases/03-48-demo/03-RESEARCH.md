@@ -551,17 +551,15 @@ Wave 1 五组可并行（max_concurrent_agents=3 时分两轮）。`03-12`/`03-1
 
 **若表非空：** A1 建议在 47 的 Task 中先写一个 contextLoads 验证 ModelRouter bean。
 
-## Open Questions
+## Open Questions (RESOLVED)
 
-1. **ClasspathSkillRegistry 资源布局**
+1. **ClasspathSkillRegistry 资源布局** — RESOLVED
    - What we know: 类在 graph-core，SkillsAgentHook 依赖 SkillRegistry
-   - What's unclear: classpath 上 SKILL.md 的官方目录约定
-   - Recommendation: execute 时读 `SkillScanner` / 官方 skills 样例；fallback 用 `FileSystemSkillRegistry` 指向 `src/main/resources/skills/`
+   - Resolution: execute 时读 `SkillScanner` / 官方 skills 样例；fallback 用 `FileSystemSkillRegistry` 指向 `src/main/resources/skills/`（plan 03-09 Task 2 已编码此 fallback）
 
-2. **A2A Server 是否必须暴露 ReactAgent Bean**
+2. **A2A Server 是否必须暴露 ReactAgent Bean** — RESOLVED
    - What we know: `GraphAgentExecutor` 在 a2a-nacos starter 中
-   - What's unclear: 最小 Server 是自动暴露已有 ReactAgent 还是需额外 `@Bean` AgentCard
-   - Recommendation: 对照 starter `A2aServerAutoConfiguration` 与官方 a2a 样例；对齐 34 的「先 Server 后 Client」启动顺序
+   - Resolution: 对照 starter `A2aServerAutoConfiguration` 与官方 a2a 样例；对齐 34 的「先 Server 后 Client」启动顺序（plan 03-11 Task 3 已编码此路径）
 
 ## Environment Availability
 
@@ -712,7 +710,7 @@ class AgentDemoApplicationIT {
 | Pitfalls | HIGH | 教程/JAR 差异已核验 |
 
 ### Open Questions
-- Skills 的 classpath 资源布局；A2A Server 最小自动装配 Bean 集（execute 时对照 autoconfigure）
+- Skills classpath / A2A Server Bean 集 — 已 RESOLVED（见上文；execute fallback 写入 plan 03-09 / 03-11）
 
 ### Ready for Planning
 Research complete. Planner can create PLAN.md files `03-09`~`03-14`.
