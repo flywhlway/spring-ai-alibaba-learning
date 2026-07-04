@@ -1,0 +1,5 @@
+### 32-mcp-client-demo · 经 MCP 查询订单（需先启动 31）
+GET http://localhost:18032/ask?question=帮我查一下订单SO20260704001的状态
+
+### POST 形式
+POST http://localhost:18032/ask?question=帮我查一下订单SO20260704001的状态

@@ -1,0 +1,22 @@
+server:
+  port: 18032
+
+spring:
+  application:
+    name: mcp-client-demo
+  ai:
+    dashscope:
+      api-key: ${AI_DASHSCOPE_API_KEY}
+      chat:
+        options:
+          model: qwen-plus
+          temperature: 0.3
+    mcp:
+      client:
+        type: SYNC
+        streamable-http:
+          connections:
+            # 仅连接本机 31，缩小工具攻击面（T-32-01）
+            order-service:
+              url: http://localhost:18031
+              endpoint: /mcp
