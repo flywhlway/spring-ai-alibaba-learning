@@ -1,0 +1,5 @@
+### 36-agent-skills-demo · 车辆诊断技能（渐进式披露）
+GET http://localhost:18036/agent/skills?query=车辆报P0420故障码该怎么排查？
+
+### OTA 升级故障技能
+GET http://localhost:18036/agent/skills?query=OTA升级卡在安装阶段失败了怎么办？
