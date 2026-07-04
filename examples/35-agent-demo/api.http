@@ -1,0 +1,2 @@
+### 35-agent-demo · 车辆故障诊断（ReactAgent + lookupDtc）
+GET http://localhost:18035/agent/diagnose?query=车辆报P0420故障码，是什么问题？
