@@ -13,7 +13,7 @@
 
 - [x] **Phase 1: 基座脚手架** - 父 POM、common、docker profiles、scripts、overview 文档与 ADR
 - [x] **Phase 2: 教程与 starter** - 22 章教程、saa-learning-starter、QA 脚本
-- [ ] **Phase 3: 48 个独立 Demo** - examples/ 全量可 `mvn spring-boot:run` 的最小 Demo
+- [x] **Phase 3: 48 个独立 Demo** - examples/ 全量可 `mvn spring-boot:run` 的最小 Demo (completed 2026-07-04)
 - [ ] **Phase 4: 知识库问答平台** - knowledge-qa-platform（端口 19100）
 - [ ] **Phase 5: 办公 Agent 助手** - office-agent-assistant（端口 19200）
 - [ ] **Phase 6: 智能客服平台** - smart-cs-platform（端口 19300）
@@ -81,7 +81,7 @@
 
 - [x] 03-02-PLAN.md — 首批 advisor/tool/memory（09~19）
 - [x] 03-08-PLAN.md — 次批 compile gate（20~34）
-- [ ] 03-14-PLAN.md — 再次批 compile gate（35~48）+ 约定扫描
+- [x] 03-14-PLAN.md — 再次批 compile gate（35~48）+ 约定扫描
 
 **Wave 3** *(blocked on Wave 2 completion)*
 
@@ -178,7 +178,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 → 7
 |-------|----------------|--------|-----------|
 | 1. 基座脚手架 | delivered | Complete | 2026-07-03 |
 | 2. 教程与 starter | delivered | Complete | 2026-07-03 |
-| 3. 48 个独立 Demo | 13/14 | In Progress|  |
+| 3. 48 个独立 Demo | 14/14 | Complete   | 2026-07-04 |
 | 4. 知识库问答平台 | 0/TBD | Not started | - |
 | 5. 办公 Agent 助手 | 0/TBD | Not started | - |
 | 6. 智能客服平台 | 0/TBD | Not started | - |
