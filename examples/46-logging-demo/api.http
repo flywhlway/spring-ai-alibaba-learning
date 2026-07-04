@@ -1,0 +1,2 @@
+### 46-logging-demo · traceId 贯通日志
+GET http://localhost:18046/log/chat?message=你好
