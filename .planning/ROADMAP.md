@@ -53,7 +53,7 @@
   3. 每个 Demo 具备独立 README、`api.http`、至少一个 REST 入口与 curl 验证命令及预期输出；`mvn spring-boot:run` 可跑，中间件依赖通过 `bash scripts/infra.sh up <profiles>` 声明
   4. 模型调用集成测试使用 `@EnabledIfEnvironmentVariable(named="AI_DASHSCOPE_API_KEY", matches=".+")`，中间件用 Testcontainers；复用 `saa-learning-common` 与 `saa-learning-starter`
   5. 全量 Demo 通过 HANDOFF §7 门禁：真实编译、version-audit 全绿、spring-ai-2-readiness 低位、无废弃 API/硬编码密钥/TODO/伪代码
-**Plans**: 3/TBD（首批扩展 01~19 已交付：03-01/02/03）
+**Plans**: 8 plans（batch1: 03-01/02/03 ✅；batch2: 03-04~08 planned）
 **Plan priority note** (for `/gsd-plan-phase 3`):
   1. ~~首批：章节 01~08 基础 + advisor/tool/memory（09~19）~~ ✅ 2026-07-04（含限额中断 UAT 闭环）
   2. 次批：RAG / Embedding / VectorStore / MCP（20~34）
