@@ -1,0 +1,8 @@
+### 45-observability-demo · 触发模型调用
+GET http://localhost:18045/obs/chat?message=用一句话介绍Micrometer
+
+### 45-observability-demo · Prometheus 指标
+GET http://localhost:18045/actuator/prometheus
+
+### 45-observability-demo · 健康检查
+GET http://localhost:18045/actuator/health

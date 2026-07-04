@@ -1,0 +1,33 @@
+server:
+  port: 18045
+
+spring:
+  application:
+    name: observability-demo
+  ai:
+    dashscope:
+      api-key: ${AI_DASHSCOPE_API_KEY}
+      chat:
+        options:
+          model: qwen-plus
+          temperature: 0.7
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,prometheus,metrics
+  endpoint:
+    prometheus:
+      enabled: true
+  metrics:
+    export:
+      prometheus:
+        enabled: true
+
+saa:
+  learning:
+    cost-tracking:
+      enabled: true
+      price-per-1k-input-tokens: 0.004
+      price-per-1k-output-tokens: 0.012
