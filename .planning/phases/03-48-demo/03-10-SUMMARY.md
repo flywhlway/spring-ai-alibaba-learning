@@ -74,6 +74,8 @@ completed: 2026-07-04
 2. **Task 2: 新建 39-graph-parallel-demo（并行 fan-out/fan-in）** - `7c8ef24` (feat)
 3. **Task 3: 新建 40-graph-saga-demo（补偿节点）** - `b75dffa` (feat)
 
+**Plan metadata:** `928afcf` (docs: complete plan)；`a40b41d` / `fc71436`（STATE 指标与 Plan 计数修正）
+
 ## Files Created/Modified
 
 - `examples/38-workflow-demo/**` — 线性工作流 + IT
