@@ -1,0 +1,13 @@
+server:
+  port: 18031
+
+spring:
+  application:
+    name: mcp-server-demo
+  ai:
+    mcp:
+      server:
+        name: order-mcp-server
+        version: 1.0.0
+        protocol: STREAMABLE
+        type: SYNC

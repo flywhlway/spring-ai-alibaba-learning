@@ -1,0 +1,2 @@
+### 31-mcp-server-demo · 健康检查
+GET http://localhost:18031/health
