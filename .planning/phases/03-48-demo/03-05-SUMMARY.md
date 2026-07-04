@@ -84,7 +84,7 @@ Each task was committed atomically:
 4. **Task 4: 新建 25-redis-vector-demo** - `c221653` (feat)
 5. **Task 5: 新建 26-es-hybrid-demo** - `3eb07fb` (feat)
 
-**Plan metadata:** `71348d4` (docs: complete plan)
+**Plan metadata:** `71348d4` + `7a05648` (docs: complete plan)
 
 ## Files Created/Modified
 
