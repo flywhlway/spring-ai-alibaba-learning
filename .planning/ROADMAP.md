@@ -63,7 +63,8 @@
   4. 模型调用集成测试使用 `@EnabledIfEnvironmentVariable(named="AI_DASHSCOPE_API_KEY", matches=".+")`，中间件用 Testcontainers；复用 `saa-learning-common` 与 `saa-learning-starter`
   5. 全量 Demo 通过 HANDOFF §7 门禁：真实编译、version-audit 全绿、spring-ai-2-readiness 低位、无废弃 API/硬编码密钥/TODO/伪代码
 
-**Plans**: 14 plans（batch1: 03-01/02/03 ✅；batch2: 03-04~08 ✅；batch3: 03-09~14 pending）Plans:
+**Plans**: 14/14（batch1: 03-01/02/03 ✅；batch2: 03-04~08 ✅；batch3: 03-09~14 ✅ compile gate 15/15）
+
 **Wave 1**
 
 - [x] 03-01-PLAN.md — 首批基础 Demo（01~08）
@@ -109,7 +110,8 @@
 
   1. ~~首批：章节 01~08 基础 + advisor/tool/memory（09~19）~~ ✅ 2026-07-04（含限额中断 UAT 闭环）
   2. ~~次批：RAG / Embedding / VectorStore / MCP（20~34）~~ ✅ 2026-07-04（compile gate 16/16）
-  3. ~~再次+末批：Agent / Graph / Multi-Agent / best-practice（35~48）~~ planned 03-09~14（2026-07-04）
+  3. ~~再次+末批：Agent / Graph / Multi-Agent / best-practice（35~48）~~ ✅ 2026-07-04（plans 03-09~14，compile gate 15/15）
+
 
 **Demo inventory (SSOT: examples/README.md):**
 01 quickstart · 02 autoconfig · 03 multi-model · 04 chat · 05 retry · 06 prompt · 07 prompt-builder · 08 prompt-nacos · 09 advisor · 10 custom-advisor · 11 tool · 12 dynamic-tool · 13 http-tool · 14 db-tool · 15 tool-security · 16 memory · 17 redis-memory · 18 jdbc-memory · 19 summary-memory · 20 structured-output · 21 json-schema · 22 embedding · 23 pgvector · 24 milvus · 25 redis-vector · 26 es-hybrid · 27 rag · 28 advanced-rag · 29 hybrid-rag · 30 rag-eval · 31 mcp-server · 32 mcp-client · 33 mcp-auth · 34 mcp-nacos · 35 agent · 36 agent-skills · 37 agent-hitl · 38 workflow · 39 graph-parallel · 40 graph-saga · 41 multi-agent · 42 supervisor · 43 a2a-nacos · 44 stream · 45 observability · 46 logging · 47 routing · 48 fallback
