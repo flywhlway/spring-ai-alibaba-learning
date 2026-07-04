@@ -1,0 +1,8 @@
+### 18-jdbc-memory-demo · 记住名字
+GET http://localhost:18018/chat?message=我叫Alice，请记住&userId=alice
+
+### 同会话追问
+GET http://localhost:18018/chat?message=我叫什么名字？&userId=alice
+
+### 会话隔离
+GET http://localhost:18018/chat?message=我叫什么名字？&userId=bob

@@ -1,0 +1,16 @@
+server:
+  port: 18009
+
+spring:
+  application:
+    name: advisor-demo
+  ai:
+    dashscope:
+      api-key: ${AI_DASHSCOPE_API_KEY}
+      chat:
+        options:
+          model: qwen-plus
+
+logging:
+  level:
+    org.springframework.ai.chat.client.advisor: DEBUG

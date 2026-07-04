@@ -1,0 +1,5 @@
+### 11-tool-demo · ToolContext 身份注入（模型不可伪造 userId）
+GET http://localhost:18011/tool/context?question=帮我查一下我的会员等级&userId=u-1001
+
+### returnDirect：结果直接返回，不经模型转述
+GET http://localhost:18011/tool/direct?city=上海

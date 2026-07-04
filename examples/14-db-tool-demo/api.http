@@ -1,0 +1,11 @@
+### 直连：按分类查询商品
+GET http://localhost:18014/db/products?category=手机
+
+### 直连：按 ID 查询商品
+GET http://localhost:18014/db/products/1
+
+### 直连：查询不存在的商品 -> code=1003
+GET http://localhost:18014/db/products/999
+
+### 模型驱动：自然语言查询
+GET http://localhost:18014/db/ask?question=帮我查一下耳机类目有哪些商品

@@ -1,0 +1,21 @@
+server:
+  port: 18014
+
+spring:
+  application:
+    name: db-tool-demo
+  datasource:
+    url: jdbc:h2:mem:dbtool;DB_CLOSE_DELAY=-1
+    driver-class-name: org.h2.Driver
+    username: sa
+    password:
+  sql:
+    init:
+      mode: embedded
+  ai:
+    dashscope:
+      api-key: ${AI_DASHSCOPE_API_KEY}
+      chat:
+        options:
+          model: qwen-plus
+          temperature: 0.3

@@ -1,0 +1,5 @@
+### 19-summary-memory-demo · 多轮对话（重复发送触发摘要）
+GET http://localhost:18019/chat?message=我叫Alice，喜欢咖啡&conversationId=demo
+
+### 查看记忆（观察【历史摘要】）
+GET http://localhost:18019/history?conversationId=demo

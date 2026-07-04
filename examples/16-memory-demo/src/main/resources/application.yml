@@ -1,0 +1,12 @@
+server:
+  port: 18016
+
+spring:
+  application:
+    name: memory-demo
+  ai:
+    dashscope:
+      api-key: ${AI_DASHSCOPE_API_KEY}
+      chat:
+        options:
+          model: qwen-plus

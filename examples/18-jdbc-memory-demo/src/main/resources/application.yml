@@ -1,0 +1,21 @@
+server:
+  port: 18018
+
+spring:
+  application:
+    name: jdbc-memory-demo
+  datasource:
+    url: jdbc:postgresql://localhost:5432/saa_learning
+    username: saa
+    password: saa123456
+  ai:
+    dashscope:
+      api-key: ${AI_DASHSCOPE_API_KEY}
+      chat:
+        options:
+          model: qwen-plus
+    chat:
+      memory:
+        repository:
+          jdbc:
+            initialize-schema: always

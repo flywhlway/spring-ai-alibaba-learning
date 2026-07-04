@@ -1,0 +1,19 @@
+server:
+  port: 18019
+
+spring:
+  application:
+    name: summary-memory-demo
+  ai:
+    dashscope:
+      api-key: ${AI_DASHSCOPE_API_KEY}
+      chat:
+        options:
+          model: qwen-plus
+
+saa:
+  summary-memory:
+    # 历史消息条数达到该阈值时触发摘要压缩
+    threshold: 6
+    # 压缩后保留最近 N 条原始消息
+    keep-recent: 2

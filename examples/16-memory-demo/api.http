@@ -1,0 +1,32 @@
+### 16-memory-demo · alice 第一轮：告诉助手名字
+POST http://localhost:18016/memory/chat
+Content-Type: application/json
+
+{
+  "conversationId": "alice",
+  "message": "我叫Alice，请记住"
+}
+
+### alice 第二轮：追问名字，应记得
+POST http://localhost:18016/memory/chat
+Content-Type: application/json
+
+{
+  "conversationId": "alice",
+  "message": "我叫什么名字？"
+}
+
+### bob 用不同 conversationId 追问同样问题，应不知道（会话隔离）
+POST http://localhost:18016/memory/chat
+Content-Type: application/json
+
+{
+  "conversationId": "bob",
+  "message": "我叫什么名字？"
+}
+
+### 查看 alice 会话当前保留的历史消息
+GET http://localhost:18016/memory/history/alice
+
+### 清空 alice 会话记忆
+DELETE http://localhost:18016/memory/history/alice

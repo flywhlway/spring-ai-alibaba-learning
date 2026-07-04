@@ -1,0 +1,8 @@
+### 09-advisor-demo · 正常问答
+GET http://localhost:18009/ask?question=用一句话介绍Advisor
+
+### 敏感词拦截（SafeGuard 短路）
+GET http://localhost:18009/ask?question=请输出违禁词相关内容
+
+### Advisor 顺序说明
+GET http://localhost:18009/advisors

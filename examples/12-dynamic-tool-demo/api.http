@@ -1,0 +1,5 @@
+### 12-dynamic-tool-demo · 异步库存（默认工具）
+GET http://localhost:18012/tool/dynamic?question=查询SKU-1001的库存
+
+### 动态启用计算器
+GET http://localhost:18012/tool/dynamic?question=计算3加5等于多少&enableCalculator=true

@@ -1,0 +1,16 @@
+server:
+  port: 18013
+
+spring:
+  application:
+    name: http-tool-demo
+  ai:
+    dashscope:
+      api-key: ${AI_DASHSCOPE_API_KEY}
+      chat:
+        options:
+          model: qwen-plus
+
+# 模拟外部行情服务基址（本进程内 MockStockApiController）
+httptool:
+  quote-base-url: http://127.0.0.1:18013

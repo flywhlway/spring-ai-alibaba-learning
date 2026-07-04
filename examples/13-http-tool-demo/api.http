@@ -1,0 +1,5 @@
+### 13-http-tool-demo · 直接打模拟行情 API
+GET http://localhost:18013/mock/quote?symbol=AAPL
+
+### 经 Tool Calling 查询股价
+GET http://localhost:18013/ask?question=查询AAPL的最新股价
