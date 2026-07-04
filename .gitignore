@@ -1,0 +1,27 @@
+# Maven
+target/
+!.mvn/wrapper/maven-wrapper.jar
+
+# IDE
+.idea/
+*.iml
+.vscode/
+.factorypath
+.classpath
+.project
+.settings/
+
+# macOS
+.DS_Store
+
+# 环境与密钥（严禁提交任何 API Key）
+.env
+.env.local
+scripts/setup-env.local.sh
+
+# 日志
+logs/
+*.log
+
+# Docker 数据卷
+docker/data/

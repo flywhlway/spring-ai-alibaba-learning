@@ -1,0 +1,269 @@
+# =====================================================================
+# Spring AI Alibaba Learning —— 统一中间件编排（SSOT）
+#
+# 全仓库所有 examples / projects 共用本文件，禁止在各工程内重复编写中间件编排。
+# 面向 Apple Silicon（OrbStack）验证，所有镜像均提供 arm64 架构。
+#
+# 按 profile 分组启动，避免一次性拉起全部容器占用内存：
+#   docker compose --profile core   up -d   # Redis / PostgreSQL(pgvector) / MySQL / MinIO
+#   docker compose --profile vector up -d   # Milvus（含 etcd，对象存储复用 core 的 MinIO）
+#   docker compose --profile mq     up -d   # Kafka / RabbitMQ
+#   docker compose --profile search up -d   # Elasticsearch
+#   docker compose --profile cloud  up -d   # Nacos
+#
+# 组合示例（RAG 全链路）：
+#   docker compose --profile core --profile vector up -d
+#
+# 注意：以下所有账号密码仅用于本机开发环境，生产配置见 docs/tutorial 安全章节。
+# =====================================================================
+name: saa-learning
+
+networks:
+  saa-net:
+    driver: bridge
+
+volumes:
+  redis-data:
+  postgres-data:
+  mysql-data:
+  minio-data:
+  etcd-data:
+  milvus-data:
+  kafka-data:
+  rabbitmq-data:
+  es-data:
+  nacos-data:
+
+services:
+  # ---------------------------------------------------------------
+  # core：会话记忆 / 缓存 / 限流
+  # ---------------------------------------------------------------
+  redis:
+    image: redis:7.4-alpine
+    container_name: saa-redis
+    profiles: [ "core" ]
+    command: [ "redis-server", "--appendonly", "yes" ]
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis-data:/data
+    networks: [ saa-net ]
+    healthcheck:
+      test: [ "CMD", "redis-cli", "ping" ]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+  # core：业务库 + pgvector 向量能力（轻量向量场景直接用 PG）
+  postgres:
+    image: pgvector/pgvector:pg16
+    container_name: saa-postgres
+    profiles: [ "core" ]
+    environment:
+      POSTGRES_USER: saa
+      POSTGRES_PASSWORD: saa123456
+      POSTGRES_DB: saa_learning
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    networks: [ saa-net ]
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U saa -d saa_learning" ]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+  # core：部分企业项目使用 MySQL 作为业务库（贴近国内企业现状）
+  mysql:
+    image: mysql:8.4
+    container_name: saa-mysql
+    profiles: [ "core" ]
+    environment:
+      MYSQL_ROOT_PASSWORD: root123456
+      MYSQL_DATABASE: saa_learning
+      MYSQL_USER: saa
+      MYSQL_PASSWORD: saa123456
+    command:
+      - --character-set-server=utf8mb4
+      - --collation-server=utf8mb4_unicode_ci
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql-data:/var/lib/mysql
+    networks: [ saa-net ]
+    healthcheck:
+      test: [ "CMD", "mysqladmin", "ping", "-h", "127.0.0.1", "-uroot", "-proot123456" ]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+
+  # core：对象存储（知识库原始文档存储；同时作为 Milvus 的对象存储后端）
+  minio:
+    image: minio/minio:RELEASE.2025-04-22T22-12-26Z
+    container_name: saa-minio
+    profiles: [ "core", "vector" ]
+    environment:
+      MINIO_ROOT_USER: minioadmin
+      MINIO_ROOT_PASSWORD: minioadmin
+    command: [ "server", "/data", "--console-address", ":9001" ]
+    ports:
+      - "9000:9000"   # S3 API
+      - "9001:9001"   # Web Console
+    volumes:
+      - minio-data:/data
+    networks: [ saa-net ]
+    healthcheck:
+      test: [ "CMD", "mc", "ready", "local" ]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+  # ---------------------------------------------------------------
+  # vector：Milvus 单机版（元数据依赖 etcd，对象存储复用上方 MinIO）
+  # ---------------------------------------------------------------
+  etcd:
+    image: quay.io/coreos/etcd:v3.5.18
+    container_name: saa-etcd
+    profiles: [ "vector" ]
+    environment:
+      ETCD_AUTO_COMPACTION_MODE: revision
+      ETCD_AUTO_COMPACTION_RETENTION: "1000"
+      ETCD_QUOTA_BACKEND_BYTES: "4294967296"
+      ETCD_SNAPSHOT_COUNT: "50000"
+    command:
+      - etcd
+      - -advertise-client-urls=http://etcd:2379
+      - -listen-client-urls=http://0.0.0.0:2379
+      - --data-dir=/etcd
+    volumes:
+      - etcd-data:/etcd
+    networks: [ saa-net ]
+    healthcheck:
+      test: [ "CMD", "etcdctl", "endpoint", "health" ]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+  milvus:
+    image: milvusdb/milvus:v2.5.12
+    container_name: saa-milvus
+    profiles: [ "vector" ]
+    command: [ "milvus", "run", "standalone" ]
+    environment:
+      ETCD_ENDPOINTS: etcd:2379
+      MINIO_ADDRESS: minio:9000
+      MINIO_ACCESS_KEY_ID: minioadmin
+      MINIO_SECRET_ACCESS_KEY: minioadmin
+    ports:
+      - "19530:19530"   # gRPC / SDK
+      - "9091:9091"     # 监控与健康检查
+    volumes:
+      - milvus-data:/var/lib/milvus
+    depends_on:
+      etcd:
+        condition: service_healthy
+      minio:
+        condition: service_healthy
+    networks: [ saa-net ]
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://localhost:9091/healthz" ]
+      interval: 15s
+      timeout: 10s
+      retries: 20
+      start_period: 60s
+
+  # ---------------------------------------------------------------
+  # mq：异步任务 / 事件流（文档解析流水线、审计事件等）
+  # ---------------------------------------------------------------
+  kafka:
+    image: apache/kafka:3.9.1
+    container_name: saa-kafka
+    profiles: [ "mq" ]
+    environment:
+      KAFKA_NODE_ID: 1
+      KAFKA_PROCESS_ROLES: broker,controller
+      KAFKA_CONTROLLER_QUORUM_VOTERS: 1@kafka:9093
+      KAFKA_LISTENERS: PLAINTEXT://:29092,CONTROLLER://:9093,EXTERNAL://:9092
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:29092,EXTERNAL://localhost:9092
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,CONTROLLER:PLAINTEXT,EXTERNAL:PLAINTEXT
+      KAFKA_CONTROLLER_LISTENER_NAMES: CONTROLLER
+      KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
+      KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
+      KAFKA_AUTO_CREATE_TOPICS_ENABLE: "true"
+    ports:
+      - "9092:9092"
+    volumes:
+      - kafka-data:/var/lib/kafka/data
+    networks: [ saa-net ]
+
+  rabbitmq:
+    image: rabbitmq:4.1-management-alpine
+    container_name: saa-rabbitmq
+    profiles: [ "mq" ]
+    environment:
+      RABBITMQ_DEFAULT_USER: saa
+      RABBITMQ_DEFAULT_PASS: saa123456
+    ports:
+      - "5672:5672"
+      - "15672:15672"   # 管理控制台
+    volumes:
+      - rabbitmq-data:/var/lib/rabbitmq
+    networks: [ saa-net ]
+    healthcheck:
+      test: [ "CMD", "rabbitmq-diagnostics", "-q", "ping" ]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+  # ---------------------------------------------------------------
+  # search：全文检索 / 混合检索（Hybrid Search 章节）
+  # ---------------------------------------------------------------
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:8.17.4
+    container_name: saa-es
+    profiles: [ "search" ]
+    environment:
+      discovery.type: single-node
+      xpack.security.enabled: "false"
+      ES_JAVA_OPTS: "-Xms512m -Xmx512m"
+    ports:
+      - "9200:9200"
+    volumes:
+      - es-data:/usr/share/elasticsearch/data
+    networks: [ saa-net ]
+    healthcheck:
+      test: [ "CMD-SHELL", "curl -sf http://localhost:9200/_cluster/health || exit 1" ]
+      interval: 10s
+      timeout: 5s
+      retries: 20
+
+  # ---------------------------------------------------------------
+  # cloud：注册中心 / 配置中心 / Prompt 热更新 / 分布式 MCP Registry
+  # ---------------------------------------------------------------
+  nacos:
+    image: nacos/nacos-server:v3.0.2
+    container_name: saa-nacos
+    profiles: [ "cloud" ]
+    environment:
+      MODE: standalone
+      # Nacos 3.x 默认开启鉴权，以下为本机开发用固定值（生产必须替换，见安全章节）
+      NACOS_AUTH_TOKEN: SecretKey012345678901234567890123456789012345678901234567890123456789
+      NACOS_AUTH_IDENTITY_KEY: serverIdentity
+      NACOS_AUTH_IDENTITY_VALUE: saa-learning-dev
+    ports:
+      - "8848:8848"   # HTTP API
+      - "9848:9848"   # gRPC
+      - "8080:8080"   # Nacos 3.x 独立控制台（http://localhost:8080）
+    volumes:
+      - nacos-data:/home/nacos/data
+    networks: [ saa-net ]
+    healthcheck:
+      # 兼容 Nacos 3.x（控制台 8080 readiness）与 2.x 风格（8848 v2 readiness）两种端点
+      test: [ "CMD-SHELL", "curl -sf http://localhost:8080/v3/console/health/readiness || curl -sf http://localhost:8848/nacos/v2/console/health/readiness || exit 1" ]
+      interval: 10s
+      timeout: 5s
+      retries: 20
+      start_period: 30s

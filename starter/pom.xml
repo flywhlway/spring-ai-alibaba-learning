@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>com.flywhl.saa</groupId>
+        <artifactId>spring-ai-alibaba-learning</artifactId>
+        <version>1.0.0-SNAPSHOT</version>
+    </parent>
+
+    <artifactId>saa-learning-starter</artifactId>
+    <packaging>jar</packaging>
+
+    <name>Spring AI Alibaba Learning :: Starter</name>
+    <description>
+        企业统一 AI 接入层 Starter（第 19 章 BestPractice 落地）。
+        收敛三个企业项目共用的 AI 基建：统一 ChatClient 装配、默认 Advisor 链、
+        多模型路由与降级、Token 成本采集。遵循 core/autoconfigure/starter 三段式
+        约定（第 03 章），本模块因规模较小未做物理拆分，但包结构体现了同等的职责边界。
+    </description>
+
+    <dependencies>
+        <dependency>
+            <groupId>com.flywhl.saa</groupId>
+            <artifactId>saa-learning-common</artifactId>
+        </dependency>
+
+        <!-- Spring AI 核心：ChatClient/ChatModel/Advisor 抽象，版本由父 POM BOM 管理 -->
+        <dependency>
+            <groupId>org.springframework.ai</groupId>
+            <artifactId>spring-ai-model</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.ai</groupId>
+            <artifactId>spring-ai-client-chat</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-autoconfigure</artifactId>
+        </dependency>
+
+        <!-- 可观测：ObservationHandler 依赖 Micrometer Observation API -->
+        <dependency>
+            <groupId>io.micrometer</groupId>
+            <artifactId>micrometer-observation</artifactId>
+        </dependency>
+
+        <!-- DashScope 具体实现仅用于测试期验证装配链路，实际使用方自行引入 -->
+        <dependency>
+            <groupId>com.alibaba.cloud.ai</groupId>
+            <artifactId>spring-ai-alibaba-starter-dashscope</artifactId>
+            <optional>true</optional>
+        </dependency>
+    </dependencies>
+</project>
