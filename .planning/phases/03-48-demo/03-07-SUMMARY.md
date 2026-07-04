@@ -79,7 +79,7 @@ completed: 2026-07-04
 3. **Task 3: 新建 33-mcp-auth-demo** - `e91798f` (feat)
 4. **Task 4: 新建 34-mcp-nacos-demo（双模块）** - `cb03cb4` (feat)
 
-**Plan metadata:** （本 SUMMARY 提交后回填）
+**Plan metadata:** `26e2b23` (docs: complete plan)
 
 ## Files Created/Modified
 
