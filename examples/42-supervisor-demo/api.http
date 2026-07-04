@@ -1,0 +1,5 @@
+### 42-supervisor-demo · 日程查询
+GET http://localhost:18042/supervisor/chat?query=帮我查一下2026-07-05的日程
+
+### 邮件起草
+GET http://localhost:18042/supervisor/chat?query=给张经理起草一封项目进度汇报邮件，要点：Phase3进行中、下周联调
