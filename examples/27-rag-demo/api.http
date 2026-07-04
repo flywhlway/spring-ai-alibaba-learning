@@ -1,0 +1,8 @@
+### 写入样例知识库
+POST http://localhost:18027/ingest
+
+### Naive RAG 问答
+GET http://localhost:18027/ask?question=OTA升级失败一般是什么原因？
+
+### 无关问题（应空上下文兜底，不编造）
+GET http://localhost:18027/ask?question=今天上海天气怎么样？
