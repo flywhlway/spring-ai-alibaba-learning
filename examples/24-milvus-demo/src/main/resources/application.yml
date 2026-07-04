@@ -1,0 +1,26 @@
+server:
+  port: 18024
+
+spring:
+  application:
+    name: milvus-demo
+  ai:
+    dashscope:
+      api-key: ${AI_DASHSCOPE_API_KEY}
+      embedding:
+        options:
+          model: text-embedding-v4
+          dimensions: 1024
+    vectorstore:
+      milvus:
+        client:
+          host: localhost
+          port: 19530
+          username: root
+          password: milvus
+        database-name: default
+        collection-name: saa_knowledge
+        embedding-dimension: 1024
+        index-type: IVF_FLAT
+        metric-type: COSINE
+        initialize-schema: true
