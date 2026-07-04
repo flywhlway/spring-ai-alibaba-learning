@@ -1,0 +1,28 @@
+server:
+  port: 18043
+
+spring:
+  application:
+    name: inventory-a2a-server
+  ai:
+    dashscope:
+      api-key: ${AI_DASHSCOPE_API_KEY}
+      chat:
+        options:
+          model: qwen-plus
+          temperature: 0.2
+    alibaba:
+      a2a:
+        nacos:
+          server-addr: 127.0.0.1:8848
+          namespace: public
+          username: nacos
+          password: nacos
+          registry:
+            enabled: true
+        server:
+          address: http://127.0.0.1:18043
+          card:
+            name: inventory-agent
+            description: 库存查询智能体，支持按 SKU 查询库存数量
+            version: 1.0.0

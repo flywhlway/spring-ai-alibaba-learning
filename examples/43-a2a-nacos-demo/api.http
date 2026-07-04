@@ -1,0 +1,5 @@
+### 43-a2a-nacos-demo · Client 调用远程库存 Agent（需 Nacos + Server 已启动）
+GET http://localhost:18143/a2a/inventory?query=查询SKU-001库存
+
+### 低库存 SKU
+GET http://localhost:18143/a2a/inventory?query=SKU-002还有多少库存？
