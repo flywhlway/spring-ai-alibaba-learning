@@ -1,0 +1,8 @@
+### 写入样例知识库
+POST http://localhost:18028/ingest
+
+### 口语化问题（会先查询改写再检索）
+GET http://localhost:18028/ask?question=车机升级挂了咋办？
+
+### 标准问题
+GET http://localhost:18028/ask?question=OTA升级失败一般是什么原因？
