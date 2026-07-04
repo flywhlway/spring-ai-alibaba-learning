@@ -1,0 +1,23 @@
+### 运行内置评测集（忠实度 / 相关性）
+POST http://localhost:18030/eval/run
+Content-Type: application/json
+
+### 再次运行（应命中响应缓存，cached=true）
+POST http://localhost:18030/eval/run
+Content-Type: application/json
+
+### 清空响应缓存
+POST http://localhost:18030/eval/cache/clear
+
+### 自定义评测用例
+POST http://localhost:18030/eval/run
+Content-Type: application/json
+
+[
+  {
+    "id": "custom-1",
+    "question": "OTA升级失败一般是什么原因？",
+    "evidenceKeywords": ["网络", "签名"],
+    "relevanceKeywords": ["OTA", "失败"]
+  }
+]
