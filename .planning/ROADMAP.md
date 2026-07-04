@@ -53,12 +53,26 @@
   3. 每个 Demo 具备独立 README、`api.http`、至少一个 REST 入口与 curl 验证命令及预期输出；`mvn spring-boot:run` 可跑，中间件依赖通过 `bash scripts/infra.sh up <profiles>` 声明
   4. 模型调用集成测试使用 `@EnabledIfEnvironmentVariable(named="AI_DASHSCOPE_API_KEY", matches=".+")`，中间件用 Testcontainers；复用 `saa-learning-common` 与 `saa-learning-starter`
   5. 全量 Demo 通过 HANDOFF §7 门禁：真实编译、version-audit 全绿、spring-ai-2-readiness 低位、无废弃 API/硬编码密钥/TODO/伪代码
-**Plans**: 8/8（batch1: 03-01/02/03 ✅；batch2: 03-04~08 ✅ compile gate）
+**Plans**: 14 plans（batch1: 03-01/02/03 ✅；batch2: 03-04~08 ✅；batch3: 03-09~14 pending）
+Plans:
+- [x] 03-01-PLAN.md — 首批基础 Demo（01~08）
+- [x] 03-02-PLAN.md — 首批 advisor/tool/memory（09~19）
+- [x] 03-03-PLAN.md — 首批 compile gate
+- [x] 03-04-PLAN.md — 次批 Structured Output（20~21）
+- [x] 03-05-PLAN.md — 次批 VectorStore（22~26）
+- [x] 03-06-PLAN.md — 次批 RAG（27~30）
+- [x] 03-07-PLAN.md — 次批 MCP（31~34）
+- [x] 03-08-PLAN.md — 次批 compile gate（20~34）
+- [ ] 03-09-PLAN.md — Agent：ReactAgent / Skills / HITL（35~37）
+- [ ] 03-10-PLAN.md — Graph / Workflow：State / Parallel / Saga（38~40）
+- [ ] 03-11-PLAN.md — Multi-Agent：四模式 / Supervisor / A2A-Nacos（41~43）
+- [ ] 03-12-PLAN.md — Stream + Observability + Logging（44~46，强制 starter）
+- [ ] 03-13-PLAN.md — Routing + Fallback（47~48，强制 starter）
+- [ ] 03-14-PLAN.md — 再次批 compile gate（35~48）+ 约定扫描
 **Plan priority note** (for `/gsd-plan-phase 3`):
   1. ~~首批：章节 01~08 基础 + advisor/tool/memory（09~19）~~ ✅ 2026-07-04（含限额中断 UAT 闭环）
   2. ~~次批：RAG / Embedding / VectorStore / MCP（20~34）~~ ✅ 2026-07-04（compile gate 16/16）
-  3. 再次：Agent / Graph / Multi-Agent（35~43）
-  4. 末批：best-practice / migration 相关（44~48 stream/observability/logging/routing/fallback）
+  3. ~~再次+末批：Agent / Graph / Multi-Agent / best-practice（35~48）~~ planned 03-09~14（2026-07-04）
 
 **Demo inventory (SSOT: examples/README.md):**
 01 quickstart · 02 autoconfig · 03 multi-model · 04 chat · 05 retry · 06 prompt · 07 prompt-builder · 08 prompt-nacos · 09 advisor · 10 custom-advisor · 11 tool · 12 dynamic-tool · 13 http-tool · 14 db-tool · 15 tool-security · 16 memory · 17 redis-memory · 18 jdbc-memory · 19 summary-memory · 20 structured-output · 21 json-schema · 22 embedding · 23 pgvector · 24 milvus · 25 redis-vector · 26 es-hybrid · 27 rag · 28 advanced-rag · 29 hybrid-rag · 30 rag-eval · 31 mcp-server · 32 mcp-client · 33 mcp-auth · 34 mcp-nacos · 35 agent · 36 agent-skills · 37 agent-hitl · 38 workflow · 39 graph-parallel · 40 graph-saga · 41 multi-agent · 42 supervisor · 43 a2a-nacos · 44 stream · 45 observability · 46 logging · 47 routing · 48 fallback
@@ -115,7 +129,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 → 7
 |-------|----------------|--------|-----------|
 | 1. 基座脚手架 | delivered | Complete | 2026-07-03 |
 | 2. 教程与 starter | delivered | Complete | 2026-07-03 |
-| 3. 48 个独立 Demo | 8/8（01~34 delivered; 35~48 pending） | In progress | - |
+| 3. 48 个独立 Demo | 14 plans（01~34 delivered; 35~48 plans 03-09~14 pending） | In progress | - |
 | 4. 知识库问答平台 | 0/TBD | Not started | - |
 | 5. 办公 Agent 助手 | 0/TBD | Not started | - |
 | 6. 智能客服平台 | 0/TBD | Not started | - |
