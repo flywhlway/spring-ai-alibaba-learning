@@ -1,0 +1,16 @@
+### 入库
+POST http://localhost:18023/documents
+Content-Type: application/json
+
+{
+  "content": "OTA升级失败常见原因包括网络中断、签名校验失败、存储空间不足",
+  "metadata": {
+    "department": "vehicle-diag"
+  }
+}
+
+### 相似度检索
+GET http://localhost:18023/search?q=升级中断怎么办&topK=3
+
+### Metadata Filter（FilterExpressionBuilder）
+GET http://localhost:18023/search/filter?q=升级中断&topK=3&department=vehicle-diag

@@ -1,0 +1,24 @@
+server:
+  port: 18023
+
+spring:
+  application:
+    name: pgvector-demo
+  datasource:
+    url: jdbc:postgresql://localhost:5432/saa_learning
+    username: saa
+    password: saa123456
+  ai:
+    dashscope:
+      api-key: ${AI_DASHSCOPE_API_KEY}
+      embedding:
+        options:
+          model: text-embedding-v4
+          dimensions: 1024
+    vectorstore:
+      pgvector:
+        index-type: HNSW
+        distance-type: COSINE_DISTANCE
+        dimensions: 1024
+        initialize-schema: true
+        max-document-batch-size: 10000
