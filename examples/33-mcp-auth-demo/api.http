@@ -1,0 +1,6 @@
+### 33-mcp-auth-demo · 健康检查
+GET http://localhost:18033/health
+
+### 带 Bearer Token（MCP Client 调用 /mcp 时需同样携带）
+GET http://localhost:18033/health
+Authorization: Bearer demo-secret

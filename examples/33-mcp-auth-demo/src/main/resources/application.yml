@@ -1,0 +1,13 @@
+server:
+  port: 18033
+
+spring:
+  application:
+    name: mcp-auth-demo
+  ai:
+    mcp:
+      server:
+        name: protected-mcp-server
+        version: 1.0.0
+        protocol: STREAMABLE
+        type: SYNC
