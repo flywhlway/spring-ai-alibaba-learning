@@ -1,0 +1,26 @@
+### 入库
+POST http://localhost:18025/documents
+Content-Type: application/json
+
+{
+  "content": "高频 FAQ：如何重置车机密码",
+  "metadata": {
+    "department": "cs"
+  }
+}
+
+### 相似度检索
+GET http://localhost:18025/search?q=车机密码重置&topK=3
+
+### 语义缓存写入
+POST http://localhost:18025/cache
+Content-Type: application/json
+
+{
+  "query": "如何重置车机密码",
+  "answer": "进入设置-账户-重置密码",
+  "ttlSeconds": 300
+}
+
+### 语义缓存查找
+GET http://localhost:18025/cache/lookup?q=车机密码怎么重置&similarityThreshold=0.8

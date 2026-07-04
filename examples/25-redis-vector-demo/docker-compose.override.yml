@@ -1,0 +1,18 @@
+# Redis Stack（RediSearch + RedisJSON）——本 Demo 专用
+# 映射到宿主机 6380，避免与 core profile 的普通 redis:7.4-alpine（6379）冲突。
+#
+# 启动：
+#   docker compose -f docker-compose.override.yml up -d
+#
+# 禁止直接复用 core profile 的 redis:7.4-alpine（缺 RediSearch/RedisJSON，向量检索会失败）。
+services:
+  redis-stack:
+    image: redis/redis-stack-server:latest
+    container_name: saa-redis-stack
+    ports:
+      - "6380:6379"
+    healthcheck:
+      test: [ "CMD", "redis-cli", "ping" ]
+      interval: 5s
+      timeout: 3s
+      retries: 10
