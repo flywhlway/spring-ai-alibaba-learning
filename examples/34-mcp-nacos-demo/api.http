@@ -1,0 +1,5 @@
+### 34 order-mcp-server 健康检查
+GET http://localhost:18034/health
+
+### 34 office-assistant-client 经 Nacos 发现查询订单
+GET http://localhost:18134/ask?question=帮我查一下订单SO20260704001的状态

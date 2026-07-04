@@ -1,0 +1,24 @@
+server:
+  port: 18034
+
+spring:
+  application:
+    name: order-mcp-server
+  ai:
+    mcp:
+      server:
+        name: order-service-mcp
+        version: 1.0.0
+        protocol: STREAMABLE
+        type: SYNC
+    alibaba:
+      mcp:
+        nacos:
+          # 开发环境地址；生产须更换凭证（T-34-01）
+          server-addr: 127.0.0.1:8848
+          namespace: public
+          username: nacos
+          password: nacos
+          register:
+            enabled: true
+            service-name: order-service-mcp

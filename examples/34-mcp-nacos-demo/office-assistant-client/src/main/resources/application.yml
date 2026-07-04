@@ -1,0 +1,32 @@
+server:
+  port: 18134
+
+spring:
+  application:
+    name: office-assistant-mcp-client
+  ai:
+    dashscope:
+      api-key: ${AI_DASHSCOPE_API_KEY}
+      chat:
+        options:
+          model: qwen-plus
+          temperature: 0.3
+    mcp:
+      client:
+        type: SYNC
+    alibaba:
+      mcp:
+        nacos:
+          # 开发环境地址；生产须更换凭证（T-34-01）
+          server-addr: 127.0.0.1:8848
+          namespace: public
+          username: nacos
+          password: nacos
+          client:
+            enabled: true
+            # 按服务名发现，非硬编码 IP/端口
+            streamable:
+              connections:
+                order-service:
+                  service-name: order-service-mcp
+                  version: 1.0.0
