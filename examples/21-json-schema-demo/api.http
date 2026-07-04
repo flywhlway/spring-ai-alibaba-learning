@@ -1,0 +1,8 @@
+### 21-json-schema-demo · 泛型集合 filmography
+GET http://localhost:18021/filmography?actors=汤姆·汉克斯,比尔·默瑞
+
+### 嵌套 Record 检查报告
+GET http://localhost:18021/report/nested?topic=电动汽车电池热管理
+
+### validateSchema 失败后的容错回退
+GET http://localhost:18021/report/resilient?topic=数据中心机房巡检

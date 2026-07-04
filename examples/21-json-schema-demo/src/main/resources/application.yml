@@ -1,0 +1,17 @@
+server:
+  port: 18021
+
+spring:
+  application:
+    name: json-schema-demo
+  ai:
+    dashscope:
+      api-key: ${AI_DASHSCOPE_API_KEY}
+      chat:
+        options:
+          model: qwen-plus
+          temperature: 0.3
+
+logging:
+  level:
+    com.flywhl.saa.jsonschema: INFO
