@@ -1,0 +1,2 @@
+### 20-structured-output-demo · 故障码结构化诊断
+GET http://localhost:18020/diagnose/structured?dtcCode=P0420

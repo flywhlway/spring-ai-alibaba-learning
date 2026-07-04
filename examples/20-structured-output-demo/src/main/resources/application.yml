@@ -1,0 +1,17 @@
+server:
+  port: 18020
+
+spring:
+  application:
+    name: structured-output-demo
+  ai:
+    dashscope:
+      api-key: ${AI_DASHSCOPE_API_KEY}
+      chat:
+        options:
+          model: qwen-plus
+          temperature: 0.3
+
+logging:
+  level:
+    com.flywhl.saa.structured: INFO
