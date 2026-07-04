@@ -128,7 +128,7 @@ Each task was committed atomically:
 1. **Task 1: common install + 20~34 全量 compile** — _(no commit; gate pass, 零修复)_
 2. **Task 2: 约定扫描（密钥/废弃 API/TODO）** — _(no commit; scan pass, 零修复)_
 
-**Plan metadata:** _(见下方 docs commit)_
+**Plan metadata:** `f3e474e` (docs: complete plan)
 
 ## Files Created/Modified
 
