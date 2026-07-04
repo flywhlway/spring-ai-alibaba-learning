@@ -1,0 +1,5 @@
+### 37-agent-hitl-demo · 启动支付会话（预期 PENDING_APPROVAL）
+POST http://localhost:18037/hitl/start?query=请向商户A支付99元
+
+### 审批恢复（将 threadId 替换为 start 返回的 UUID）
+POST http://localhost:18037/hitl/approve?threadId={{threadId}}
