@@ -1,0 +1,2 @@
+### 38-workflow-demo · 线性 StateGraph（rewrite → retrieve → generate）
+GET http://localhost:18038/workflow/run?question=P0420故障码是什么问题？
