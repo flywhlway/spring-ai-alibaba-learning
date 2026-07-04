@@ -1,0 +1,11 @@
+### 41-multi-agent-demo · SequentialAgent 顺序流水线
+GET http://localhost:18041/multi/sequential?query=P0420故障码怎么处理？
+
+### ParallelAgent 并行检索
+GET http://localhost:18041/multi/parallel?query=P0420故障码
+
+### LlmRoutingAgent 意图路由
+GET http://localhost:18041/multi/routing?query=我想咨询退换货流程
+
+### LoopAgent 有限次循环改进
+GET http://localhost:18041/multi/loop?query=用三句话介绍Spring AI Alibaba
