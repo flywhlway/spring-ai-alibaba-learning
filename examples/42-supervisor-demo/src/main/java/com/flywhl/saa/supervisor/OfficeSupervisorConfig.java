@@ -8,7 +8,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 /**
- * Supervisor 模式：ReactAgent 总控 + {@link AgentTool#create} 封装子 Agent（无 SupervisorAgent 类）。
+ * Supervisor 模式：ReactAgent 总控 + {@link AgentTool#create} 封装子 Agent（无专用 Supervisor 类）。
  *
  * @author flywhl
  */

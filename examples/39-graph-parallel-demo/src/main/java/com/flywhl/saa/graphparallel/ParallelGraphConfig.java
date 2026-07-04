@@ -17,7 +17,7 @@ import java.util.Map;
 import static com.alibaba.cloud.ai.graph.action.AsyncNodeAction.node_async;
 
 /**
- * 并行图：fan-out（START→List）+ fan-in（List→merge），无 addAggregatedEdge。
+ * 并行图：fan-out（START→List）+ fan-in（List→merge），仅用 addEdge(List) 聚合边。
  *
  * @author flywhl
  */

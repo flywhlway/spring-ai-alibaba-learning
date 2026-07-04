@@ -6,7 +6,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 /**
- * A2A 远程 Agent：通过 Nacos 发现 AgentCard（禁止硬编码 URL / nacosServiceName）。
+ * A2A 远程 Agent：通过 Nacos 发现 AgentCard（禁止硬编码 URL 与服务名）。
  *
  * @author flywhl
  */

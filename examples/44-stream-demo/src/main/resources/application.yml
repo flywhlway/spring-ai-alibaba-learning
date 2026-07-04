@@ -1,5 +1,4 @@
-server:
-  port: 18044
+server.port: 18044
 
 spring:
   application:

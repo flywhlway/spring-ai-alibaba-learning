@@ -12,7 +12,7 @@ import org.springframework.context.annotation.Configuration;
 
 /**
  * Skills Agent：ClasspathSkillRegistry 扫描 resources/skills 下各技能目录的 SKILL.md，
- * 经 SkillsAgentHook 注入 read_skill 与 SkillsInterceptor（替代教程伪 API Skill.of）。
+ * 经 SkillsAgentHook 注入 read_skill 与 SkillsInterceptor（替代教程中的静态工厂写法）。
  *
  * @author flywhl
  */
