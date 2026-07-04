@@ -3,7 +3,7 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: executing
-last_updated: "2026-07-04T15:50:13.647Z"
+last_updated: "2026-07-04T15:50:40.872Z"
 last_activity: 2026-07-04
 progress:
   total_phases: 7
@@ -45,6 +45,7 @@ Progress: [███████░░░] 71%
 | 1. 基座脚手架 | delivered | — | — |
 | 2. 教程与 starter | delivered | — | — |
 | 3. 48 Demo | 8 (batch1+2 = 01~34) | TBD | ~12–18min |
+| Phase 03 P10 | 3min | 3 tasks | 26 files |
 
 ## Accumulated Context
 
@@ -56,6 +57,8 @@ Progress: [███████░░░] 71%
 - Embedding 一律 DashScope `text-embedding-v4`，dimensions=1024
 - 自定义 Advisor 一律 `CallAdvisor`/`StreamAdvisor`（禁用 `CallAroundAdvisor`）
 - Spring AI 1.1.2：结构化校验用 `StructuredOutputValidationAdvisor`；MCP 注解为 `org.springaicommunity.mcp.annotation.McpTool`
+- [Phase 03]: 38/39/40 只声明 agent-framework，SaverConfig+MemorySaver，并行用 addEdge(List) 禁止 addAggregatedEdge
+- [Phase 03]: Saga forceFail 查询参数触发 compensateInventory，内存 Map 无外部事务中间件
 
 ### Pending Todos
 
@@ -75,7 +78,7 @@ None.
 
 ## Session Continuity
 
-Last session: 2026-07-04T15:50:13.642Z
-Stopped at: Phase 3 batch 2 (20~34) compile gate complete
+Last session: 2026-07-04T15:50:40.867Z
+Stopped at: Completed 03-10-PLAN.md (Graph/Workflow 38~40)
 Resume file: None
 Next: `/gsd-verify-work`（次批 UAT）或 `/gsd-plan-phase 3` 规划再次批（35~48）
