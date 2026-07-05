@@ -3,13 +3,13 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: Full Delivery
 status: executing
-last_updated: "2026-07-05T15:07:26.781Z"
+last_updated: "2026-07-05T15:13:31.019Z"
 last_activity: 2026-07-05
 progress:
   total_phases: 7
   completed_phases: 1
   total_plans: 21
-  completed_plans: 17
+  completed_plans: 18
   percent: 14
 ---
 
@@ -25,20 +25,22 @@ See: .planning/PROJECT.md (updated 2026-07-05)
 ## Current Position
 
 Phase: 04 (knowledge-qa-platform) — EXECUTING
-Plan: 4 of 6
+Plan: 5 of 6
 Status: Ready to execute
 Last activity: 2026-07-05
 
-Progress: [█████████░] 85%
+Progress: [█████████░] 90%
 
 ## Performance Metrics
 
 **Velocity:**
 
-- Total plans completed: 16 (Phase 3: 14 + Phase 4: 2)
+- Total plans completed: 18 (Phase 3: 14 + Phase 4: 4)
 - UAT runs: 3 iterations → 48/48 pass
 - Phase 04-01: 12min, 3 tasks, 97 files
 - Phase 04-02: 18min, 3 tasks, 11 files
+- Phase 04-03: 12min, 3 tasks, 6 files
+- Phase 04-04: 18min, 3 tasks, 11 files
 
 **By Phase:**
 
@@ -47,7 +49,7 @@ Progress: [█████████░] 85%
 | 1. 基座脚手架 | delivered | ✅ Complete | 2026-07-03 |
 | 2. 教程与 starter | delivered | ✅ Complete | 2026-07-03 |
 | 3. 48 Demo | 14/14 | ✅ Verified | 2026-07-05 |
-| 4. 知识库问答 | 2/6 | 🚧 In Progress | - |
+| 4. 知识库问答 | 4/6 | 🚧 In Progress | - |
 
 ## Accumulated Context
 
@@ -65,6 +67,9 @@ Progress: [█████████░] 85%
 - PromptTemplateVO 额外添加以支撑 PromptConverter
 - JWT secret 经 KQA_JWT_SECRET 环境变量注入
 - MessageChatMemoryAdvisor 单独 Bean，ChatClient 留 04-03
+- JWT role claim 经 JwtAuthenticationConverter 映射 ROLE_* 供 @PreAuthorize
+- SSE meta 事件序列化 QaAnswerVO（citations+usage）
+- 会话删除硬删 PG 并清 RedisChatMemoryRepository
 
 ### Pending Todos
 
