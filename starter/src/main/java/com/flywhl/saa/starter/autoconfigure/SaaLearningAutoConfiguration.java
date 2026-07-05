@@ -8,6 +8,7 @@ import com.flywhl.saa.starter.metrics.LoggingCostRecorder;
 import com.flywhl.saa.starter.routing.FallbackModelRouter;
 import com.flywhl.saa.starter.routing.ModelRouter;
 import org.springframework.ai.chat.model.ChatModel;
+import org.springframework.boot.autoconfigure.AutoConfigureAfter;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
@@ -33,6 +34,10 @@ import org.springframework.context.annotation.Import;
  * @since 1.0.0
  */
 @Configuration(proxyBeanMethods = false)
+@AutoConfigureAfter(name = {
+        "com.alibaba.cloud.ai.autoconfigure.dashscope.DashScopeChatAutoConfiguration",
+        "org.springframework.ai.model.deepseek.autoconfigure.DeepSeekChatAutoConfiguration"
+})
 @EnableConfigurationProperties(SaaLearningProperties.class)
 @Import(GlobalExceptionHandler.class)
 public class SaaLearningAutoConfiguration {
