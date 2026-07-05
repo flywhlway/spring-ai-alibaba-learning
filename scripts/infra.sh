@@ -30,6 +30,9 @@ case "$CMD" in
     ARGS=()
     for p in "$@"; do ARGS+=(--profile "$p"); done
     docker compose -f "$COMPOSE_FILE" "${ARGS[@]}" up -d
+    if printf '%s\n' "$@" | grep -qx cloud; then
+      bash "${SCRIPT_DIR}/nacos-init-dev.sh" || echo "警告: Nacos 开发用户初始化失败，MCP/A2A Demo 可能无法登录"
+    fi
     docker compose -f "$COMPOSE_FILE" "${ARGS[@]}" ps
     ;;
   down)
