@@ -1,13 +1,25 @@
 package com.flywhl.saa.knowledgeqa.config;
 
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+
+import io.minio.MinioClient;
+
 /**
- * MinIO 客户端装配：绑定 kqa.minio.* 配置，提供 MinioClient Bean 与 bucket 兜底创建。
- *
- * <p><b>骨架占位</b>：本类型仅锁定包位与职责边界，接口契约见项目 README「接口总览」，
- * 具体实现由 Phase 4~6 后续迭代任务交付（占位内容不参与任何 Bean 装配）。
+ * MinIO 客户端装配：绑定 kqa.minio.* 配置。
  *
  * @author flywhl
  * @since 1.0.0
  */
+@Configuration(proxyBeanMethods = false)
 public class MinioConfig {
+
+    @Bean
+    MinioClient minioClient(KqaProperties properties) {
+        KqaProperties.Minio minio = properties.minio();
+        return MinioClient.builder()
+                .endpoint(minio.endpoint())
+                .credentials(minio.accessKey(), minio.secretKey())
+                .build();
+    }
 }
