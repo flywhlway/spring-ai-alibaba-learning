@@ -1,5 +1,8 @@
 # Testcontainers 集成测试 Profile：PG/Redis 由 @DynamicPropertySource 注入
 spring:
+  main:
+    lazy-initialization: true
+    allow-bean-definition-overriding: true
   jpa:
     hibernate:
       ddl-auto: none
@@ -24,4 +27,4 @@ spring:
 kqa:
   security:
     jwt:
-      secret: test-jwt-secret-key-32bytes-min!!
+      secret: "dev-only-kqa-jwt-secret-key-32bytes!!"

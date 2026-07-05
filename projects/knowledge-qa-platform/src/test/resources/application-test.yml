@@ -40,4 +40,4 @@ spring:
 kqa:
   security:
     jwt:
-      secret: test-jwt-secret-key-32bytes-min!!
+      secret: "dev-only-kqa-jwt-secret-key-32bytes!!"
