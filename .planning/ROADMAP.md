@@ -142,7 +142,7 @@ Plans:
 - [x] 04-02-PLAN.md — config/*（Security JWT / MinIO / VectorStore / Memory / OpenAPI / Prompt 读取）
 - [x] 04-03-PLAN.md — rag/* + AiClientConfig + DemoKnowledgeSeeder
 - [x] 04-04-PLAN.md — 问答域 Auth/Qa SSE/Conversation/Feedback
-- [ ] 04-05-PLAN.md — admin/* 五组后台 + Prompt 发布 + KnowledgeOpsTools
+- [x] 04-05-PLAN.md — admin/* 五组后台 + Prompt 发布 + KnowledgeOpsTools
 - [ ] 04-06-PLAN.md — 测试 + HANDOFF §7 + 04-UAT.md
 
 **Checklist:** `.planning/phases/04-knowledge-qa-platform/04-PLAN-CHECKLIST.md`
@@ -198,7 +198,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 → 7
 | 1. 基座脚手架 | delivered | Complete | 2026-07-03 |
 | 2. 教程与 starter | delivered | Complete | 2026-07-03 |
 | 3. 48 个独立 Demo | 14/14 | Verified | 2026-07-05 |
-| 4. 知识库问答平台 | 4/6 | In Progress|  |
+| 4. 知识库问答平台 | 5/6 | In Progress|  |
 | 5. 办公 Agent 助手 | 0/TBD | Not started | - |
 | 6. 智能客服平台 | 0/TBD | Not started | - |
 | 7. 生产化 | 0/TBD | Not started | - |
