@@ -20,4 +20,8 @@ public interface PromptTemplateRepository extends JpaRepository<PromptTemplateEn
     Optional<PromptTemplateEntity> findByTemplateKeyAndStatusOrderByVersionDesc(String templateKey, String status);
 
     Optional<PromptTemplateEntity> findFirstByTemplateKeyAndStatusOrderByVersionDesc(String templateKey, String status);
+
+    List<PromptTemplateEntity> findByStatusOrderByTemplateKeyAsc(String status);
+
+    Optional<PromptTemplateEntity> findTopByTemplateKeyOrderByVersionDesc(String templateKey);
 }
