@@ -28,7 +28,7 @@ public record KqaProperties(
             memory = new Memory(20, Duration.ofDays(7));
         }
         if (security == null) {
-            security = new Security(new Jwt("knowledge-qa-platform", Duration.ofHours(2)));
+            security = new Security(new Jwt("knowledge-qa-platform", Duration.ofHours(2), null));
         }
     }
 
@@ -44,6 +44,12 @@ public record KqaProperties(
     public record Security(Jwt jwt) {
     }
 
-    public record Jwt(String issuer, Duration accessTokenTtl) {
+    public record Jwt(String issuer, Duration accessTokenTtl, String secret) {
+
+        public Jwt {
+            if (secret == null || secret.isBlank()) {
+                secret = "dev-only-kqa-jwt-secret-key-32bytes!!";
+            }
+        }
     }
 }

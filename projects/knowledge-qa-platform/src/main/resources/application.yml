@@ -117,6 +117,7 @@ kqa:
     jwt:
       issuer: knowledge-qa-platform
       access-token-ttl: 2h
+      secret: ${KQA_JWT_SECRET:dev-only-kqa-jwt-secret-key-32bytes!!}
 
 # ----------------- API 文档（统一 /doc.html，见架构文档 §5.2） -----------------
 springdoc:
