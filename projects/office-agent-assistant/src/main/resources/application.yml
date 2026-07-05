@@ -1,0 +1,147 @@
+# =====================================================================
+# 项目二 · 企业 AI Agent 办公助手（office-agent-assistant，端口 19200）
+#
+# 中间件依赖（统一由 docker/docker-compose.yml + 本项目 override 提供）：
+#   docker compose -f docker/docker-compose.yml \
+#                  -f projects/office-agent-assistant/docker-compose.override.yml \
+#                  --profile core --profile office up -d
+#
+# 存储拓扑：MySQL（业务 + JDBC 长期记忆）· pgvector（轻量知识检索）· Redis（会话短期记忆）
+# 密钥一律环境变量注入（scripts/setup-env.sh），严禁硬编码。
+# =====================================================================
+server:
+  port: 19200
+
+spring:
+  application:
+    name: office-agent-assistant
+
+  # ----------------- 业务库：MySQL（贴近国内企业现状；schema 由 db/schema.sql 管理） -----------------
+  # 凭据策略：口令支持环境变量覆盖；默认值仅对齐 docker/docker-compose.yml 本机开发中间件（dev-only），
+  # 生产部署必须注入环境变量且更换默认口令。
+  datasource:
+    url: jdbc:mysql://localhost:3306/office_agent?useUnicode=true&characterEncoding=utf8&serverTimezone=Asia/Shanghai
+    username: ${OFFICE_DB_USERNAME:saa}
+    password: ${OFFICE_DB_PASSWORD:saa123456}
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    hikari:
+      maximum-pool-size: 10
+      pool-name: office-hikari
+  jpa:
+    hibernate:
+      ddl-auto: none        # DDL 唯一真源 = db/schema.sql，禁止 Hibernate 自动建表
+    open-in-view: false
+
+  # ----------------- Redis：会话短期记忆 -----------------
+  data:
+    redis:
+      host: localhost
+      port: 6379
+      timeout: 3s
+
+  # ----------------- AI：DashScope + Agent + 记忆 + pgvector + MCP -----------------
+  ai:
+    dashscope:
+      api-key: ${AI_DASHSCOPE_API_KEY}
+      chat:
+        options:
+          model: qwen-plus
+          temperature: 0.7
+      embedding:
+        options:
+          model: text-embedding-v3    # 1024 维，与 pgvector dimensions 对齐
+    # 长期记忆：JDBC ChatMemoryRepository → MySQL（建表语句已并入 db/schema.sql，故关闭自动初始化）
+    chat:
+      memory:
+        repository:
+          jdbc:
+            initialize-schema: never
+    # 轻量知识检索：pgvector（独立 DataSource 装配见 config/VectorStoreConfig）
+    vectorstore:
+      pgvector:
+        dimensions: 1024
+        distance-type: COSINE_DISTANCE
+        index-type: HNSW
+        initialize-schema: true
+        table-name: office_knowledge
+    # MCP：内嵌 Server 暴露企业工具总线；本应用 Client 同时可消费外部企业 MCP 服务
+    mcp:
+      server:
+        name: office-tool-bus
+        version: 1.0.0
+        type: SYNC
+        instructions: 企业办公工具总线：报表 SQL 查询、内部系统 HTTP 调用、Excel 生成解析、日程管理。
+      client:
+        enabled: true
+        name: office-agent-assistant
+        toolcallback:
+          enabled: true
+        sse:
+          connections:
+            office-tool-bus:
+              url: http://localhost:19200   # 演示形态：消费本应用内嵌 Server；接企业总线时改为总线地址
+
+# ----------------- 统一 AI Starter（审计 / 成本采集；单模型场景关闭路由降级目标） -----------------
+saa:
+  learning:
+    audit-enabled: true
+    cost-tracking:
+      enabled: true
+      price-per-1k-input-tokens: 0.0008
+      price-per-1k-output-tokens: 0.002
+
+# ----------------- 项目自有配置（config/OfficeProperties 绑定） -----------------
+office:
+  vector-datasource:               # pgvector 专用数据源（与 MySQL 主数据源隔离；口令同上为 dev-only 默认）
+    enabled: true
+    url: jdbc:postgresql://localhost:5432/office_vector
+    username: ${OFFICE_VECTOR_DB_USERNAME:saa}
+    password: ${OFFICE_VECTOR_DB_PASSWORD:saa123456}
+  memory:
+    short-term-max-messages: 20    # Redis 会话滚动窗口
+    short-term-ttl: 3d
+  tool:
+    sql:
+      allowed-tables: report_sales,report_attendance,approval_request   # SQL Tool 白名单（防注入第一道闸）
+      max-rows: 200
+    http:
+      allowed-hosts: localhost,127.0.0.1                                # HTTP Tool 内部系统白名单
+      timeout: 10s
+    excel:
+      workspace: ${java.io.tmpdir}/office-agent/excel                   # 生成文件的本地工作区
+  approval:
+    escalation-threshold: 5000     # 审批金额阈值（元），超过走 RoutingAgent 升级链路
+  security:
+    jwt:
+      issuer: office-agent-assistant
+      access-token-ttl: 2h
+
+# ----------------- API 文档 -----------------
+springdoc:
+  api-docs:
+    enabled: true
+  swagger-ui:
+    enabled: true
+knife4j:
+  enable: true
+  setting:
+    language: zh_cn
+
+# ----------------- 可观测 -----------------
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,prometheus,metrics
+  endpoint:
+    health:
+      show-details: when-authorized
+  metrics:
+    tags:
+      application: ${spring.application.name}
+
+logging:
+  level:
+    com.flywhl.saa: INFO
+    org.springframework.ai: INFO
+    com.alibaba.cloud.ai: INFO

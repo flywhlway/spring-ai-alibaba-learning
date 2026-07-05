@@ -1,0 +1,73 @@
+# =====================================================================
+# 项目二 · office-agent-assistant —— 项目专属服务（叠加 docker/docker-compose.yml）
+#
+# 用法（在仓库根目录执行）：
+#   docker compose -f docker/docker-compose.yml \
+#                  -f projects/office-agent-assistant/docker-compose.override.yml \
+#                  --profile core --profile office up -d
+#
+# 说明：
+#   - core   → Redis / MySQL / PostgreSQL(pgvector)（短期记忆 + 业务库 + 轻量向量）
+#   - office → 本文件新增的初始化任务（MySQL 建库导数 + pgvector 建库启用扩展）
+#
+# 初始化任务幂等：演示数据仅在空库时导入。
+# =====================================================================
+services:
+  # 业务库初始化：创建 office_agent 库、授权 saa、导入 DDL；演示数据仅首次导入
+  office-db-init:
+    image: mysql:8.4
+    container_name: saa-office-db-init
+    profiles: [ "office" ]
+    environment:
+      MYSQL_PWD: root123456
+    volumes:
+      - ./db:/office-db:ro
+    entrypoint:
+      - bash
+      - -ceu
+      - |
+        until mysqladmin ping -h mysql -uroot --silent; do sleep 2; done
+        mysql -h mysql -uroot <<'SQL'
+        CREATE DATABASE IF NOT EXISTS office_agent DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+        GRANT ALL PRIVILEGES ON office_agent.* TO 'saa'@'%';
+        FLUSH PRIVILEGES;
+        SQL
+        mysql -h mysql -uroot office_agent < /office-db/schema.sql
+        ROWS=$$(mysql -h mysql -uroot -N -e "SELECT COUNT(*) FROM office_agent.sys_user")
+        if [ "$$ROWS" = "0" ]; then
+          mysql -h mysql -uroot office_agent < /office-db/data.sql
+          echo "[office-db-init] 演示数据已导入"
+        else
+          echo "[office-db-init] 已有数据，跳过演示数据导入"
+        fi
+        echo "[office-db-init] office_agent 初始化完成"
+    depends_on:
+      mysql:
+        condition: service_healthy
+    networks: [ saa-net ]
+    restart: "no"
+
+  # 轻量向量库初始化：创建 office_vector 库并启用 vector 扩展
+  # （表 office_knowledge 由应用启动时 pgvector initialize-schema 自动创建）
+  office-vector-db-init:
+    image: pgvector/pgvector:pg16
+    container_name: saa-office-vector-db-init
+    profiles: [ "office" ]
+    environment:
+      PGHOST: postgres
+      PGUSER: saa
+      PGPASSWORD: saa123456
+    entrypoint:
+      - bash
+      - -ceu
+      - |
+        until pg_isready -h postgres -U saa -d saa_learning; do sleep 2; done
+        psql -d saa_learning -tAc "SELECT 1 FROM pg_database WHERE datname='office_vector'" | grep -q 1 \
+          || createdb office_vector
+        psql -d office_vector -v ON_ERROR_STOP=1 -c "CREATE EXTENSION IF NOT EXISTS vector;"
+        echo "[office-vector-db-init] office_vector 初始化完成"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks: [ saa-net ]
+    restart: "no"
