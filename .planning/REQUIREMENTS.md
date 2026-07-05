@@ -21,7 +21,7 @@ Brownfield registration: Phase 1–2 VALIDATED（已交付）。Active 工作从
 
 ### Phase 4 — 知识库问答（Active）
 
-- [ ] **REQ-phase-4-knowledge-qa**: knowledge-qa-platform（端口 19100）——制度/手册/技术文档统一问答；MinIO+ETL、DashScope Embedding、RAG+Citation、多模型、Redis ChatMemory、Prompt 管理、Security+审计+Micrometer、SSE；DB：PostgreSQL + Milvus + Redis
+- [x] **REQ-phase-4-knowledge-qa**: knowledge-qa-platform（端口 19100）——制度/手册/技术文档统一问答；MinIO+ETL、DashScope Embedding、RAG+Citation、多模型、Redis ChatMemory、Prompt 管理、Security+审计+Micrometer、SSE；DB：PostgreSQL + Milvus + Redis
 
 ### Phase 5 — 办公 Agent（Active）
 
@@ -56,7 +56,7 @@ Deferred. None registered at ingest.
 | REQ-phase-1-scaffold | Phase 1 | Complete |
 | REQ-phase-2-tutorials-starter | Phase 2 | Complete |
 | REQ-phase-3-demos | Phase 3 | Complete |
-| REQ-phase-4-knowledge-qa | Phase 4 | Pending |
+| REQ-phase-4-knowledge-qa | Phase 4 | Complete |
 | REQ-phase-5-office-agent | Phase 5 | Pending |
 | REQ-phase-6-smart-cs | Phase 6 | Pending |
 | REQ-phase-7-production | Phase 7 | Pending |
