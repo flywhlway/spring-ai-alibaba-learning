@@ -1,13 +1,64 @@
 package com.flywhl.saa.knowledgeqa.admin.service;
 
+import java.time.OffsetDateTime;
+
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.stereotype.Service;
+
+import com.flywhl.saa.common.result.PageResult;
+import com.flywhl.saa.knowledgeqa.model.entity.AuditLog;
+import com.flywhl.saa.knowledgeqa.model.vo.AuditLogVO;
+import com.flywhl.saa.knowledgeqa.repository.AuditLogRepository;
+
 /**
- * 审计查询服务：audit_log 多条件分页检索。
- *
- * <p><b>骨架占位</b>：本类型仅锁定包位与职责边界，接口契约见项目 README「接口总览」，
- * 具体实现由 Phase 4~6 后续迭代任务交付（占位内容不参与任何 Bean 装配）。
+ * 审计日志查询服务。
  *
  * @author flywhl
  * @since 1.0.0
  */
+@Service
 public class AuditQueryService {
+
+    private final AuditLogRepository auditLogRepository;
+
+    public AuditQueryService(AuditLogRepository auditLogRepository) {
+        this.auditLogRepository = auditLogRepository;
+    }
+
+    public PageResult<AuditLogVO> search(
+            String action,
+            Long userId,
+            OffsetDateTime fromTime,
+            OffsetDateTime toTime,
+            int page,
+            int size) {
+        Pageable pageable = PageRequest.of(Math.max(page, 1) - 1, Math.max(size, 1));
+        Page<AuditLog> result = auditLogRepository.search(
+                blankToNull(action),
+                userId,
+                fromTime,
+                toTime,
+                pageable);
+        return PageResult.of(page, size, result.getTotalElements(),
+                result.getContent().stream().map(this::toVo).toList());
+    }
+
+    private static String blankToNull(String value) {
+        return value == null || value.isBlank() ? null : value;
+    }
+
+    private AuditLogVO toVo(AuditLog entity) {
+        return new AuditLogVO(
+                entity.getId(),
+                entity.getUserId(),
+                entity.getUsername(),
+                entity.getAction(),
+                entity.getTarget(),
+                entity.getDetail(),
+                entity.getClientIp(),
+                entity.getSuccess(),
+                entity.getCreatedAt());
+    }
 }

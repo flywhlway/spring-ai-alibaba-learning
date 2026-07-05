@@ -8,7 +8,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 import com.flywhl.saa.knowledgeqa.prompt.PromptTemplateProvider;
-import com.flywhl.saa.starter.advisor.AuditLoggingAdvisor;
 import com.flywhl.saa.starter.routing.ModelRouter;
 
 /**
@@ -26,14 +25,14 @@ public class AiClientConfig {
             PromptTemplateProvider promptTemplateProvider,
             MessageChatMemoryAdvisor messageChatMemoryAdvisor,
             RetrievalAugmentationAdvisor retrievalAugmentationAdvisor,
-            AuditLoggingAdvisor auditLoggingAdvisor) {
+            DbAuditLoggingAdvisor dbAuditLoggingAdvisor) {
         ChatModel model = fallbackModelRouter.route();
         return ChatClient.builder(model)
                 .defaultSystem(promptTemplateProvider.get("qa-system"))
                 .defaultAdvisors(
                         messageChatMemoryAdvisor,
                         retrievalAugmentationAdvisor,
-                        auditLoggingAdvisor)
+                        dbAuditLoggingAdvisor)
                 .build();
     }
 }

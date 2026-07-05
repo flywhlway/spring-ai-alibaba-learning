@@ -1,5 +1,7 @@
 package com.flywhl.saa.knowledgeqa.repository;
 
+import java.time.OffsetDateTime;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -23,4 +25,8 @@ public interface QaMessageRepository extends JpaRepository<QaMessage, Long> {
     @Modifying
     @Transactional
     void deleteByConversationId(String conversationId);
+
+    long countByRoleAndCreatedAtAfter(String role, OffsetDateTime after);
+
+    java.util.List<QaMessage> findByRoleAndCreatedAtAfter(String role, OffsetDateTime after);
 }

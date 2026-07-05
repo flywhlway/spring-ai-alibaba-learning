@@ -37,18 +37,21 @@ public class AuthService {
     private final KqaProperties properties;
     private final SysUserRepository userRepository;
     private final UserConverter userConverter;
+    private final AuditLogService auditLogService;
 
     public AuthService(
             AuthenticationManager authenticationManager,
             JwtEncoder jwtEncoder,
             KqaProperties properties,
             SysUserRepository userRepository,
-            UserConverter userConverter) {
+            UserConverter userConverter,
+            AuditLogService auditLogService) {
         this.authenticationManager = authenticationManager;
         this.jwtEncoder = jwtEncoder;
         this.properties = properties;
         this.userRepository = userRepository;
         this.userConverter = userConverter;
+        this.auditLogService = auditLogService;
     }
 
     public LoginVO login(LoginRequest request) {
@@ -64,6 +67,12 @@ public class AuthService {
                 .orElseThrow(() -> new BizException(CommonResultCode.UNAUTHORIZED, "用户不存在或已停用"));
 
         String accessToken = encodeToken(user);
+        auditLogService.save(
+                user.getId(),
+                "LOGIN",
+                "sys_user",
+                String.valueOf(user.getId()),
+                java.util.Map.of("username", user.getUsername(), "role", user.getRole()));
         return new LoginVO(accessToken, userConverter.toVo(user));
     }
 
