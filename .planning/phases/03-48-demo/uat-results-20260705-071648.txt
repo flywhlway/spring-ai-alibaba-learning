@@ -1,0 +1,49 @@
+Phase 3 Full UAT — 2026-07-05T07:16:48+08:00
+PASS=6 FAIL=46 SKIP=0
+--- Failures ---
+01 quickstart — HTTP 400, body=<!doctype html><html lang="en"><head><title>HTTP Status 400 – Bad Request</title><style type="text/css">body {font-family:Tahoma,Arial,sans-serif;} h1, h2, h3, b {color:white;background-color:#525D76;
+03 multi-model — HTTP 400, body=<!doctype html><html lang="en"><head><title>HTTP Status 400 – Bad Request</title><style type="text/css">body {font-family:Tahoma,Arial,sans-serif;} h1, h2, h3, b {color:white;background-color:#525D76;
+04 chat — HTTP 400, body=<!doctype html><html lang="en"><head><title>HTTP Status 400 – Bad Request</title><style type="text/css">body {font-family:Tahoma,Arial,sans-serif;} h1, h2, h3, b {color:white;background-color:#525D76;
+05 retry — HTTP 400, body=<!doctype html><html lang="en"><head><title>HTTP Status 400 – Bad Request</title><style type="text/css">body {font-family:Tahoma,Arial,sans-serif;} h1, h2, h3, b {color:white;background-color:#525D76;
+07 prompt-builder — HTTP 200, body={"code":1003,"message":"未注册的 Prompt：greeting","success":false}
+08 prompt-nacos — 启动超时（120s）
+09 advisor — 启动超时（120s）
+10 custom-advisor — 启动超时（120s）
+11 tool — HTTP 400, body=<!doctype html><html lang="en"><head><title>HTTP Status 400 – Bad Request</title><style type="text/css">body {font-family:Tahoma,Arial,sans-serif;} h1, h2, h3, b {color:white;background-color:#525D76;
+12 dynamic-tool — HTTP 400, body=<!doctype html><html lang="en"><head><title>HTTP Status 400 – Bad Request</title><style type="text/css">body {font-family:Tahoma,Arial,sans-serif;} h1, h2, h3, b {color:white;background-color:#525D76;
+13 http-tool — 启动超时（120s）
+14 db-tool — HTTP 400, body=<!doctype html><html lang="en"><head><title>HTTP Status 400 – Bad Request</title><style type="text/css">body {font-family:Tahoma,Arial,sans-serif;} h1, h2, h3, b {color:white;background-color:#525D76;
+15 tool-security — HTTP 400, body=<!doctype html><html lang="en"><head><title>HTTP Status 400 – Bad Request</title><style type="text/css">body {font-family:Tahoma,Arial,sans-serif;} h1, h2, h3, b {color:white;background-color:#525D76;
+16 memory — 子步骤失败: curl_post "http://localhost:18016/memory/chat" -H "Content-Type: application/jso → HTTP 
+16 memory — 子步骤失败: curl_post "http://localhost:18016/memory/chat" -H "Content-Type: application/jso → HTTP 
+17 redis-memory — 子步骤失败: curl_get "http://localhost:18017/chat?message=我叫Alice&userId=alice" → HTTP 400
+17 redis-memory — 子步骤失败: curl_get "http://localhost:18017/chat?message=我叫什么名字？&userId=alice" → HTTP 400
+18 jdbc-memory — 启动超时
+19 summary-memory — 启动超时（120s）
+21 json-schema — HTTP 400, body=<!doctype html><html lang="en"><head><title>HTTP Status 400 – Bad Request</title><style type="text/css">body {font-family:Tahoma,Arial,sans-serif;} h1, h2, h3, b {color:white;background-color:#525D76;
+22 embedding — HTTP 400, body=<!doctype html><html lang="en"><head><title>HTTP Status 400 – Bad Request</title><style type="text/css">body {font-family:Tahoma,Arial,sans-serif;} h1, h2, h3, b {color:white;background-color:#525D76;
+23 pgvector — 子步骤失败: curl_post "http://localhost:18023/documents" -H "Content-Type: application/json" → HTTP 
+23 pgvector — 子步骤失败: curl_get "http://localhost:18023/search?q=升级中断&topK=3" → HTTP 400
+24 milvus — 子步骤失败: curl_post "http://localhost:18024/documents" -H "Content-Type: application/json" → HTTP 
+24 milvus — 子步骤失败: curl_get "http://localhost:18024/search?q=催化效率&topK=3" → HTTP 400
+25 redis-vector — 子步骤失败: curl_post "http://localhost:18025/documents" -H "Content-Type: application/json" → HTTP 
+25 redis-vector — 子步骤失败: curl_get "http://localhost:18025/search?q=密码重置&topK=3" → HTTP 400
+26 es-hybrid — 子步骤失败: curl_post "http://localhost:18026/documents" -H "Content-Type: application/json" → HTTP 
+27 rag — 子步骤失败: curl_get "http://localhost:18027/ask?question=OTA升级失败原因" → HTTP 400
+28 advanced-rag — 子步骤失败: curl_get "http://localhost:18028/ask?question=车机升级失败" → HTTP 400
+29 hybrid-rag — 子步骤失败: curl_get "http://localhost:18029/ask?question=OTA升级失败" → HTTP 400
+31 mcp-server — 启动超时
+33 mcp-auth — 启动超时（120s）
+34 server — 启动超时
+35 agent — HTTP 400, body=<!doctype html><html lang="en"><head><title>HTTP Status 400 – Bad Request</title><style type="text/css">body {font-family:Tahoma,Arial,sans-serif;} h1, h2, h3, b {color:white;background-color:#525D76;
+36 agent-skills — HTTP 400, body=<!doctype html><html lang="en"><head><title>HTTP Status 400 – Bad Request</title><style type="text/css">body {font-family:Tahoma,Arial,sans-serif;} h1, h2, h3, b {color:white;background-color:#525D76;
+37 agent-hitl — start 失败 HTTP 000
+38 workflow — HTTP 400, body=<!doctype html><html lang="en"><head><title>HTTP Status 400 – Bad Request</title><style type="text/css">body {font-family:Tahoma,Arial,sans-serif;} h1, h2, h3, b {color:white;background-color:#525D76;
+41 multi-agent — HTTP 400, body=<!doctype html><html lang="en"><head><title>HTTP Status 400 – Bad Request</title><style type="text/css">body {font-family:Tahoma,Arial,sans-serif;} h1, h2, h3, b {color:white;background-color:#525D76;
+42 supervisor — HTTP 400, body=<!doctype html><html lang="en"><head><title>HTTP Status 400 – Bad Request</title><style type="text/css">body {font-family:Tahoma,Arial,sans-serif;} h1, h2, h3, b {color:white;background-color:#525D76;
+43 server — 启动超时
+44 stream — 启动超时
+45 observability — 启动超时（120s）
+46 logging — 启动超时（120s）
+47 routing — 启动超时（120s）
+48 fallback — 启动超时（120s）

@@ -2,9 +2,9 @@
 gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
-status: ready_for_verification
-last_updated: "2026-07-04T16:10:00.000Z"
-last_activity: 2026-07-04 — batch 3 (35~48) execute complete, compile gate 15/15 PASS
+status: uat_complete
+last_updated: "2026-07-05T14:26:00.000Z"
+last_activity: 2026-07-05 — Phase 3 full UAT 48/48 pass
 progress:
   total_phases: 7
   completed_phases: 1
@@ -24,12 +24,12 @@ See: .planning/PROJECT.md (updated 2026-07-04)
 
 ## Current Position
 
-Phase: 3 (48 个独立 Demo) — READY FOR VERIFICATION
-Plan: 14 of 14 complete (batch 1: 01~19; batch 2: 20~34; batch 3: 35~48)
-Status: Batch 3 compile gate green; Phase 3 inventory 48/48; need UAT / verify-work
-Last activity: 2026-07-04 — batch 3 (35~48) execute complete, 15/15 compile PASS
+Phase: 3 (48 个独立 Demo) — UAT 48/48 ✅
+Plan: 14 of 14 complete
+Status: Automated curl UAT complete; Phase 3 ready for milestone closure
+Last activity: 2026-07-05 — gap closure 34/43 + full UAT v3
 
-Progress: [██████████] 100% plans executed (UAT not yet)
+Progress: [██████████] 100% UAT (compile 100%)
 
 ## Performance Metrics
 
@@ -67,8 +67,7 @@ None.
 
 ### Blockers/Concerns
 
-- 真机 curl 需对应中间件（core/vector/search/cloud）与 `AI_DASHSCOPE_API_KEY`
-- Phase 3 全量 UAT / VERIFICATION.md 尚未跑
+- None — Phase 3 UAT 48/48 通过
 
 ## Deferred Items
 

@@ -1,0 +1,5 @@
+Phase 3 Full UAT — 2026-07-05T07:35:37+08:00
+PASS=44 FAIL=3
+FAIL: 34 client — 启动失败
+FAIL: 37 agent-hitl — approve HTTP 200
+FAIL: 43 client — 启动失败

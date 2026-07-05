@@ -1,0 +1,102 @@
+[1m[14:15:49][0m 前置：环境变量
+[1m[14:15:49][0m 前置：Nacos 开发用户
+[nacos-init] 用户 nacos 已存在，跳过
+[1m[14:15:49][0m 前置：安装 common + starter
+[1m[14:15:51][0m ========== Phase 3 全量 UAT 开始 ==========
+[1m[14:15:51][0m Demo 01 quickstart (port 18001)
+  [32m✔[0m 01 quickstart — HTTP 200
+[1m[14:16:00][0m Demo 02 autoconfig (port 18002)
+  [32m✔[0m 02 autoconfig — HTTP 200
+[1m[14:16:08][0m Demo 03 multi-model (port 18003)
+  [32m✔[0m 03 multi-model — HTTP 200
+[1m[14:16:18][0m Demo 04 chat (port 18004)
+  [32m✔[0m 04 chat — HTTP 200
+[1m[14:16:26][0m Demo 05 retry (port 18005)
+  [32m✔[0m 05 retry — HTTP 200
+[1m[14:16:36][0m Demo 06 prompt (port 18006)
+  [32m✔[0m 06 prompt — HTTP 200
+[1m[14:16:45][0m Demo 07 prompt-builder (port 18007)
+  [32m✔[0m 07 prompt-builder — invoke OK
+[1m[14:16:54][0m Demo 08 prompt-nacos (port 18008)
+  [32m✔[0m 08 prompt-nacos — HTTP 200
+[1m[14:17:32][0m Demo 09 advisor (port 18009)
+  [32m✔[0m 09 advisor — HTTP 200
+[1m[14:17:41][0m Demo 10 custom-advisor (port 18010)
+  [32m✔[0m 10 custom-advisor — HTTP 200
+[1m[14:17:51][0m Demo 11 tool (port 18011)
+  [32m✔[0m 11 tool — HTTP 200
+[1m[14:18:00][0m Demo 12 dynamic-tool (port 18012)
+  [32m✔[0m 12 dynamic-tool — HTTP 200
+[1m[14:18:10][0m Demo 13 http-tool (port 18013)
+  [32m✔[0m 13 http-tool — HTTP 200
+[1m[14:18:20][0m Demo 14 db-tool (port 18014)
+  [32m✔[0m 14 db-tool — HTTP 200
+[1m[14:18:30][0m Demo 15 tool-security (port 18015)
+  [32m✔[0m 15 tool-security — HTTP 200
+[1m[14:18:39][0m Demo 16 memory (port 18016)
+  [32m✔[0m 16 memory — OK
+[1m[14:18:52][0m Demo 17 redis-memory (port 18017)
+  [32m✔[0m 17 redis-memory — OK
+[1m[14:19:04][0m Demo 18 jdbc-memory (port 18018)
+  [32m✔[0m 18 jdbc-memory — OK
+[1m[14:19:15][0m Demo 19 summary-memory (port 18019)
+  [32m✔[0m 19 summary-memory — HTTP 200
+[1m[14:19:27][0m Demo 20 structured-output (port 18020)
+  [32m✔[0m 20 structured-output — HTTP 200
+[1m[14:19:39][0m Demo 21 json-schema (port 18021)
+  [32m✔[0m 21 json-schema — HTTP 200
+[1m[14:19:48][0m Demo 22 embedding (port 18022)
+  [32m✔[0m 22 embedding — HTTP 200
+[1m[14:19:57][0m Demo 23 pgvector (port 18023)
+  [32m✔[0m 23 pgvector — OK
+[1m[14:20:06][0m Demo 24 milvus (port 18024)
+  [32m✔[0m 24 milvus — OK
+[1m[14:20:16][0m Demo 25 redis-vector (port 18025)
+  [32m✔[0m 25 redis-vector — OK
+[1m[14:20:26][0m Demo 26 es-hybrid (port 18026)
+  [32m✔[0m 26 es-hybrid — OK
+[1m[14:20:35][0m Demo 27 rag (port 18027)
+  [32m✔[0m 27 rag — OK
+[1m[14:20:47][0m Demo 28 advanced-rag (port 18028)
+  [32m✔[0m 28 advanced-rag — OK
+[1m[14:20:58][0m Demo 29 hybrid-rag (port 18029)
+  [32m✔[0m 29 hybrid-rag — OK
+[1m[14:21:09][0m Demo 30 rag-eval (port 18030)
+  [32m✔[0m 30 rag-eval — HTTP 200
+[1m[14:21:22][0m Demo 31+32 mcp-server/client
+  [32m✔[0m 31+32 mcp — OK
+[1m[14:21:41][0m Demo 33 mcp-auth (port 18033)
+  [32m✔[0m 33 mcp-auth — HTTP 200
+[1m[14:21:49][0m Demo 34 mcp-nacos
+  [32m✔[0m 34 mcp-nacos — OK
+[1m[14:22:23][0m Demo 35 agent (port 18035)
+  [32m✔[0m 35 agent — HTTP 200
+[1m[14:22:50][0m Demo 36 agent-skills (port 18036)
+  [32m✔[0m 36 agent-skills — HTTP 200
+[1m[14:23:19][0m Demo 37 agent-hitl
+  [32m✔[0m 37 agent-hitl — 直接完成（模型未触发 HITL）
+[1m[14:23:29][0m Demo 38 workflow (port 18038)
+  [32m✔[0m 38 workflow — HTTP 200
+[1m[14:23:42][0m Demo 39 graph-parallel (port 18039)
+  [32m✔[0m 39 graph-parallel — HTTP 200
+[1m[14:24:03][0m Demo 40 graph-saga (port 18040)
+  [32m✔[0m 40 graph-saga — HTTP 200
+[1m[14:24:12][0m Demo 41 multi-agent (port 18041)
+  [32m✔[0m 41 multi-agent — HTTP 200
+[1m[14:24:29][0m Demo 42 supervisor (port 18042)
+  [32m✔[0m 42 supervisor — HTTP 200
+[1m[14:24:39][0m Demo 43 a2a-nacos
+  [32m✔[0m 43 a2a-nacos — OK
+[1m[14:25:11][0m Demo 44 stream
+  [32m✔[0m 44 stream — SSE OK
+[1m[14:25:20][0m Demo 45 observability (port 18045)
+  [32m✔[0m 45 observability — HTTP 200
+[1m[14:25:30][0m Demo 46 logging (port 18046)
+  [32m✔[0m 46 logging — HTTP 200
+[1m[14:25:39][0m Demo 47 routing (port 18047)
+  [32m✔[0m 47 routing — HTTP 200
+[1m[14:25:48][0m Demo 48 fallback (port 18048)
+  [32m✔[0m 48 fallback — HTTP 200
+[1m[14:25:57][0m ========== UAT 汇总 ==========
+通过: [32m47[0m / 失败: [31m0[0m / 总计: 48
+scripts/uat-phase3.sh: line 409: FAILURES[@]: unbound variable
