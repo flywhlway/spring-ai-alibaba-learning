@@ -1,13 +1,39 @@
 package com.flywhl.saa.knowledgeqa.config;
 
+import org.springframework.ai.chat.client.ChatClient;
+import org.springframework.ai.chat.client.advisor.MessageChatMemoryAdvisor;
+import org.springframework.ai.chat.model.ChatModel;
+import org.springframework.ai.rag.advisor.RetrievalAugmentationAdvisor;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+
+import com.flywhl.saa.knowledgeqa.prompt.PromptTemplateProvider;
+import com.flywhl.saa.starter.advisor.AuditLoggingAdvisor;
+import com.flywhl.saa.starter.routing.ModelRouter;
+
 /**
- * ChatClient 统一装配：DashScope 主通道 + DeepSeek 备用通道，注入 starter 的 FallbackModelRouter 与 AuditLoggingAdvisor。
- *
- * <p><b>骨架占位</b>：本类型仅锁定包位与职责边界，接口契约见项目 README「接口总览」，
- * 具体实现由 Phase 4~6 后续迭代任务交付（占位内容不参与任何 Bean 装配）。
+ * ChatClient 统一装配：多模型路由 + 会话记忆 + Modular RAG + 审计 Advisor 链。
  *
  * @author flywhl
  * @since 1.0.0
  */
+@Configuration(proxyBeanMethods = false)
 public class AiClientConfig {
+
+    @Bean
+    ChatClient chatClient(
+            ModelRouter fallbackModelRouter,
+            PromptTemplateProvider promptTemplateProvider,
+            MessageChatMemoryAdvisor messageChatMemoryAdvisor,
+            RetrievalAugmentationAdvisor retrievalAugmentationAdvisor,
+            AuditLoggingAdvisor auditLoggingAdvisor) {
+        ChatModel model = fallbackModelRouter.route();
+        return ChatClient.builder(model)
+                .defaultSystem(promptTemplateProvider.get("qa-system"))
+                .defaultAdvisors(
+                        messageChatMemoryAdvisor,
+                        retrievalAugmentationAdvisor,
+                        auditLoggingAdvisor)
+                .build();
+    }
 }
