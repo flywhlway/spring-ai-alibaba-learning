@@ -15,9 +15,9 @@ Brownfield registration: Phase 1–2 VALIDATED（已交付）。Active 工作从
 
 - [x] **REQ-phase-2-tutorials-starter**: 22 章教材级教程（docs/tutorial/01~22）、saa-learning-starter（审计 Advisor、模型路由降级、成本采集）、QA 脚本（version-audit.sh、spring-ai-2-readiness.sh）
 
-### Phase 3 — 48 个独立 Demo（Active）
+### Phase 3 — 48 个独立 Demo（Validated）
 
-- [x] **REQ-phase-3-demos**: 将教程各章核心 API 落成 48 个可独立 `mvn spring-boot:run` 的最小 Demo；编号/命名/端口以 examples/README.md 为 SSOT，满足 HANDOFF §3 验收（独立 pom、端口 180NN、infra profiles、环境变量密钥、REST+curl+README+api.http、Testcontainers/EnabledIfEnvironmentVariable、复用 common/starter、零 TODO/零废弃 API）
+- [x] **REQ-phase-3-demos**: 将教程各章核心 API 落成 48 个可独立 `mvn spring-boot:run` 的最小 Demo；编号/命名/端口以 examples/README.md 为 SSOT，满足 HANDOFF §3 验收（独立 pom、端口 180NN、infra profiles、环境变量密钥、REST+curl+README+api.http、Testcontainers/EnabledIfEnvironmentVariable、复用 common/starter、零 TODO/零废弃 API）— **UAT 48/48 通过 2026-07-05**
 
 ### Phase 4 — 知识库问答（Active）
 
@@ -55,7 +55,7 @@ Deferred. None registered at ingest.
 |-------------|-------|--------|
 | REQ-phase-1-scaffold | Phase 1 | Complete |
 | REQ-phase-2-tutorials-starter | Phase 2 | Complete |
-| REQ-phase-3-demos | Phase 3 | In Progress |
+| REQ-phase-3-demos | Phase 3 | Complete |
 | REQ-phase-4-knowledge-qa | Phase 4 | Pending |
 | REQ-phase-5-office-agent | Phase 5 | Pending |
 | REQ-phase-6-smart-cs | Phase 6 | Pending |
@@ -68,4 +68,4 @@ Deferred. None registered at ingest.
 
 ---
 *Requirements defined: 2026-07-04*
-*Last updated: 2026-07-04 after brownfield ingest registration*
+*Last updated: 2026-07-05 after Phase 3 milestone closure*

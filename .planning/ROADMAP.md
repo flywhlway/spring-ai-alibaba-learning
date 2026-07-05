@@ -2,7 +2,12 @@
 
 ## Overview
 
-从脚手架与教程基座出发，交付 48 个可独立运行的 SAA Demo，再落地三个企业项目（知识库问答 → 办公 Agent → 智能客服），最后以 CI/CD、部署与质量门禁完成生产化收口。Phase 1–2 已交付；当前从 Phase 3（48 demos）推进。
+从脚手架与教程基座出发，交付 48 个可独立运行的 SAA Demo，再落地三个企业项目（知识库问答 → 办公 Agent → 智能客服），最后以 CI/CD、部署与质量门禁完成生产化收口。Phase 1–3 已交付并验证；当前从 Phase 4 推进。
+
+## Milestones
+
+- ✅ **Phase 3: 48 Demo** — 14 plans, UAT 48/48（shipped 2026-07-05）→ [archive](milestones/phase-3-48-demos-ROADMAP.md)
+- 🚧 **v1.0 Full Delivery** — Phases 1–7（3/7 complete）
 
 ## Phases
 
@@ -13,7 +18,7 @@
 
 - [x] **Phase 1: 基座脚手架** - 父 POM、common、docker profiles、scripts、overview 文档与 ADR
 - [x] **Phase 2: 教程与 starter** - 22 章教程、saa-learning-starter、QA 脚本
-- [x] **Phase 3: 48 个独立 Demo** - examples/ 全量可 `mvn spring-boot:run` 的最小 Demo (completed 2026-07-04)
+- [x] **Phase 3: 48 个独立 Demo** - examples/ 全量可 `mvn spring-boot:run` 的最小 Demo (verified 2026-07-05, UAT 48/48)
 - [ ] **Phase 4: 知识库问答平台** - knowledge-qa-platform（端口 19100）
 - [ ] **Phase 5: 办公 Agent 助手** - office-agent-assistant（端口 19200）
 - [ ] **Phase 6: 智能客服平台** - smart-cs-platform（端口 19300）
@@ -63,7 +68,9 @@
   4. 模型调用集成测试使用 `@EnabledIfEnvironmentVariable(named="AI_DASHSCOPE_API_KEY", matches=".+")`，中间件用 Testcontainers；复用 `saa-learning-common` 与 `saa-learning-starter`
   5. 全量 Demo 通过 HANDOFF §7 门禁：真实编译、version-audit 全绿、spring-ai-2-readiness 低位、无废弃 API/硬编码密钥/TODO/伪代码
 
-**Plans**: 14/14（batch1: 03-01/02/03 ✅；batch2: 03-04~08 ✅；batch3: 03-09~14 ✅ compile gate 15/15）
+**Plans**: 14/14 ✅ UAT 48/48 verified 2026-07-05
+
+**Status**: Complete & Verified
 
 **Wave 1**
 
@@ -180,7 +187,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 → 7
 |-------|----------------|--------|-----------|
 | 1. 基座脚手架 | delivered | Complete | 2026-07-03 |
 | 2. 教程与 starter | delivered | Complete | 2026-07-03 |
-| 3. 48 个独立 Demo | 14/14 | Complete   | 2026-07-04 |
+| 3. 48 个独立 Demo | 14/14 | Verified | 2026-07-05 |
 | 4. 知识库问答平台 | 0/TBD | Not started | - |
 | 5. 办公 Agent 助手 | 0/TBD | Not started | - |
 | 6. 智能客服平台 | 0/TBD | Not started | - |

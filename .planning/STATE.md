@@ -2,64 +2,63 @@
 gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
-status: uat_complete
-last_updated: "2026-07-05T14:26:00.000Z"
-last_activity: 2026-07-05 — Phase 3 full UAT 48/48 pass
+status: phase_3_complete
+last_updated: "2026-07-05T14:35:00.000Z"
+last_activity: 2026-07-05 — Phase 3 milestone closed, ready for Phase 4
 progress:
   total_phases: 7
-  completed_phases: 1
+  completed_phases: 3
   total_plans: 14
   completed_plans: 14
-  percent: 14
+  percent: 43
 ---
 
 # Project State
 
 ## Project Reference
 
-See: .planning/PROJECT.md (updated 2026-07-04)
+See: .planning/PROJECT.md (updated 2026-07-05)
 
 **Core value:** 48 demos + 3 enterprise projects runnable via `mvn spring-boot:run`，通过 HANDOFF §7 质量门禁
-**Current focus:** Phase 3 — batch 3 (35~48) compile gate passed; full UAT pending
+**Current focus:** Phase 4 — knowledge-qa-platform（端口 19100）
 
 ## Current Position
 
-Phase: 3 (48 个独立 Demo) — UAT 48/48 ✅
-Plan: 14 of 14 complete
-Status: Automated curl UAT complete; Phase 3 ready for milestone closure
-Last activity: 2026-07-05 — gap closure 34/43 + full UAT v3
+Phase: 3 ✅ CLOSED — Phase 4 next
+Plan: 14 of 14 complete (Phase 3)
+Status: Phase 3 milestone shipped; UAT 48/48; VERIFICATION signed off
+Last activity: 2026-07-05 — Phase 3 milestone closure
 
-Progress: [██████████] 100% UAT (compile 100%)
+Progress: [████░░░░░░] 43% phases (3/7)
 
 ## Performance Metrics
 
 **Velocity:**
 
-- Total plans completed: 14
-- Average duration: ~8–12min (batch 3)
+- Total plans completed: 14 (Phase 3)
+- UAT runs: 3 iterations → 48/48 pass
 
 **By Phase:**
 
-| Phase | Plans | Total | Avg/Plan |
-|-------|-------|-------|----------|
-| 1. 基座脚手架 | delivered | — | — |
-| 2. 教程与 starter | delivered | — | — |
-| 3. 48 Demo | 14 (batch1+2+3 = 01~48) | compile green | ~8–18min |
+| Phase | Plans | Status | Completed |
+|-------|-------|--------|-----------|
+| 1. 基座脚手架 | delivered | ✅ Complete | 2026-07-03 |
+| 2. 教程与 starter | delivered | ✅ Complete | 2026-07-03 |
+| 3. 48 Demo | 14/14 | ✅ Verified | 2026-07-05 |
+| 4. 知识库问答 | 0/TBD | Not started | - |
 
 ## Accumulated Context
 
 ### Decisions
 
-- Phase 3 首批 = demos **01~19**；次批 = **20~34**；再次批 = **35~48**（Agent/Graph/Multi-Agent/best-practice）
-- 17 用普通 Redis 自定义 `ChatMemoryRepository`（core profile 非 Redis Stack）
-- 25 必须 `redis/redis-stack-server`（端口 6380 override），禁止复用 core 普通 redis
-- Embedding 一律 DashScope `text-embedding-v4`，dimensions=1024
-- 自定义 Advisor 一律 `CallAdvisor`/`StreamAdvisor`（禁用 `CallAroundAdvisor`）
-- Spring AI 1.1.2：结构化校验用 `StructuredOutputValidationAdvisor`；MCP 注解为 `org.springaicommunity.mcp.annotation.McpTool`
-- Agent/Graph：`spring-ai-alibaba-agent-framework`；并行用 `addEdge(List)` 禁止 `addAggregatedEdge`
-- Supervisor：`ReactAgent` + `AgentTool.create`（禁止 `SupervisorAgent` / `AgentTool.from`）
-- A2A：`spring.ai.alibaba.a2a.nacos.*`（禁止 `nacosServiceName` / mcp.nacos 键）
-- 44~48 强制 `saa-learning-starter`（ModelRouter / AuditLoggingAdvisor / CostTrackingObservationHandler）
+- Phase 3 三批交付：01~19 / 20~34 / 35~48
+- 17 用普通 Redis 自定义 ChatMemoryRepository；25 必须 redis-stack-server（6380）
+- Embedding 一律 DashScope text-embedding-v4 dimensions=1024
+- 自定义 Advisor 一律 CallAdvisor/StreamAdvisor
+- Agent/Graph：spring-ai-alibaba-agent-framework
+- Supervisor：ReactAgent + AgentTool.create
+- A2A：spring.ai.alibaba.a2a.nacos.*
+- 44~48 强制 saa-learning-starter
 
 ### Pending Todos
 
@@ -67,17 +66,16 @@ None.
 
 ### Blockers/Concerns
 
-- None — Phase 3 UAT 48/48 通过
+None.
 
 ## Deferred Items
 
 | Category | Item | Status | Deferred At |
 |----------|------|--------|-------------|
-| Phase 3 batch 2 UAT | 真机 curl / verify-work | pending | 2026-07-04 |
-| Phase 3 batch 3 UAT | 真机 curl / verify-work | pending | 2026-07-04 |
-| Phase 3 full VERIFICATION | 48/48 UAT + version-audit | pending | 2026-07-04 |
+| Phase 3 | Demo 37 HITL flaky（模型偶发不触发 tool） | acknowledged | 2026-07-05 |
+| Phase 2 | starter 单测覆盖率加强 | pending | 2026-07-05 |
 
 ## Session Continuity
 
-Stopped at: Phase 3 batch 3 (35~48) compile gate complete
-Next: `/gsd-verify-work`（全量或分批 UAT）或 Phase 4 discuss
+Stopped at: Phase 3 milestone closed
+Next: `/gsd-discuss-phase 4` 或 `/gsd-new-milestone`（若调整 v1.0 范围）
