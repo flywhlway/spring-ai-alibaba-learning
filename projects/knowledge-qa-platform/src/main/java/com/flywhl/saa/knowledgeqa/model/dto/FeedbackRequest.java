@@ -1,13 +1,17 @@
 package com.flywhl.saa.knowledgeqa.model.dto;
 
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotNull;
+
 /**
- * 反馈请求 DTO：messageId、rating、comment。
- *
- * <p><b>骨架占位</b>：本类型仅锁定包位与职责边界，接口契约见项目 README「接口总览」，
- * 具体实现由 Phase 4~6 后续迭代任务交付（占位内容不参与任何 Bean 装配）。
+ * 答案反馈请求 DTO。
  *
  * @author flywhl
  * @since 1.0.0
  */
-public class FeedbackRequest {
+public record FeedbackRequest(
+        @NotNull Long messageId,
+        @NotNull @Min(-1) @Max(1) Integer rating,
+        String comment) {
 }

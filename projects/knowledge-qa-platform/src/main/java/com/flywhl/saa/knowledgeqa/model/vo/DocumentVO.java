@@ -1,13 +1,24 @@
 package com.flywhl.saa.knowledgeqa.model.vo;
 
+import java.time.OffsetDateTime;
+
 /**
- * 文档视图 VO：元数据 + 解析状态 + chunk 数。
- *
- * <p><b>骨架占位</b>：本类型仅锁定包位与职责边界，接口契约见项目 README「接口总览」，
- * 具体实现由 Phase 4~6 后续迭代任务交付（占位内容不参与任何 Bean 装配）。
+ * 文档视图 VO。
  *
  * @author flywhl
  * @since 1.0.0
  */
-public class DocumentVO {
+public record DocumentVO(
+        Long id,
+        String title,
+        String category,
+        String fileName,
+        String contentType,
+        Long fileSize,
+        String status,
+        Integer chunkCount,
+        String failReason,
+        Long uploadedBy,
+        OffsetDateTime createdAt,
+        OffsetDateTime updatedAt) {
 }

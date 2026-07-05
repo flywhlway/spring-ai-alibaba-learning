@@ -1,13 +1,22 @@
 package com.flywhl.saa.knowledgeqa.repository;
 
+import java.util.Optional;
+
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.repository.JpaRepository;
+
+import com.flywhl.saa.knowledgeqa.model.entity.QaConversation;
+
 /**
  * qa_conversation JPA Repository。
- *
- * <p><b>骨架占位</b>：本类型仅锁定包位与职责边界，接口契约见项目 README「接口总览」，
- * 具体实现由 Phase 4~6 后续迭代任务交付（占位内容不参与任何 Bean 装配）。
  *
  * @author flywhl
  * @since 1.0.0
  */
-public interface QaConversationRepository {
+public interface QaConversationRepository extends JpaRepository<QaConversation, Long> {
+
+    Optional<QaConversation> findByConversationId(String conversationId);
+
+    Page<QaConversation> findByUserIdOrderByUpdatedAtDesc(Long userId, Pageable pageable);
 }

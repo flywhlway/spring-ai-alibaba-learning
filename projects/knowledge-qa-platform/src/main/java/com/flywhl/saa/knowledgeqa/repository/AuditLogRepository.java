@@ -1,13 +1,20 @@
 package com.flywhl.saa.knowledgeqa.repository;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.repository.JpaRepository;
+
+import com.flywhl.saa.knowledgeqa.model.entity.AuditLog;
+
 /**
- * audit_log JPA Repository（多条件分页）。
- *
- * <p><b>骨架占位</b>：本类型仅锁定包位与职责边界，接口契约见项目 README「接口总览」，
- * 具体实现由 Phase 4~6 后续迭代任务交付（占位内容不参与任何 Bean 装配）。
+ * audit_log JPA Repository。
  *
  * @author flywhl
  * @since 1.0.0
  */
-public interface AuditLogRepository {
+public interface AuditLogRepository extends JpaRepository<AuditLog, Long> {
+
+    Page<AuditLog> findByActionOrderByCreatedAtDesc(String action, Pageable pageable);
+
+    Page<AuditLog> findAllByOrderByCreatedAtDesc(Pageable pageable);
 }

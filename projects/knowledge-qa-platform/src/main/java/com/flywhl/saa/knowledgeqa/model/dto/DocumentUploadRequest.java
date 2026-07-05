@@ -1,13 +1,14 @@
 package com.flywhl.saa.knowledgeqa.model.dto;
 
+import jakarta.validation.constraints.NotBlank;
+
 /**
- * 文档上传请求 DTO：title、category（文件走 multipart）。
- *
- * <p><b>骨架占位</b>：本类型仅锁定包位与职责边界，接口契约见项目 README「接口总览」，
- * 具体实现由 Phase 4~6 后续迭代任务交付（占位内容不参与任何 Bean 装配）。
+ * 文档上传元数据 DTO（multipart 表单字段校验用）。
  *
  * @author flywhl
  * @since 1.0.0
  */
-public class DocumentUploadRequest {
+public record DocumentUploadRequest(
+        @NotBlank String title,
+        @NotBlank String category) {
 }
