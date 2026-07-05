@@ -74,7 +74,7 @@ Each task was committed atomically:
 2. **Task 2: KqaProperties + 8 Entity** - `64886f2` (feat)
 3. **Task 3: Repository + Mapper + DTO/VO** - `5e9019e` (feat)
 
-**Plan metadata:** pending (docs commit)
+**Plan metadata:** `b6c856a` (docs: complete plan)
 
 ## Files Created/Modified
 

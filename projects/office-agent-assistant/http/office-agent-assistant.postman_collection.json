@@ -1,0 +1,172 @@
+{
+  "info": {
+    "name": "office-agent-assistant (19200)",
+    "description": "项目二 · 企业 AI Agent 办公助手全接口（与 http/api.http 对齐）。先执行「认证/员工登录」或「认证/管理员登录」，token 自动写入集合变量。演示账号：admin/admin123、zhangsan/zhangsan123。",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    { "key": "baseUrl", "value": "http://localhost:19200" },
+    { "key": "token", "value": "" },
+    { "key": "adminToken", "value": "" }
+  ],
+  "item": [
+    {
+      "name": "认证",
+      "item": [
+        {
+          "name": "员工登录",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const data = pm.response.json().data;",
+                  "if (data && data.accessToken) pm.collectionVariables.set('token', data.accessToken);"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": "{{baseUrl}}/api/auth/login",
+            "body": { "mode": "raw", "raw": "{ \"username\": \"zhangsan\", \"password\": \"zhangsan123\" }" }
+          }
+        },
+        {
+          "name": "管理员登录",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const data = pm.response.json().data;",
+                  "if (data && data.accessToken) pm.collectionVariables.set('adminToken', data.accessToken);"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": "{{baseUrl}}/api/auth/login",
+            "body": { "mode": "raw", "raw": "{ \"username\": \"admin\", \"password\": \"admin123\" }" }
+          }
+        },
+        {
+          "name": "当前用户",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": "{{baseUrl}}/api/auth/me"
+          }
+        }
+      ]
+    },
+    {
+      "name": "助手对话",
+      "item": [
+        {
+          "name": "多轮对话（Agent + Tool）",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{token}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "url": "{{baseUrl}}/api/chat",
+            "body": { "mode": "raw", "raw": "{ \"message\": \"帮我查一下7月4日华东销售数据\", \"conversationId\": \"conv-demo-001\" }" }
+          }
+        }
+      ]
+    },
+    {
+      "name": "办公任务生成",
+      "item": [
+        {
+          "name": "会议纪要",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{token}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "url": "{{baseUrl}}/api/tasks/meeting-summary",
+            "body": { "mode": "raw", "raw": "{ \"title\": \"Q3 策略会纪要\", \"input\": \"讨论华东区 Q3 目标，决定加大网关 Pro 推广，张三负责方案，7月15日前提交。\" }" }
+          }
+        },
+        {
+          "name": "日报生成",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{token}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "url": "{{baseUrl}}/api/tasks/daily-report",
+            "body": { "mode": "raw", "raw": "{ \"input\": \"完成客户拜访3家，整理竞品分析，明日继续跟进杭州客户。\" }" }
+          }
+        },
+        {
+          "name": "邮件起草",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{token}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "url": "{{baseUrl}}/api/tasks/email-draft",
+            "body": { "mode": "raw", "raw": "{ \"input\": \"向供应商确认7月10日交货时间，并询问发票开具流程。\" }" }
+          }
+        }
+      ]
+    },
+    {
+      "name": "审批助手",
+      "item": [
+        {
+          "name": "审批 AI 初审",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{token}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "url": "{{baseUrl}}/api/approvals/review",
+            "body": { "mode": "raw", "raw": "{ \"approvalId\": 1 }" }
+          }
+        }
+      ]
+    },
+    {
+      "name": "管理后台",
+      "item": [
+        {
+          "name": "用户列表",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{adminToken}}" }],
+            "url": "{{baseUrl}}/api/admin/users?page=1&size=10"
+          }
+        },
+        {
+          "name": "Prompt 列表",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{adminToken}}" }],
+            "url": "{{baseUrl}}/api/admin/prompts"
+          }
+        }
+      ]
+    },
+    {
+      "name": "可观测",
+      "item": [
+        { "name": "健康检查", "request": { "method": "GET", "url": "{{baseUrl}}/actuator/health" } },
+        { "name": "Prometheus 指标", "request": { "method": "GET", "url": "{{baseUrl}}/actuator/prometheus" } }
+      ]
+    }
+  ]
+}

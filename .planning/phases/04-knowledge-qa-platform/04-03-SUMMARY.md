@@ -72,7 +72,7 @@ Each task was committed atomically:
 2. **Task 2: DocumentEtlPipeline + IngestStatusTracker** - `32ecc59` (feat)
 3. **Task 3: AiClientConfig + DemoKnowledgeSeeder** - `4d63036` (feat)
 
-**Plan metadata:** `ead52b0` (docs: complete plan)
+**Plan metadata:** `507807d` (docs: complete plan)
 
 ## Files Created/Modified
 

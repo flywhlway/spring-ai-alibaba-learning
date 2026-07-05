@@ -2,15 +2,15 @@
 gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: Full Delivery
-status: verifying
-last_updated: "2026-07-05T15:38:10.392Z"
-last_activity: 2026-07-05
+status: phase_5_executed
+last_updated: "2026-07-05T16:00:00.000Z"
+last_activity: 2026-07-05 — Phase 5 office-agent-assistant executed
 progress:
   total_phases: 7
-  completed_phases: 1
-  total_plans: 21
+  completed_phases: 5
+  total_plans: 20
   completed_plans: 20
-  percent: 14
+  percent: 71
 ---
 
 # Project State
@@ -20,30 +20,23 @@ progress:
 See: .planning/PROJECT.md (updated 2026-07-05)
 
 **Core value:** 48 demos + 3 enterprise projects runnable via `mvn spring-boot:run`，通过 HANDOFF §7 质量门禁
-**Current focus:** Phase 04 — knowledge-qa-platform
+**Current focus:** Phase 5 — office-agent-assistant（端口 19200）已交付；下一步 Phase 6
 
 ## Current Position
 
-Phase: 04 (knowledge-qa-platform) — VERIFYING
-Plan: 6 of 6 (complete)
-Status: Phase complete — ready for verification
-Last activity: 2026-07-05
+Phase: 5 — office-agent-assistant（executed）
+Plan: delivered（2 commits，69 Java 源文件）
+Status: 代码+测试绿；人工 UAT 待 infra + API Key
+Last activity: 2026-07-05 — /gsd-execute-phase 5 --auto
 
-Progress: [██████████] 100%
+Progress: [███████░░░] 71% phases (5/7)
 
 ## Performance Metrics
 
 **Velocity:**
 
 - Total plans completed: 20 (Phase 3: 14 + Phase 4: 6)
-- UAT runs: 3 iterations → 48/48 pass
-- Phase 04-01: 12min, 3 tasks, 97 files
-- Phase 04-02: 18min, 3 tasks, 11 files
-- Phase 04-03: 12min, 3 tasks, 6 files
-- Phase 04-04: 18min, 3 tasks, 11 files
-
-- Phase 04-05: 22min, 3 tasks, 21 files
-- Phase 04-06: 14min, 3 tasks, 22 files
+- Phase 5: 2 commits, 69 Java files, mvn test 7 run / 3 skipped (API Key 门控)
 
 **By Phase:**
 
@@ -53,6 +46,7 @@ Progress: [██████████] 100%
 | 2. 教程与 starter | delivered | ✅ Complete | 2026-07-03 |
 | 3. 48 Demo | 14/14 | ✅ Verified | 2026-07-05 |
 | 4. 知识库问答 | 6/6 | ✅ Complete | 2026-07-05 |
+| 5. 办公 Agent | delivered | ✅ Complete | 2026-07-05 |
 
 ## Accumulated Context
 
@@ -63,40 +57,20 @@ Progress: [██████████] 100%
 - Embedding 一律 DashScope text-embedding-v4 dimensions=1024
 - 自定义 Advisor 一律 CallAdvisor/StreamAdvisor
 - Agent/Graph：spring-ai-alibaba-agent-framework
-- Supervisor：ReactAgent + AgentTool.create
-- A2A：spring.ai.alibaba.a2a.nacos.*
-- 44~48 强制 saa-learning-starter
-- JSONB 字段使用 @JdbcTypeCode(SqlTypes.JSON) 映射
-- PromptTemplateVO 额外添加以支撑 PromptConverter
-- JWT secret 经 KQA_JWT_SECRET 环境变量注入
-- MessageChatMemoryAdvisor 单独 Bean，ChatClient 留 04-03
-- JWT role claim 经 JwtAuthenticationConverter 映射 ROLE_* 供 @PreAuthorize
-- SSE meta 事件序列化 QaAnswerVO（citations+usage）
-- 会话删除硬删 PG 并清 RedisChatMemoryRepository
-- DbAuditLoggingAdvisor 委托 AuditLoggingAdvisor 并落库 AI_CALL
-- Prompt 发布推送 Nacos 全量 PUBLISHED JSON 数组
-- Dashboard 成本优先 gen_ai 指标，qa_message token 兜底
-- KnowledgeQaApplicationTests H2+MockBean 无 Docker 冒烟
-- Auth IT MockBean JwtEncoder 规避 YAML secret 解析
-- QaAskIT/QaStreamIT 仅 API Key 门控，Milvus 需 infra profile
+- Phase 5：MySQL 业务库 + pgvector 轻量知识 + Redis 短期记忆 + JDBC 长期记忆
+- Phase 5 审批：SequentialAgent（摘要→意见）+ LlmRoutingAgent（金额超阈值升级）
+- SQL Tool 白名单：report_sales, report_attendance, approval_request
 
 ### Pending Todos
 
-None.
+- Phase 4/5 人工 UAT（需 Milvus/MySQL infra + AI_DASHSCOPE_API_KEY）
 
 ### Blockers/Concerns
 
 None.
 
-## Deferred Items
-
-| Category | Item | Status | Deferred At |
-|----------|------|--------|-------------|
-| Phase 3 | Demo 37 HITL flaky（模型偶发不触发 tool） | acknowledged | 2026-07-05 |
-| Phase 2 | starter 单测覆盖率加强 | pending | 2026-07-05 |
-
 ## Session Continuity
 
-Stopped at: Completed 04-06-PLAN.md
-Next: /gsd-verify-work 对照 04-UAT.md
-Resume: `.planning/phases/04-knowledge-qa-platform/04-UAT.md`
+Stopped at: Phase 5 execution complete
+Next: `/gsd-discuss-phase 6` 或 `/gsd-plan-phase 6 --auto`
+Resume: `projects/office-agent-assistant/README.md`

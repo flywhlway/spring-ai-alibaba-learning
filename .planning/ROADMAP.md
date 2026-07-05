@@ -20,7 +20,7 @@
 - [x] **Phase 2: 教程与 starter** - 22 章教程、saa-learning-starter、QA 脚本
 - [x] **Phase 3: 48 个独立 Demo** - examples/ 全量可 `mvn spring-boot:run` 的最小 Demo (verified 2026-07-05, UAT 48/48)
 - [x] **Phase 4: 知识库问答平台** - knowledge-qa-platform（端口 19100） (completed 2026-07-05)
-- [ ] **Phase 5: 办公 Agent 助手** - office-agent-assistant（端口 19200）
+- [x] **Phase 5: 办公 Agent 助手** - office-agent-assistant（端口 19200） (completed 2026-07-05)
 - [ ] **Phase 6: 智能客服平台** - smart-cs-platform（端口 19300）
 - [ ] **Phase 7: 生产化** - CI/CD、部署、调优、排障与质量门禁收口
 
@@ -159,7 +159,11 @@ Plans:
   3. 审批助手走 SequentialAgent/RoutingAgent；记忆为 Redis（会话）+ JDBC（长期偏好）；用户/Prompt 管理 CRUD 可用
   4. 工程满足统一交付标准；端口 19200；栈为 MySQL + pgvector + Redis
 
-**Plans**: TBD
+**Plans**: 2 commits（Wave 1~6 合并交付）
+
+**Status**: Complete（2026-07-05）
+
+交付物：`projects/office-agent-assistant/`（69 Java 源文件）— ReactAgent 对话、SQL/HTTP/Excel/Calendar Tools、SequentialAgent+LlmRoutingAgent 审批、Redis+JDBC 双轨记忆、pgvector、MCP、用户/Prompt 后台、单测+Testcontainers IT、`scripts/uat-office-agent.sh`
 
 ### Phase 6: 智能客服平台
 
@@ -198,7 +202,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 → 7
 | 1. 基座脚手架 | delivered | Complete | 2026-07-03 |
 | 2. 教程与 starter | delivered | Complete | 2026-07-03 |
 | 3. 48 个独立 Demo | 14/14 | Verified | 2026-07-05 |
-| 4. 知识库问答平台 | 6/6 | Complete   | 2026-07-05 |
-| 5. 办公 Agent 助手 | 0/TBD | Not started | - |
+| 4. 知识库问答平台 | 6/6 | Complete | 2026-07-05 |
+| 5. 办公 Agent 助手 | delivered | Complete | 2026-07-05 |
 | 6. 智能客服平台 | 0/TBD | Not started | - |
 | 7. 生产化 | 0/TBD | Not started | - |
