@@ -1,0 +1,61 @@
+# =====================================================================
+# 项目一 · knowledge-qa-platform —— 项目专属服务（叠加 docker/docker-compose.yml）
+#
+# 用法（在仓库根目录执行）：
+#   docker compose -f docker/docker-compose.yml \
+#                  -f projects/knowledge-qa-platform/docker-compose.override.yml \
+#                  --profile core --profile vector --profile cloud --profile kqa up -d
+#
+# 说明：
+#   - core   → Redis / PostgreSQL / MinIO（业务库 + 记忆缓存 + 文档对象存储）
+#   - vector → Milvus + etcd（主向量库，冷启动 30~60s）
+#   - cloud  → Nacos（Prompt 热更新）
+#   - kqa    → 本文件新增的初始化任务（建库 + 执行 db/schema.sql + db/data.sql + 建 MinIO bucket）
+#
+# 初始化任务均幂等，可重复执行。
+# =====================================================================
+services:
+  # 业务库初始化：创建 kqa_platform 库并导入 DDL 与演示数据
+  kqa-db-init:
+    image: pgvector/pgvector:pg16
+    container_name: saa-kqa-db-init
+    profiles: [ "kqa" ]
+    environment:
+      PGHOST: postgres
+      PGUSER: saa
+      PGPASSWORD: saa123456
+    volumes:
+      - ./db:/kqa-db:ro
+    entrypoint:
+      - bash
+      - -ceu
+      - |
+        until pg_isready -h postgres -U saa -d saa_learning; do sleep 2; done
+        psql -d saa_learning -tAc "SELECT 1 FROM pg_database WHERE datname='kqa_platform'" | grep -q 1 \
+          || createdb kqa_platform
+        psql -d kqa_platform -v ON_ERROR_STOP=1 -f /kqa-db/schema.sql
+        psql -d kqa_platform -v ON_ERROR_STOP=1 -f /kqa-db/data.sql
+        echo "[kqa-db-init] kqa_platform 初始化完成"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks: [ saa-net ]
+    restart: "no"
+
+  # MinIO bucket 初始化：创建知识文档存储桶 kqa-documents
+  kqa-minio-init:
+    image: minio/mc:RELEASE.2025-04-16T18-13-26Z
+    container_name: saa-kqa-minio-init
+    profiles: [ "kqa" ]
+    entrypoint:
+      - sh
+      - -ceu
+      - |
+        mc alias set saa http://minio:9000 minioadmin minioadmin
+        mc mb --ignore-existing saa/kqa-documents
+        echo "[kqa-minio-init] bucket kqa-documents 就绪"
+    depends_on:
+      minio:
+        condition: service_healthy
+    networks: [ saa-net ]
+    restart: "no"

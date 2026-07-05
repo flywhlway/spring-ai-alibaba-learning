@@ -1,0 +1,275 @@
+{
+  "info": {
+    "name": "knowledge-qa-platform (19100)",
+    "description": "项目一 · AI 企业知识库问答平台全接口。先执行「认证域/管理员登录」或「员工登录」，token 会写入集合变量。演示账号：admin/admin123、zhangsan/zhangsan123。",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    { "key": "host", "value": "http://localhost:19100" },
+    { "key": "adminToken", "value": "" },
+    { "key": "userToken", "value": "" }
+  ],
+  "item": [
+    {
+      "name": "认证域",
+      "item": [
+        {
+          "name": "管理员登录",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const data = pm.response.json().data;",
+                  "if (data && data.accessToken) pm.collectionVariables.set('adminToken', data.accessToken);"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": "{{host}}/api/auth/login",
+            "body": { "mode": "raw", "raw": "{ \"username\": \"admin\", \"password\": \"admin123\" }" }
+          }
+        },
+        {
+          "name": "员工登录",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const data = pm.response.json().data;",
+                  "if (data && data.accessToken) pm.collectionVariables.set('userToken', data.accessToken);"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": "{{host}}/api/auth/login",
+            "body": { "mode": "raw", "raw": "{ \"username\": \"zhangsan\", \"password\": \"zhangsan123\" }" }
+          }
+        },
+        {
+          "name": "当前用户信息",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{userToken}}" }],
+            "url": "{{host}}/api/auth/me"
+          }
+        }
+      ]
+    },
+    {
+      "name": "问答域",
+      "item": [
+        {
+          "name": "同步问答",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{userToken}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "url": "{{host}}/api/qa/ask",
+            "body": { "mode": "raw", "raw": "{ \"conversationId\": \"demo-conv-001\", \"question\": \"员工出差住宿费报销标准是多少？\" }" }
+          }
+        },
+        {
+          "name": "SSE 流式问答",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{userToken}}" },
+              { "key": "Accept", "value": "text/event-stream" }
+            ],
+            "url": {
+              "raw": "{{host}}/api/qa/stream?conversationId=demo-conv-001&question=智能网关如何恢复出厂设置",
+              "host": ["{{host}}"],
+              "path": ["api", "qa", "stream"],
+              "query": [
+                { "key": "conversationId", "value": "demo-conv-001" },
+                { "key": "question", "value": "智能网关如何恢复出厂设置" }
+              ]
+            }
+          }
+        },
+        {
+          "name": "会话列表",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{userToken}}" }],
+            "url": "{{host}}/api/conversations?page=1&size=10"
+          }
+        },
+        {
+          "name": "会话历史消息",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{userToken}}" }],
+            "url": "{{host}}/api/conversations/demo-conv-001/messages?page=1&size=20"
+          }
+        },
+        {
+          "name": "删除会话",
+          "request": {
+            "method": "DELETE",
+            "header": [{ "key": "Authorization", "value": "Bearer {{userToken}}" }],
+            "url": "{{host}}/api/conversations/demo-conv-001"
+          }
+        },
+        {
+          "name": "答案反馈",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{userToken}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "url": "{{host}}/api/qa/feedback",
+            "body": { "mode": "raw", "raw": "{ \"messageId\": 1, \"rating\": 1, \"comment\": \"答案准确，引用清晰\" }" }
+          }
+        }
+      ]
+    },
+    {
+      "name": "后台-知识管理",
+      "item": [
+        {
+          "name": "上传知识文档",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Authorization", "value": "Bearer {{adminToken}}" }],
+            "url": "{{host}}/api/admin/documents",
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                { "key": "title", "value": "员工差旅费报销制度（2026 版）", "type": "text" },
+                { "key": "category", "value": "公司制度", "type": "text" },
+                { "key": "file", "type": "file", "src": "" }
+              ]
+            }
+          }
+        },
+        {
+          "name": "文档列表",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{adminToken}}" }],
+            "url": "{{host}}/api/admin/documents?status=INDEXED&page=1&size=10"
+          }
+        },
+        {
+          "name": "触发重建索引",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Authorization", "value": "Bearer {{adminToken}}" }],
+            "url": "{{host}}/api/admin/documents/1/reindex"
+          }
+        },
+        {
+          "name": "删除文档",
+          "request": {
+            "method": "DELETE",
+            "header": [{ "key": "Authorization", "value": "Bearer {{adminToken}}" }],
+            "url": "{{host}}/api/admin/documents/3"
+          }
+        }
+      ]
+    },
+    {
+      "name": "后台-Prompt 管理",
+      "item": [
+        {
+          "name": "模板列表",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{adminToken}}" }],
+            "url": "{{host}}/api/admin/prompts?templateKey=qa-system"
+          }
+        },
+        {
+          "name": "新建草稿版本",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{adminToken}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "url": "{{host}}/api/admin/prompts",
+            "body": { "mode": "raw", "raw": "{ \"templateKey\": \"qa-system\", \"content\": \"你是企业知识库问答助手（V3 草稿）……\\n\\n知识片段：\\n{context}\", \"description\": \"问答系统提示词 V3\" }" }
+          }
+        },
+        {
+          "name": "发布版本（推 Nacos）",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Authorization", "value": "Bearer {{adminToken}}" }],
+            "url": "{{host}}/api/admin/prompts/3/publish"
+          }
+        }
+      ]
+    },
+    {
+      "name": "后台-用户/审计/看板",
+      "item": [
+        {
+          "name": "用户列表",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{adminToken}}" }],
+            "url": "{{host}}/api/admin/users?page=1&size=10"
+          }
+        },
+        {
+          "name": "新建用户",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{adminToken}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "url": "{{host}}/api/admin/users",
+            "body": { "mode": "raw", "raw": "{ \"username\": \"wangwu\", \"password\": \"wangwu123\", \"displayName\": \"王五\", \"role\": \"EMPLOYEE\", \"department\": \"财务部\" }" }
+          }
+        },
+        {
+          "name": "停用用户",
+          "request": {
+            "method": "PUT",
+            "header": [{ "key": "Authorization", "value": "Bearer {{adminToken}}" }],
+            "url": "{{host}}/api/admin/users/3/status?enabled=false"
+          }
+        },
+        {
+          "name": "审计日志查询",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{adminToken}}" }],
+            "url": "{{host}}/api/admin/audits?action=UPLOAD_DOC&page=1&size=20"
+          }
+        },
+        {
+          "name": "运营看板统计",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{adminToken}}" }],
+            "url": "{{host}}/api/admin/dashboard/stats?days=7"
+          }
+        }
+      ]
+    },
+    {
+      "name": "可观测",
+      "item": [
+        { "name": "健康检查", "request": { "method": "GET", "url": "{{host}}/actuator/health" } },
+        { "name": "Prometheus 指标", "request": { "method": "GET", "url": "{{host}}/actuator/prometheus" } }
+      ]
+    }
+  ]
+}
