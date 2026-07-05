@@ -1,13 +1,49 @@
 package com.flywhl.saa.knowledgeqa.config;
 
+import java.time.Duration;
+
+import org.springframework.boot.context.properties.ConfigurationProperties;
+
 /**
- * 项目自有配置属性（前缀 kqa）：minio / rag / memory / security.jwt 分组绑定。
- *
- * <p><b>骨架占位</b>：本类型仅锁定包位与职责边界，接口契约见项目 README「接口总览」，
- * 具体实现由 Phase 4~6 后续迭代任务交付（占位内容不参与任何 Bean 装配）。
+ * 项目自有配置属性（前缀 {@code kqa}）：MinIO / RAG / 会话记忆 / JWT 安全分组绑定。
  *
  * @author flywhl
  * @since 1.0.0
  */
-public class KqaProperties {
+@ConfigurationProperties(prefix = "kqa")
+public record KqaProperties(
+        Minio minio,
+        Rag rag,
+        Memory memory,
+        Security security) {
+
+    public KqaProperties {
+        if (minio == null) {
+            minio = new Minio("http://localhost:9000", "minioadmin", "minioadmin", "kqa-documents");
+        }
+        if (rag == null) {
+            rag = new Rag(5, 0.35, 512, 64, true);
+        }
+        if (memory == null) {
+            memory = new Memory(20, Duration.ofDays(7));
+        }
+        if (security == null) {
+            security = new Security(new Jwt("knowledge-qa-platform", Duration.ofHours(2)));
+        }
+    }
+
+    public record Minio(String endpoint, String accessKey, String secretKey, String bucket) {
+    }
+
+    public record Rag(int topK, double similarityThreshold, int chunkSize, int chunkOverlap, boolean citationEnabled) {
+    }
+
+    public record Memory(int maxMessages, Duration ttl) {
+    }
+
+    public record Security(Jwt jwt) {
+    }
+
+    public record Jwt(String issuer, Duration accessTokenTtl) {
+    }
 }
