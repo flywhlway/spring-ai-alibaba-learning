@@ -3,6 +3,8 @@ package com.flywhl.saa.knowledgeqa.repository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.flywhl.saa.knowledgeqa.model.entity.QaMessage;
 
@@ -17,4 +19,8 @@ public interface QaMessageRepository extends JpaRepository<QaMessage, Long> {
     Page<QaMessage> findByConversationIdOrderByCreatedAtAsc(String conversationId, Pageable pageable);
 
     long countByConversationId(String conversationId);
+
+    @Modifying
+    @Transactional
+    void deleteByConversationId(String conversationId);
 }

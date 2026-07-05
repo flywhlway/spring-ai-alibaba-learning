@@ -8,6 +8,7 @@ import org.mapstruct.Mapping;
 
 import com.flywhl.saa.knowledgeqa.model.entity.QaConversation;
 import com.flywhl.saa.knowledgeqa.model.entity.QaMessage;
+import com.flywhl.saa.knowledgeqa.model.vo.ChatMessageVO;
 import com.flywhl.saa.knowledgeqa.model.vo.CitationVO;
 import com.flywhl.saa.knowledgeqa.model.vo.ConversationVO;
 import com.flywhl.saa.knowledgeqa.model.vo.QaAnswerVO;
@@ -22,6 +23,9 @@ import com.flywhl.saa.knowledgeqa.model.vo.QaAnswerVO;
 public interface MessageConverter {
 
     ConversationVO toVo(QaConversation entity);
+
+    @Mapping(target = "citations", source = "citations")
+    ChatMessageVO toMessageVo(QaMessage entity);
 
     @Mapping(target = "answer", source = "content")
     @Mapping(target = "citations", source = "citations")
