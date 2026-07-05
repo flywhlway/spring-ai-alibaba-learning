@@ -800,15 +800,13 @@ chatClient.prompt()
 | A3 | 手动 64-token overlap 算法足够 | §3 | 检索质量略降 |
 | A4 | `KQA_JWT_SECRET` 为新环境变量名 | §2 | 需同步 `setup-env.sh` |
 
-## Open Questions
+## Open Questions (RESOLVED)
 
-1. **MinIO 演示文件是否已放入 bucket？**
-   - What we know: `data.sql` 有 `minio_object` 路径
-   - What's unclear: compose 是否上传实体 PDF/DOCX
-   - Recommendation: Wave 2 检查 `kqa-minio-init`；缺失则提供 sample 文件或 UAT 改为上传流
+1. **MinIO 演示文件是否已放入 bucket？** → **RESOLVED**
+   - Decision: `kqa-minio-init` 仅建空 bucket，不上传实体文件；`data.sql` INDEXED 文档由 **DemoKnowledgeSeeder**（04-03）在启动时从 classpath sample 或 reindex 灌入 Milvus；UAT 亦可通过 admin 上传流验证。
 
-2. **Nacos 发布是否需独立 `nacos-client`？**
-   - Recommendation: Wave 4 首任务 compile-time 验证 `ConfigService` Bean
+2. **Nacos 发布是否需独立 `nacos-client`？** → **RESOLVED**
+   - Decision: 不新增独立 `nacos-client` 依赖；`spring-ai-alibaba-starter-nacos-prompt` + `spring-cloud-starter-alibaba-nacos-config`（Boot BOM 传递）提供 `ConfigService`；04-05 `PromptPublishService` 首任务 compile 验证 `ConfigService` 可注入。
 
 ## Environment Availability
 
