@@ -19,7 +19,7 @@
 - [x] **Phase 1: 基座脚手架** - 父 POM、common、docker profiles、scripts、overview 文档与 ADR
 - [x] **Phase 2: 教程与 starter** - 22 章教程、saa-learning-starter、QA 脚本
 - [x] **Phase 3: 48 个独立 Demo** - examples/ 全量可 `mvn spring-boot:run` 的最小 Demo (verified 2026-07-05, UAT 48/48)
-- [ ] **Phase 4: 知识库问答平台** - knowledge-qa-platform（端口 19100）
+- [x] **Phase 4: 知识库问答平台** - knowledge-qa-platform（端口 19100） (completed 2026-07-05)
 - [ ] **Phase 5: 办公 Agent 助手** - office-agent-assistant（端口 19200）
 - [ ] **Phase 6: 智能客服平台** - smart-cs-platform（端口 19300）
 - [ ] **Phase 7: 生产化** - CI/CD、部署、调优、排障与质量门禁收口
@@ -143,7 +143,7 @@ Plans:
 - [x] 04-03-PLAN.md — rag/* + AiClientConfig + DemoKnowledgeSeeder
 - [x] 04-04-PLAN.md — 问答域 Auth/Qa SSE/Conversation/Feedback
 - [x] 04-05-PLAN.md — admin/* 五组后台 + Prompt 发布 + KnowledgeOpsTools
-- [ ] 04-06-PLAN.md — 测试 + HANDOFF §7 + 04-UAT.md
+- [x] 04-06-PLAN.md — 测试 + HANDOFF §7 + 04-UAT.md
 
 **Checklist:** `.planning/phases/04-knowledge-qa-platform/04-PLAN-CHECKLIST.md`
 
@@ -198,7 +198,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 → 7
 | 1. 基座脚手架 | delivered | Complete | 2026-07-03 |
 | 2. 教程与 starter | delivered | Complete | 2026-07-03 |
 | 3. 48 个独立 Demo | 14/14 | Verified | 2026-07-05 |
-| 4. 知识库问答平台 | 5/6 | In Progress|  |
+| 4. 知识库问答平台 | 6/6 | Complete   | 2026-07-05 |
 | 5. 办公 Agent 助手 | 0/TBD | Not started | - |
 | 6. 智能客服平台 | 0/TBD | Not started | - |
 | 7. 生产化 | 0/TBD | Not started | - |
