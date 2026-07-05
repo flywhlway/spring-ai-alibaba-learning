@@ -35,12 +35,14 @@ Progress: [██████████] 95%
 
 **Velocity:**
 
-- Total plans completed: 18 (Phase 3: 14 + Phase 4: 4)
+- Total plans completed: 19 (Phase 3: 14 + Phase 4: 5)
 - UAT runs: 3 iterations → 48/48 pass
 - Phase 04-01: 12min, 3 tasks, 97 files
 - Phase 04-02: 18min, 3 tasks, 11 files
 - Phase 04-03: 12min, 3 tasks, 6 files
 - Phase 04-04: 18min, 3 tasks, 11 files
+
+- Phase 04-05: 22min, 3 tasks, 21 files
 
 **By Phase:**
 
@@ -49,7 +51,7 @@ Progress: [██████████] 95%
 | 1. 基座脚手架 | delivered | ✅ Complete | 2026-07-03 |
 | 2. 教程与 starter | delivered | ✅ Complete | 2026-07-03 |
 | 3. 48 Demo | 14/14 | ✅ Verified | 2026-07-05 |
-| 4. 知识库问答 | 4/6 | 🚧 In Progress | - |
+| 4. 知识库问答 | 5/6 | 🚧 In Progress | - |
 
 ## Accumulated Context
 
@@ -70,6 +72,9 @@ Progress: [██████████] 95%
 - JWT role claim 经 JwtAuthenticationConverter 映射 ROLE_* 供 @PreAuthorize
 - SSE meta 事件序列化 QaAnswerVO（citations+usage）
 - 会话删除硬删 PG 并清 RedisChatMemoryRepository
+- DbAuditLoggingAdvisor 委托 AuditLoggingAdvisor 并落库 AI_CALL
+- Prompt 发布推送 Nacos 全量 PUBLISHED JSON 数组
+- Dashboard 成本优先 gen_ai 指标，qa_message token 兜底
 
 ### Pending Todos
 
@@ -88,6 +93,6 @@ None.
 
 ## Session Continuity
 
-Stopped at: Completed 04-04-PLAN.md
-Next: Execute 04-05-PLAN.md（admin 五组 API）
-Resume: `.planning/phases/04-knowledge-qa-platform/04-05-PLAN.md`
+Stopped at: Completed 04-05-PLAN.md
+Next: Execute 04-06-PLAN.md（测试 + HANDOFF §7 门禁）
+Resume: `.planning/phases/04-knowledge-qa-platform/04-06-PLAN.md`
