@@ -75,7 +75,7 @@ Each task was committed atomically:
 2. **Task 2: Minio + VectorStore + ChatMemory + OpenAPI** - `f2edf49` (feat)
 3. **Task 3: PromptTemplateProvider** - `a9af2a7` (feat)
 
-**Plan metadata:** `bfe8c7a` (docs: complete plan)
+**Plan metadata:** `10d4504` (docs: complete plan)
 
 ## Files Created/Modified
 
