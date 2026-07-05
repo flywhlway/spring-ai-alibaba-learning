@@ -1,5 +1,6 @@
 package com.flywhl.saa.mcpnacos.client;
 
+import com.alibaba.cloud.ai.autoconfigure.mcp.discovery.client.NacosMcpToolCallbackAutoConfiguration;
 import com.flywhl.saa.common.exception.GlobalExceptionHandler;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -10,7 +11,7 @@ import org.springframework.context.annotation.Import;
  *
  * @author flywhl
  */
-@SpringBootApplication
+@SpringBootApplication(exclude = NacosMcpToolCallbackAutoConfiguration.class)
 @Import(GlobalExceptionHandler.class)
 public class OfficeAssistantClientApplication {
 

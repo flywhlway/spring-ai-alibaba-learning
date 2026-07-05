@@ -24,9 +24,15 @@ spring:
           password: nacos
           client:
             enabled: true
-            # 按服务名发现，非硬编码 IP/端口
+            # operation service 与 streamable connection 按同名 key 配对（key = service-name）
+            configs:
+              order-service-mcp:
+                server-addr: 127.0.0.1:8848
+                namespace: public
+                username: nacos
+                password: nacos
             streamable:
               connections:
-                order-service:
+                order-service-mcp:
                   service-name: order-service-mcp
                   version: 1.0.0
