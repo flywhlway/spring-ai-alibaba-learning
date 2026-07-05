@@ -1,0 +1,27 @@
+# Testcontainers 集成测试 Profile：PG/Redis 由 @DynamicPropertySource 注入
+spring:
+  jpa:
+    hibernate:
+      ddl-auto: none
+  sql:
+    init:
+      mode: always
+      schema-locations: classpath:db/schema.sql
+      data-locations: classpath:db/data.sql
+  ai:
+    dashscope:
+      api-key: ${AI_DASHSCOPE_API_KEY:test-dummy-key}
+    deepseek:
+      api-key: test-dummy-key
+    nacos:
+      prompt:
+        template:
+          enabled: false
+    vectorstore:
+      milvus:
+        initialize-schema: false
+
+kqa:
+  security:
+    jwt:
+      secret: test-jwt-secret-key-32bytes-min!!

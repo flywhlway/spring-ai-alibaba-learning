@@ -1,17 +1,43 @@
 package com.flywhl.saa.knowledgeqa;
 
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+import org.springframework.ai.vectorstore.VectorStore;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.data.redis.core.StringRedisTemplate;
+import org.springframework.test.context.ActiveProfiles;
+
+import com.flywhl.saa.knowledgeqa.config.DemoKnowledgeSeeder;
+
+import io.minio.MinioClient;
+
 /**
- * 集成测试骨架占位。
- *
- * <p>后续迭代按仓库测试约定补齐：
- * <ul>
- *   <li>PostgreSQL/Redis 用 Testcontainers（{@code @Testcontainers} + {@code @DynamicPropertySource}）；</li>
- *   <li>真实模型调用用例标注 {@code @EnabledIfEnvironmentVariable(named = "AI_DASHSCOPE_API_KEY", matches = ".+")}，
- *       保证无 Key 环境 {@code mvn clean install} 全绿。</li>
- * </ul>
+ * 应用上下文冒烟测试：无 Docker 时通过 @MockBean 替代外部中间件，仅验证 Spring 容器启动。
  *
  * @author flywhl
- * @since 1.0.0
  */
+@SpringBootTest(properties = {
+        "spring.autoconfigure.exclude=org.springframework.ai.vectorstore.milvus.autoconfigure.MilvusVectorStoreAutoConfiguration"
+})
+@ActiveProfiles("test")
+@DisplayName("应用上下文加载")
 class KnowledgeQaApplicationTests {
+
+    @MockBean
+    private VectorStore vectorStore;
+
+    @MockBean
+    private MinioClient minioClient;
+
+    @MockBean
+    private StringRedisTemplate stringRedisTemplate;
+
+    @MockBean
+    private DemoKnowledgeSeeder demoKnowledgeSeeder;
+
+    @Test
+    @DisplayName("Spring 上下文可正常启动")
+    void contextLoads() {
+    }
 }
