@@ -49,7 +49,17 @@ mvn -f projects/office-agent-assistant/pom.xml spring-boot:run
 - `GET/POST /api/admin/users` — 用户管理
 - `GET/POST /api/admin/prompts` — Prompt CRUD/发布
 
-完整示例见 [`http/api.http`](http/api.http)，OpenAPI 文档：`http://localhost:19200/doc.html`
+完整示例见 [`http/api.http`](http/api.http) 与 [Postman Collection](http/office-agent-assistant.postman_collection.json)，OpenAPI 文档：`http://localhost:19200/doc.html`
+
+## 安全
+
+模型（LLM）产出的工具入参一律视为**不可信输入**，工具层做纵深防御：
+
+- **`SqlQueryTool`（报表查询）**：只允许单条 `SELECT`；先剥离字符串字面量再校验，杜绝把表名藏进字面量绕过；拒绝注释/分号/反引号/双引号/反斜杠等危险字符与写操作、`UNION`/`INTO OUTFILE`/`LOAD_FILE`/`information_schema`/`SLEEP` 等关键字；词法级提取 `FROM`/`JOIN` 表名并与 `office.tool.sql.allowed-tables` **精确相等**比对，拒绝子查询/派生表与 schema 限定名。
+  - **生产纵深防御建议**：为本 Tool 单独配置一个只读数据库账号，仅 `GRANT SELECT` 白名单表/列，即便应用层校验被绕过也无法触达 `sys_user` 等敏感表。
+- **`HttpInternalTool`（内部系统调用）**：目标主机受 `office.tool.http.allowed-hosts` 白名单约束，防 SSRF。
+- **工具鉴权**：所有工具经 `ToolSecuritySupport` 基于 `ToolContext`（服务端注入的 userId/role，模型不可伪造）做 RBAC 校验。
+- **接口鉴权**：JWT + ADMIN/EMPLOYEE RBAC；演示口令 `{noop}` 前缀仅限本机，生产一律 BCrypt。
 
 ## 测试
 
