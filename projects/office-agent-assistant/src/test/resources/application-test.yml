@@ -1,0 +1,14 @@
+spring:
+  ai:
+    dashscope:
+      api-key: test-dummy-key
+    mcp:
+      client:
+        enabled: false
+      server:
+        enabled: false
+
+office:
+  security:
+    jwt:
+      secret: "dev-only-office-jwt-secret-32bytes!!"

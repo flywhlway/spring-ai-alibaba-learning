@@ -1,0 +1,30 @@
+spring:
+  main:
+    lazy-initialization: true
+    allow-bean-definition-overriding: true
+  jpa:
+    hibernate:
+      ddl-auto: none
+  sql:
+    init:
+      mode: always
+      schema-locations: classpath:db/schema.sql
+      data-locations: classpath:db/data.sql
+  ai:
+    dashscope:
+      api-key: ${AI_DASHSCOPE_API_KEY:test-dummy-key}
+    mcp:
+      client:
+        enabled: false
+      server:
+        enabled: false
+    vectorstore:
+      pgvector:
+        initialize-schema: false
+
+office:
+  vector-datasource:
+    enabled: false
+  security:
+    jwt:
+      secret: "dev-only-office-jwt-secret-32bytes!!"

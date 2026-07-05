@@ -1,0 +1,72 @@
+### 企业 AI Agent 办公助手 API
+@baseUrl = http://localhost:19200
+@token = {{login.response.body.data.accessToken}}
+
+### 登录
+# @name login
+POST {{baseUrl}}/api/auth/login
+Content-Type: application/json
+
+{
+  "username": "zhangsan",
+  "password": "zhangsan123"
+}
+
+### 当前用户
+GET {{baseUrl}}/api/auth/me
+Authorization: Bearer {{token}}
+
+### 多轮对话
+POST {{baseUrl}}/api/chat
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "message": "帮我查一下7月4日华东销售数据",
+  "conversationId": "conv-demo-001"
+}
+
+### 会议纪要
+POST {{baseUrl}}/api/tasks/meeting-summary
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "title": "Q3 策略会纪要",
+  "input": "讨论华东区 Q3 目标，决定加大网关 Pro 推广，张三负责方案，7月15日前提交。"
+}
+
+### 日报生成
+POST {{baseUrl}}/api/tasks/daily-report
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "input": "完成客户拜访3家，整理竞品分析，明日继续跟进杭州客户。"
+}
+
+### 邮件起草
+POST {{baseUrl}}/api/tasks/email-draft
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "input": "向供应商确认7月10日交货时间，并询问发票开具流程。"
+}
+
+### 审批 AI 初审
+POST {{baseUrl}}/api/approvals/review
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "approvalId": 1
+}
+
+### 用户列表（管理员）
+GET {{baseUrl}}/api/admin/users?page=1&size=10
+Authorization: Bearer {{token}}
+
+### Prompt 列表（管理员）
+GET {{baseUrl}}/api/admin/prompts
+Authorization: Bearer {{token}}
