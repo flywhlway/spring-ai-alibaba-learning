@@ -17,8 +17,7 @@ spring:
           namespace: public
           username: nacos
           password: nacos
+          registry:
+            enabled: false
           discovery:
             enabled: true
-        client:
-          card:
-            name: inventory-agent

@@ -18,6 +18,7 @@ public class InventoryRemoteAgentConfig {
         return A2aRemoteAgent.builder()
                 .name("inventory-agent")
                 .description("通过 Nacos 发现的远程库存查询智能体")
+                .outputKey("output")
                 .agentCardProvider(nacosAgentCardProvider)
                 .build();
     }

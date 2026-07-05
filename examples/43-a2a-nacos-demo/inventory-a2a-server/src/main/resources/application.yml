@@ -19,9 +19,13 @@ spring:
           password: nacos
           registry:
             enabled: true
+          discovery:
+            enabled: false
         server:
-          address: http://127.0.0.1:18043
+          address: 127.0.0.1
+          port: 18043
           card:
             name: inventory-agent
             description: 库存查询智能体，支持按 SKU 查询库存数量
             version: 1.0.0
+            url: http://127.0.0.1:18043/a2a
