@@ -16,10 +16,12 @@ spring:
     name: knowledge-qa-platform
 
   # ----------------- 业务库：PostgreSQL（schema 由 db/schema.sql 管理，JPA 只校验不建表） -----------------
+  # 凭据策略：以下所有口令均支持环境变量覆盖；冒号后的默认值仅对齐 docker/docker-compose.yml
+  # 的本机开发中间件（dev-only），生产部署必须注入环境变量且更换默认口令。
   datasource:
     url: jdbc:postgresql://localhost:5432/kqa_platform
-    username: saa
-    password: saa123456
+    username: ${KQA_DB_USERNAME:saa}
+    password: ${KQA_DB_PASSWORD:saa123456}
     driver-class-name: org.postgresql.Driver
     hikari:
       maximum-pool-size: 10
@@ -75,9 +77,9 @@ spring:
 
   cloud:
     nacos:
-      server-addr: 127.0.0.1:8848
-      username: nacos
-      password: nacos
+      server-addr: ${NACOS_SERVER_ADDR:127.0.0.1:8848}
+      username: ${NACOS_USERNAME:nacos}
+      password: ${NACOS_PASSWORD:nacos}
 
   servlet:
     multipart:
