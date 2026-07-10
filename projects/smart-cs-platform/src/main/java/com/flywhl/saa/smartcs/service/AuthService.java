@@ -1,0 +1,116 @@
+package com.flywhl.saa.smartcs.service;
+
+import java.time.Instant;
+
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.oauth2.jwt.Jwt;
+import org.springframework.security.oauth2.jwt.JwtClaimsSet;
+import org.springframework.security.oauth2.jwt.JwtEncoder;
+import org.springframework.security.oauth2.jwt.JwtEncoderParameters;
+import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
+import org.springframework.stereotype.Service;
+
+import com.flywhl.saa.common.exception.BizException;
+import com.flywhl.saa.common.result.CommonResultCode;
+import com.flywhl.saa.smartcs.config.ScsProperties;
+import com.flywhl.saa.smartcs.mapper.UserConverter;
+import com.flywhl.saa.smartcs.model.dto.LoginRequest;
+import com.flywhl.saa.smartcs.model.entity.SysUser;
+import com.flywhl.saa.smartcs.model.vo.LoginVO;
+import com.flywhl.saa.smartcs.model.vo.UserVO;
+import com.flywhl.saa.smartcs.repository.SysUserRepository;
+
+/**
+ * 认证服务：账号校验 + JWT 签发；当前登录用户解析，供 Controller/Service/@Tool 复用。
+ *
+ * @author flywhl
+ * @since 1.0.0
+ */
+@Service
+public class AuthService {
+
+    private final AuthenticationManager authenticationManager;
+    private final JwtEncoder jwtEncoder;
+    private final ScsProperties properties;
+    private final SysUserRepository userRepository;
+    private final UserConverter userConverter;
+
+    public AuthService(
+            AuthenticationManager authenticationManager,
+            JwtEncoder jwtEncoder,
+            ScsProperties properties,
+            SysUserRepository userRepository,
+            UserConverter userConverter) {
+        this.authenticationManager = authenticationManager;
+        this.jwtEncoder = jwtEncoder;
+        this.properties = properties;
+        this.userRepository = userRepository;
+        this.userConverter = userConverter;
+    }
+
+    public LoginVO login(LoginRequest request) {
+        try {
+            authenticationManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(request.username(), request.password()));
+        } catch (Exception ex) {
+            throw new BizException(CommonResultCode.UNAUTHORIZED, "用户名或密码错误");
+        }
+
+        SysUser user = userRepository.findByUsername(request.username())
+                .filter(SysUser::getEnabled)
+                .orElseThrow(() -> new BizException(CommonResultCode.UNAUTHORIZED, "用户不存在或已停用"));
+
+        ScsProperties.Jwt jwtProps = properties.security().jwt();
+        String accessToken = encodeToken(user, jwtProps);
+        return new LoginVO(accessToken, jwtProps.accessTokenTtl().toSeconds(), userConverter.toVo(user));
+    }
+
+    public UserVO me() {
+        return userConverter.toVo(requireCurrentUser());
+    }
+
+    /**
+     * 从 SecurityContext 解析当前登录用户；未认证或用户已停用时统一抛出 401。
+     *
+     * @return 当前登录的 {@link SysUser}
+     */
+    public SysUser requireCurrentUser() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication == null || !authentication.isAuthenticated()) {
+            throw new BizException(CommonResultCode.UNAUTHORIZED);
+        }
+
+        if (authentication instanceof JwtAuthenticationToken jwtAuth) {
+            Jwt jwt = jwtAuth.getToken();
+            Object uid = jwt.getClaim("uid");
+            if (uid instanceof Number number) {
+                return userRepository.findById(number.longValue())
+                        .filter(SysUser::getEnabled)
+                        .orElseThrow(() -> new BizException(CommonResultCode.UNAUTHORIZED));
+            }
+        }
+
+        return userRepository.findByUsername(authentication.getName())
+                .filter(SysUser::getEnabled)
+                .orElseThrow(() -> new BizException(CommonResultCode.UNAUTHORIZED));
+    }
+
+    private String encodeToken(SysUser user, ScsProperties.Jwt jwtProps) {
+        Instant now = Instant.now();
+        Instant expiresAt = now.plus(jwtProps.accessTokenTtl());
+
+        JwtClaimsSet claims = JwtClaimsSet.builder()
+                .issuer(jwtProps.issuer())
+                .subject(user.getUsername())
+                .claim("uid", user.getId())
+                .claim("role", user.getRole().name())
+                .issuedAt(now)
+                .expiresAt(expiresAt)
+                .build();
+
+        return jwtEncoder.encode(JwtEncoderParameters.from(claims)).getTokenValue();
+    }
+}
