@@ -11,7 +11,7 @@ import com.flywhl.saa.smartcs.service.TicketService;
 /**
  * 人工接管 Tool：由 {@code human-escalation-agent} 挂载，触发前经
  * {@code HumanInTheLoopHook.approvalOn("requestHumanHandoff", ...)} 拦截，需坐席审批后
- * 才会真正执行（禁止 {@code interruptBefore} 教程伪 API）。执行时委托
+ * 才会真正执行（禁止使用模型执行前中断钩子等教程伪 API）。执行时委托
  * {@link TicketService#createOrEscalate} 将工单流转为 {@code PENDING_HUMAN}。
  *
  * @author flywhl
