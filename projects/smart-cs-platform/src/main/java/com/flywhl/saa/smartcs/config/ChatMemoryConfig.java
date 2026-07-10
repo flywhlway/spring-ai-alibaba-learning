@@ -8,7 +8,7 @@ import org.springframework.context.annotation.Configuration;
 
 /**
  * 会话记忆装配：{@link MessageWindowChatMemory} + {@link MessageChatMemoryAdvisor}
- * （禁用 API：不得使用已废弃的 {@code PromptChatMemoryAdvisor}）。
+ * （仓库禁用旧版 Prompt 前缀记忆 Advisor，一律使用消息级记忆 Advisor 新写法）。
  *
  * @author flywhl
  * @since 1.0.0
