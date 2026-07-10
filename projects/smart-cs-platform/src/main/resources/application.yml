@@ -1,0 +1,165 @@
+# =====================================================================
+# 项目三 · 智能客服 Agent 平台（smart-cs-platform，端口 19300）
+#
+# 中间件依赖（统一由 docker/docker-compose.yml + 本项目 override 提供）：
+#   docker compose -f docker/docker-compose.yml \
+#                  -f projects/smart-cs-platform/docker-compose.override.yml \
+#                  --profile core --profile vector --profile search --profile cloud --profile smartcs up -d
+#
+# 密钥一律环境变量注入（scripts/setup-env.sh），严禁硬编码。
+# =====================================================================
+server:
+  port: 19300
+
+spring:
+  application:
+    name: smart-cs-platform
+
+  # ----------------- 业务库：PostgreSQL（schema 由 db/schema.sql 管理，JPA 只校验不建表） -----------------
+  # 凭据策略：以下所有口令均支持环境变量覆盖；冒号后的默认值仅对齐 docker/docker-compose.yml
+  # 的本机开发中间件（dev-only），生产部署必须注入环境变量且更换默认口令。
+  datasource:
+    url: jdbc:postgresql://localhost:5432/scs_platform
+    username: ${SCS_DB_USERNAME:saa}
+    password: ${SCS_DB_PASSWORD:saa123456}
+    driver-class-name: org.postgresql.Driver
+    hikari:
+      maximum-pool-size: 10
+      pool-name: scs-hikari
+  jpa:
+    hibernate:
+      ddl-auto: none        # DDL 唯一真源 = db/schema.sql，禁止 Hibernate 自动建表
+    open-in-view: false
+    properties:
+      hibernate:
+        default_schema: public
+
+  # ----------------- Redis：会话记忆（6379，与语义缓存 Redis Stack 6380 物理隔离） -----------------
+  data:
+    redis:
+      host: localhost
+      port: 6379
+      timeout: 3s
+
+  elasticsearch:
+    uris: ${SCS_ES_URIS:http://localhost:9200}
+
+  # ----------------- AI：多模型（DashScope 主 / DeepSeek 备）+ Milvus + ES + Redis Stack + Nacos Prompt -----------------
+  ai:
+    dashscope:
+      api-key: ${AI_DASHSCOPE_API_KEY}
+      chat:
+        options:
+          model: qwen-plus
+          temperature: 0.7
+      embedding:
+        options:
+          model: text-embedding-v3    # 1024 维，与 Milvus / ES embedding-dimension 对齐
+    deepseek:
+      api-key: ${DEEPSEEK_API_KEY}
+      chat:
+        options:
+          model: deepseek-chat
+          temperature: 0.7
+    vectorstore:
+      # FAQ 主向量库：Milvus
+      milvus:
+        client:
+          host: localhost
+          port: 19530
+        database-name: default
+        collection-name: scs_faq
+        embedding-dimension: 1024
+        index-type: IVF_FLAT
+        metric-type: COSINE
+        initialize-schema: true
+      # FAQ 全文/混合检索通道：Elasticsearch（应用层 RRF）
+      elasticsearch:
+        initialize-schema: true
+        index-name: scs-faq
+        dimensions: 1024
+        similarity: cosine
+      # 语义缓存：Redis Stack（6380，独立于 spring.data.redis 6379 会话记忆）
+      redis:
+        uri: redis://localhost:6380
+        index-name: scs-semantic-cache
+        prefix: "scs-cache:"
+        initialize-schema: true
+    # Nacos Prompt 模板热更新（Data ID: spring.ai.alibaba.configurable.prompt）
+    nacos:
+      prompt:
+        template:
+          enabled: true
+
+  cloud:
+    nacos:
+      server-addr: ${NACOS_SERVER_ADDR:127.0.0.1:8848}
+      username: ${NACOS_USERNAME:nacos}
+      password: ${NACOS_PASSWORD:nacos}
+
+# ----------------- 统一 AI Starter（审计 Advisor / 模型路由降级 / 成本采集） -----------------
+saa:
+  learning:
+    primary-model: dashScopeChatModel
+    fallback-model: deepSeekChatModel
+    audit-enabled: true
+    cost-tracking:
+      enabled: true
+      price-per-1k-input-tokens: 0.0008
+      price-per-1k-output-tokens: 0.002
+
+# ----------------- 项目自有配置（config/ScsProperties 绑定，前缀 scs） -----------------
+scs:
+  rag:
+    top-k: 5                       # 混合检索召回条数
+    similarity-threshold: 0.35     # 低于该分值的召回被丢弃
+    chunk-size: 512                # TokenTextSplitter 单块 token 数
+    chunk-overlap: 64
+  cache:
+    similarity-threshold: 0.95     # 语义缓存命中阈值（宁缺毋滥，避免答非所问）
+    ttl-seconds: 300
+    redis-uri: redis://localhost:6380
+  memory:
+    max-messages: 20               # 单会话保留的最近消息数（Redis 6379）
+    ttl: 7d
+  security:
+    jwt:
+      issuer: smart-cs-platform
+      access-token-ttl: 2h
+      secret: ${SCS_JWT_SECRET:dev-only-scs-jwt-secret-key-32bytes!!}
+  ticket:
+    auto-escalate-after-failures: 3   # AI 连续失败 N 次自动升级 PENDING_HUMAN
+    default-priority: NORMAL
+
+# ----------------- API 文档（统一 /doc.html，见架构文档 §5.2） -----------------
+springdoc:
+  api-docs:
+    enabled: true
+  swagger-ui:
+    enabled: true
+knife4j:
+  enable: true
+  setting:
+    language: zh_cn
+
+# ----------------- 可观测：Prometheus 指标 + 健康检查 -----------------
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,prometheus,metrics
+  endpoint:
+    health:
+      show-details: when-authorized
+  metrics:
+    tags:
+      application: ${spring.application.name}
+    export:
+      prometheus:
+        enabled: true
+
+logging:
+  level:
+    com.flywhl.saa: INFO
+    org.springframework.ai: INFO
+    com.alibaba.cloud.ai: INFO
