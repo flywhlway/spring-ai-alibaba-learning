@@ -157,3 +157,10 @@ None - 无需外部服务人工配置。Wave 0 仅产出可编译的骨架与配
 ---
 *Phase: 06-smart-cs-platform*
 *Completed: 2026-07-10*
+
+## Self-Check: PASSED
+
+All 10 created files verified present on disk (pom.xml / README.md / application.yml /
+SmartCsApplication.java / db/schema.sql / db/data.sql / docker-compose.override.yml /
+http/api.http / ScsProperties.java / 06-01-SUMMARY.md). All 4 commit hashes
+(`01fd98b`, `f034a69`, `b5a764b`, `c07aaaa`) verified present in `git log --oneline --all`.
