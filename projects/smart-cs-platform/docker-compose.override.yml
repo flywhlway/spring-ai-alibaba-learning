@@ -1,0 +1,84 @@
+# =====================================================================
+# 项目三 · smart-cs-platform —— 项目专属服务（叠加 docker/docker-compose.yml）
+#
+# 用法（在仓库根目录执行）：
+#   docker compose -f docker/docker-compose.yml \
+#                  -f projects/smart-cs-platform/docker-compose.override.yml \
+#                  --profile core --profile vector --profile search --profile cloud --profile smartcs up -d
+#
+# 说明：
+#   - core    → Redis:6379 / PostgreSQL（业务库 + 会话记忆）
+#   - vector  → Milvus + etcd（FAQ 主向量库，冷启动 30~60s）
+#   - search  → Elasticsearch（FAQ 全文/混合检索通道）
+#   - cloud   → Nacos（Prompt / model_profile 热更新）
+#   - smartcs → 本文件新增的初始化任务（建库 + 执行 db/schema.sql + db/data.sql）
+#               与语义缓存专用 Redis Stack（6380，独立于 core 的 6379）
+#
+# 初始化任务均幂等，可重复执行。
+# =====================================================================
+services:
+  # 业务库初始化：创建 scs_platform 库并导入 DDL 与演示数据
+  scs-db-init:
+    image: pgvector/pgvector:pg16
+    container_name: saa-scs-db-init
+    profiles: [ "smartcs" ]
+    environment:
+      PGHOST: postgres
+      PGUSER: saa
+      PGPASSWORD: saa123456
+    volumes:
+      - ./db:/scs-db:ro
+    entrypoint:
+      - bash
+      - -ceu
+      - |
+        until pg_isready -h postgres -U saa -d saa_learning; do sleep 2; done
+        psql -d saa_learning -tAc "SELECT 1 FROM pg_database WHERE datname='scs_platform'" | grep -q 1 \
+          || createdb scs_platform
+        psql -d scs_platform -v ON_ERROR_STOP=1 -f /scs-db/schema.sql
+        psql -d scs_platform -v ON_ERROR_STOP=1 -f /scs-db/data.sql
+        echo "[scs-db-init] scs_platform 初始化完成"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks: [ saa-net ]
+    restart: "no"
+
+  # 语义缓存专用 Redis Stack（RediSearch + RedisJSON）：6380，避免与 core profile 的
+  # 普通 redis:7.4-alpine（6379，用于会话记忆）冲突。普通 Redis 缺 RediSearch/RedisJSON，
+  # 无法承载 FAQ 语义缓存的向量索引。
+  scs-redis-stack:
+    image: redis/redis-stack-server:latest
+    container_name: saa-scs-redis-stack
+    profiles: [ "smartcs" ]
+    ports:
+      - "6380:6379"
+    healthcheck:
+      test: [ "CMD", "redis-cli", "ping" ]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+    networks: [ saa-net ]
+
+  # ------------------------------------------------------------------
+  # 可选 monitor profile（Prometheus + Grafana）：基座 docker/docker-compose.yml
+  # 无此服务，运营看板波次（Wave 5）如需可视化面板可在此补充，最低验收标准是
+  # /actuator/prometheus 端点可被抓取。示例（默认不启用，需要时取消注释并加入
+  # `profiles: [ "monitor" ]`）：
+  #
+  # scs-prometheus:
+  #   image: prom/prometheus:v2.55.1
+  #   profiles: [ "monitor" ]
+  #   ports:
+  #     - "9090:9090"
+  #   volumes:
+  #     - ./monitor/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+  #   networks: [ saa-net ]
+  #
+  # scs-grafana:
+  #   image: grafana/grafana:11.2.0
+  #   profiles: [ "monitor" ]
+  #   ports:
+  #     - "3300:3000"
+  #   networks: [ saa-net ]
+  # ------------------------------------------------------------------

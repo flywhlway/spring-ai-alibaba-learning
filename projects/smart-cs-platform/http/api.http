@@ -1,0 +1,194 @@
+### =====================================================================
+### 项目三 · 智能客服 Agent 平台 —— 全接口验证（端口 19300）
+### 使用：IDEA/VS Code REST Client。先执行「登录」拿 token，再调其余接口。
+### 演示账号：admin/admin123（管理员）、agent1/agent123（坐席）、
+###           customer1/customer123、customer2/customer123（客户）
+### =====================================================================
+
+@host = http://localhost:19300
+@adminToken = {{login_admin.response.body.data.accessToken}}
+@agentToken = {{login_agent.response.body.data.accessToken}}
+@customerToken = {{login_customer.response.body.data.accessToken}}
+
+### ---------------------------------------------------------------
+### 0. 健康检查（无需鉴权）
+### ---------------------------------------------------------------
+GET {{host}}/actuator/health
+
+### ---------------------------------------------------------------
+### 1. 认证域
+### ---------------------------------------------------------------
+
+### 1.1 管理员登录
+# @name login_admin
+POST {{host}}/api/auth/login
+Content-Type: application/json
+
+{ "username": "admin", "password": "admin123" }
+
+### 1.2 坐席登录
+# @name login_agent
+POST {{host}}/api/auth/login
+Content-Type: application/json
+
+{ "username": "agent1", "password": "agent123" }
+
+### 1.3 客户登录
+# @name login_customer
+POST {{host}}/api/auth/login
+Content-Type: application/json
+
+{ "username": "customer1", "password": "customer123" }
+
+### 1.4 当前用户信息
+GET {{host}}/api/auth/me
+Authorization: Bearer {{customerToken}}
+
+### ---------------------------------------------------------------
+### 2. 会话域（客户/坐席/管理员）
+### ---------------------------------------------------------------
+
+### 2.1 同步问答（返回 Result<ChatAnswerVO>，含 routeAgent / cacheHit）
+POST {{host}}/api/chat/ask
+Authorization: Bearer {{customerToken}}
+Content-Type: application/json
+
+{
+  "conversationId": "demo-conv-001",
+  "question": "收到商品后多久可以申请退货？"
+}
+
+### 2.2 SSE 流式对话（事件：message 增量 / meta 路由与 usage / error / done）
+GET {{host}}/api/chat/stream?conversationId=demo-conv-001&question=订单支付成功但库存系统未同步怎么办
+Authorization: Bearer {{customerToken}}
+Accept: text/event-stream
+
+### ---------------------------------------------------------------
+### 3. 工单域
+### ---------------------------------------------------------------
+
+### 3.1 创建工单（客户主动建单）
+POST {{host}}/api/tickets
+Authorization: Bearer {{customerToken}}
+Content-Type: application/json
+
+{
+  "conversationId": "demo-conv-001",
+  "summary": "支付成功但订单状态一直显示待支付，请核实",
+  "priority": "HIGH"
+}
+
+### 3.2 工单详情
+GET {{host}}/api/tickets/TKT-20260702-0002
+Authorization: Bearer {{customerToken}}
+
+### 3.3 工单分页（坐席/管理员，状态过滤）
+GET {{host}}/api/tickets?status=PENDING_HUMAN&page=1&size=10
+Authorization: Bearer {{agentToken}}
+
+### ---------------------------------------------------------------
+### 4. 人工接管（Handoffs / HITL）
+### ---------------------------------------------------------------
+
+### 4.1 触发人工升级（客户/Agent 工具调用 requestHumanHandoff 后进入 PENDING_HUMAN）
+# @name handoff_start
+POST {{host}}/api/handoff/start
+Authorization: Bearer {{customerToken}}
+Content-Type: application/json
+
+{ "conversationId": "demo-conv-001", "query": "我要投诉，请转人工处理" }
+
+### 4.2 坐席审批恢复（HITL resume，threadId 与 conversationId 一致）
+POST {{host}}/api/handoff/approve
+Authorization: Bearer {{agentToken}}
+Content-Type: application/json
+
+{ "threadId": "demo-conv-001" }
+
+### ---------------------------------------------------------------
+### 5. 后台-模型配置（ADMIN）
+### ---------------------------------------------------------------
+
+### 5.1 模型配置列表（按场景过滤）
+GET {{host}}/api/admin/model-profiles?scene=FAQ
+Authorization: Bearer {{adminToken}}
+
+### 5.2 新建模型配置
+POST {{host}}/api/admin/model-profiles
+Authorization: Bearer {{adminToken}}
+Content-Type: application/json
+
+{
+  "profileKey": "dashscope-qwen-max-business",
+  "provider": "DASHSCOPE",
+  "modelName": "qwen-max",
+  "scene": "BUSINESS",
+  "priority": 20,
+  "enabled": true,
+  "optionsJson": { "temperature": 0.5 }
+}
+
+### 5.3 发布模型配置（推送 Nacos scs.model.profiles）
+POST {{host}}/api/admin/model-profiles/1/publish
+Authorization: Bearer {{adminToken}}
+
+### ---------------------------------------------------------------
+### 6. 后台-Prompt 管理（ADMIN）
+### ---------------------------------------------------------------
+
+### 6.1 模板列表
+GET {{host}}/api/admin/prompts?templateKey=cs-router-system
+Authorization: Bearer {{adminToken}}
+
+### 6.2 新建草稿版本
+POST {{host}}/api/admin/prompts
+Authorization: Bearer {{adminToken}}
+Content-Type: application/json
+
+{
+  "templateKey": "faq-answer-system",
+  "content": "你是智能客服 FAQ 助手（V2 草稿）……\n\n知识片段：\n{context}",
+  "description": "FAQ 问答系统提示词 V2"
+}
+
+### 6.3 发布版本（DRAFT→PUBLISHED 并推送 Nacos 热更新）
+POST {{host}}/api/admin/prompts/4/publish
+Authorization: Bearer {{adminToken}}
+
+### ---------------------------------------------------------------
+### 7. 后台-FAQ 管理（ADMIN）
+### ---------------------------------------------------------------
+
+### 7.1 FAQ 列表（按分类/状态过滤）
+GET {{host}}/api/admin/faq?category=售后&status=INDEXED&page=1&size=10
+Authorization: Bearer {{adminToken}}
+
+### 7.2 新建 FAQ（触发 ETL：Embedding → 双写 Milvus + ES）
+POST {{host}}/api/admin/faq
+Authorization: Bearer {{adminToken}}
+Content-Type: application/json
+
+{
+  "title": "会员积分兑换规则",
+  "category": "售前",
+  "question": "会员积分如何兑换优惠券？",
+  "answer": "在「我的-积分商城」中选择对应优惠券，消耗相应积分即可兑换，兑换后 24 小时内到账。"
+}
+
+### ---------------------------------------------------------------
+### 8. 后台-看板（ADMIN）
+### ---------------------------------------------------------------
+
+### 8.1 运营看板统计（会话量/成本/缓存命中率/工单分布）
+GET {{host}}/api/admin/dashboard/stats?days=7
+Authorization: Bearer {{adminToken}}
+
+### ---------------------------------------------------------------
+### 9. 可观测
+### ---------------------------------------------------------------
+
+### 9.1 Prometheus 指标（含 gen_ai.* 成本指标）
+GET {{host}}/actuator/prometheus
+
+### 9.2 Knife4j 文档（浏览器打开）
+GET {{host}}/doc.html
