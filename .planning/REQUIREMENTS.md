@@ -29,7 +29,7 @@ Brownfield registration: Phase 1–2 VALIDATED（已交付）。Active 工作从
 
 ### Phase 6 — 智能客服（Active）
 
-- [ ] **REQ-phase-6-smart-cs**: smart-cs-platform（端口 19300）——FAQ 秒答、多智能体协作、工单、人工接管、运营看板；RoutingAgent+Supervisor+Handoffs、Milvus+Redis 语义缓存+ES、HITL、Micrometer/Prometheus/Grafana、Nacos；DB：PostgreSQL + Milvus + Redis + ES
+- [x] **REQ-phase-6-smart-cs**: smart-cs-platform（端口 19300）——FAQ 秒答、多智能体协作、工单、人工接管、运营看板；RoutingAgent+Supervisor+Handoffs、Milvus+Redis 语义缓存+ES、HITL、Micrometer/Prometheus/Grafana、Nacos；DB：PostgreSQL + Milvus + Redis + ES
 
 ### Phase 7 — 生产化（Active）
 
@@ -58,7 +58,7 @@ Deferred. None registered at ingest.
 | REQ-phase-3-demos | Phase 3 | Complete |
 | REQ-phase-4-knowledge-qa | Phase 4 | Complete |
 | REQ-phase-5-office-agent | Phase 5 | Pending |
-| REQ-phase-6-smart-cs | Phase 6 | Pending |
+| REQ-phase-6-smart-cs | Phase 6 | Complete |
 | REQ-phase-7-production | Phase 7 | Pending |
 
 **Coverage:**

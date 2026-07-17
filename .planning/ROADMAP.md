@@ -184,7 +184,7 @@ Plans:
 - [x] 06-02-PLAN.md — Wave 1 config（Security、Milvus/ES/双 Redis、Nacos、AiClient）
 - [x] 06-03-PLAN.md — Wave 2 FAQ/RAG（ETL、HybridSearch、SemanticCache、FaqAnswerService）
 - [x] 06-04-PLAN.md — Wave 3 Agent（LlmRoutingAgent、Supervisor、子 Agent、HITL hooks）
-- [ ] 06-05-PLAN.md — Wave 4 会话/工单（SSE Chat、TicketService、HumanHandoffController）
+- [x] 06-05-PLAN.md — Wave 4 会话/工单（SSE Chat、TicketService、HumanHandoffController）
 - [ ] 06-06-PLAN.md — Wave 5 admin/ops（model_profile、Prompt、Dashboard、Prometheus 文档）
 - [ ] 06-07-PLAN.md — Wave 6 测试/UAT（单测、Testcontainers IT、uat-smart-cs.sh、06-UAT.md）
 
@@ -213,5 +213,5 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 → 7
 | 3. 48 个独立 Demo | 14/14 | Verified | 2026-07-05 |
 | 4. 知识库问答平台 | 6/6 | Complete | 2026-07-05 |
 | 5. 办公 Agent 助手 | delivered | Complete | 2026-07-05 |
-| 6. 智能客服平台 | 4/7 | In Progress|  |
+| 6. 智能客服平台 | 5/7 | In Progress|  |
 | 7. 生产化 | 0/TBD | Not started | - |
