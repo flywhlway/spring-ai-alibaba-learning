@@ -21,4 +21,6 @@ public interface CsConversationRepository extends JpaRepository<CsConversation, 
     Page<CsConversation> findByCustomerId(Long customerId, Pageable pageable);
 
     Page<CsConversation> findByAssignedAgentId(Long agentId, Pageable pageable);
+
+    long countByCreatedAtAfter(java.time.OffsetDateTime after);
 }

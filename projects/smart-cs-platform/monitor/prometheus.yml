@@ -1,0 +1,13 @@
+# Prometheus scrape config for smart-cs-platform (host app on :19300)
+global:
+  scrape_interval: 15s
+  evaluation_interval: 15s
+
+scrape_configs:
+  - job_name: smart-cs-platform
+    metrics_path: /actuator/prometheus
+    static_configs:
+      # 应用跑在宿主机时，Docker Desktop / OrbStack 用 host.docker.internal
+      - targets: [ "host.docker.internal:19300" ]
+        labels:
+          app: smart-cs-platform

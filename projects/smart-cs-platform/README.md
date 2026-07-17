@@ -110,6 +110,14 @@ docker compose -f docker/docker-compose.yml \
 
 拉起：Redis(6379) / PostgreSQL / Milvus(+etcd) / Elasticsearch / Nacos，并叠加本项目 `scs-db-init`（建库 `scs_platform` + 导入 DDL/演示数据）与 `scs-redis-stack`（6380，语义缓存专用）。**Milvus 冷启动约 30~60s**，等 `docker compose ps` 全部 healthy 再启动应用。
 
+可选监控栈（Prometheus + Grafana）：
+
+```bash
+docker compose -f docker/docker-compose.yml \
+               -f projects/smart-cs-platform/docker-compose.override.yml \
+               --profile monitor up -d
+```
+
 ### 4.3 编译与运行
 
 ```bash
@@ -160,7 +168,43 @@ curl -X POST http://localhost:19300/api/auth/login \
 | 后台-看板 | GET | `/api/admin/dashboard/stats` | ADMIN | 会话量/成本/缓存命中率/工单分布 |
 | 运维 | GET | `/actuator/health` `/actuator/prometheus` | 匿名/内网 | 健康与指标 |
 
-## 7. 数据与存储
+## 7. 监控（Prometheus / Grafana）
+
+应用已暴露 Micrometer Prometheus 端点：`http://localhost:19300/actuator/prometheus`（Security 匿名放行）。
+
+### 7.1 启动 monitor profile
+
+```bash
+docker compose -f docker/docker-compose.yml \
+               -f projects/smart-cs-platform/docker-compose.override.yml \
+               --profile monitor up -d
+```
+
+| 服务 | 镜像（pin LTS） | 端口 | 说明 |
+|---|---|---|---|
+| `scs-prometheus` | `prom/prometheus:v2.55.1` | 9090 | scrape `host.docker.internal:19300/actuator/prometheus` |
+| `scs-grafana` | `grafana/grafana:11.2.0` | 3000 | 默认账号 `admin` / `admin` |
+
+配置文件：`projects/smart-cs-platform/monitor/prometheus.yml`。
+
+### 7.2 Grafana 添加 Prometheus 数据源
+
+1. 打开 http://localhost:3000 ，登录后进入 **Connections → Data sources → Add data source → Prometheus**
+2. **Prometheus server URL** 填：`http://scs-prometheus:9090`（同一 Docker 网络内服务名）
+3. Save & test 应显示绿色成功
+
+### 7.3 示例面板指标名
+
+| 面板意图 | PromQL / 指标名 |
+|---|---|
+| Token 用量（成本相关） | `gen_ai_client_token_usage_total`（对应代码 `gen_ai.client.token.usage`） |
+| JVM 内存 | `jvm_memory_used_bytes` |
+| HTTP 请求耗时 | `http_server_requests_seconds_count` |
+| 进程 CPU | `process_cpu_usage` |
+
+运营看板聚合 API（ADMIN）：`GET /api/admin/dashboard/stats?days=7` 返回会话数、消息数、工单按状态分布、FAQ 缓存命中率、`route_agent` 分布与 token 成本（优先 Micrometer，DB 回退）。
+
+## 8. 数据与存储
 
 | 存储 | 用途 | 初始化 |
 |---|---|---|
@@ -171,12 +215,12 @@ curl -X POST http://localhost:19300/api/auth/login \
 | Redis `6379` | 会话记忆（滚动窗口 + TTL 7d） | 无需初始化 |
 | Nacos | Prompt 热更新 + `model_profile` 配置推送 | 后台发布接口自动推送 |
 
-## 8. 测试与部署
+## 9. 测试与部署
 
 - **单元测试**：JUnit 5 + AssertJ；**集成测试**：PostgreSQL/Redis/ES 走 Testcontainers，真实模型用例以 `AI_DASHSCOPE_API_KEY` 环境变量门控，无 Key 环境 `mvn clean install` 保持全绿。
 - **部署**：`mvn clean package` 产出 `target/smart-cs-platform.jar`；生产以 `java -jar` + 上述 compose 编排（替换演示口令、Nacos 鉴权与 JWT Secret）。
 
-## 9. 迭代任务清单（Wave 0 骨架 → Wave 1~6 实现）
+## 10. 迭代任务清单（Wave 0 骨架 → Wave 1~6 实现）
 
 1. Wave 1 `config/*`：Security（JWT）/ Milvus / ES / Redis 记忆 / Redis Stack 语义缓存 / Nacos / `AiClientConfig`；
 2. Wave 2 `rag/*` + `service/SemanticCacheService`：FAQ ETL、混合检索、RAG 生成、语义缓存读写；

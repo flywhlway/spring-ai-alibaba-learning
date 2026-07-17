@@ -6,6 +6,9 @@
 #                  -f projects/smart-cs-platform/docker-compose.override.yml \
 #                  --profile core --profile vector --profile search --profile cloud --profile smartcs up -d
 #
+# 可选监控：
+#   ... --profile monitor up -d
+#
 # 说明：
 #   - core    → Redis:6379 / PostgreSQL（业务库 + 会话记忆）
 #   - vector  → Milvus + etcd（FAQ 主向量库，冷启动 30~60s）
@@ -13,6 +16,7 @@
 #   - cloud   → Nacos（Prompt / model_profile 热更新）
 #   - smartcs → 本文件新增的初始化任务（建库 + 执行 db/schema.sql + db/data.sql）
 #               与语义缓存专用 Redis Stack（6380，独立于 core 的 6379）
+#   - monitor → Prometheus（抓取 :19300/actuator/prometheus）+ Grafana（:3000）
 #
 # 初始化任务均幂等，可重复执行。
 # =====================================================================
@@ -61,24 +65,36 @@ services:
     networks: [ saa-net ]
 
   # ------------------------------------------------------------------
-  # 可选 monitor profile（Prometheus + Grafana）：基座 docker/docker-compose.yml
-  # 无此服务，运营看板波次（Wave 5）如需可视化面板可在此补充，最低验收标准是
-  # /actuator/prometheus 端点可被抓取。示例（默认不启用，需要时取消注释并加入
-  # `profiles: [ "monitor" ]`）：
-  #
-  # scs-prometheus:
-  #   image: prom/prometheus:v2.55.1
-  #   profiles: [ "monitor" ]
-  #   ports:
-  #     - "9090:9090"
-  #   volumes:
-  #     - ./monitor/prometheus.yml:/etc/prometheus/prometheus.yml:ro
-  #   networks: [ saa-net ]
-  #
-  # scs-grafana:
-  #   image: grafana/grafana:11.2.0
-  #   profiles: [ "monitor" ]
-  #   ports:
-  #     - "3300:3000"
-  #   networks: [ saa-net ]
+  # 可选 monitor profile：Prometheus + Grafana（pin LTS tag，威胁 T-06-SC）
   # ------------------------------------------------------------------
+  scs-prometheus:
+    image: prom/prometheus:v2.55.1
+    container_name: saa-scs-prometheus
+    profiles: [ "monitor" ]
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./monitor/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+    command:
+      - "--config.file=/etc/prometheus/prometheus.yml"
+      - "--storage.tsdb.path=/prometheus"
+      - "--web.enable-lifecycle"
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    networks: [ saa-net ]
+    restart: unless-stopped
+
+  scs-grafana:
+    image: grafana/grafana:11.2.0
+    container_name: saa-scs-grafana
+    profiles: [ "monitor" ]
+    ports:
+      - "3000:3000"
+    environment:
+      GF_SECURITY_ADMIN_USER: admin
+      GF_SECURITY_ADMIN_PASSWORD: admin
+      GF_USERS_ALLOW_SIGN_UP: "false"
+    depends_on:
+      - scs-prometheus
+    networks: [ saa-net ]
+    restart: unless-stopped
