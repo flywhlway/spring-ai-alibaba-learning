@@ -13,6 +13,9 @@
 #   - kqa    → 本文件新增的初始化任务（建库 + 执行 db/schema.sql + db/data.sql + 建 MinIO bucket）
 #
 # 初始化任务均幂等，可重复执行。
+#
+# 注意：多文件 compose 时，本文件内相对路径相对**首个** compose 文件所在目录
+# docker/ 解析（不是本 override 目录）。因此 db 须写 ../projects/...，勿改回 ./db。
 # =====================================================================
 services:
   # 业务库初始化：创建 kqa_platform 库并导入 DDL 与演示数据
@@ -25,7 +28,7 @@ services:
       PGUSER: saa
       PGPASSWORD: saa123456
     volumes:
-      - ./db:/kqa-db:ro
+      - ../projects/knowledge-qa-platform/db:/kqa-db:ro
     entrypoint:
       - bash
       - -ceu

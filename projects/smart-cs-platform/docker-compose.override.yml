@@ -19,6 +19,9 @@
 #   - monitor → Prometheus（抓取 :19300/actuator/prometheus）+ Grafana（:3000）
 #
 # 初始化任务均幂等，可重复执行。
+#
+# 注意：多文件 compose 时，本文件内相对路径相对**首个** compose 文件所在目录
+# docker/ 解析（不是本 override 目录）。因此 db/monitor 须写 ../projects/...，勿改回 ./db。
 # =====================================================================
 services:
   # 业务库初始化：创建 scs_platform 库并导入 DDL 与演示数据
@@ -31,7 +34,7 @@ services:
       PGUSER: saa
       PGPASSWORD: saa123456
     volumes:
-      - ./db:/scs-db:ro
+      - ../projects/smart-cs-platform/db:/scs-db:ro
     entrypoint:
       - bash
       - -ceu

@@ -11,6 +11,9 @@
 #   - office → 本文件新增的初始化任务（MySQL 建库导数 + pgvector 建库启用扩展）
 #
 # 初始化任务幂等：演示数据仅在空库时导入。
+#
+# 注意：多文件 compose 时，本文件内相对路径相对**首个** compose 文件所在目录
+# docker/ 解析（不是本 override 目录）。因此 db 须写 ../projects/...，勿改回 ./db。
 # =====================================================================
 services:
   # 业务库初始化：创建 office_agent 库、授权 saa、导入 DDL；演示数据仅首次导入
@@ -21,7 +24,7 @@ services:
     environment:
       MYSQL_PWD: root123456
     volumes:
-      - ./db:/office-db:ro
+      - ../projects/office-agent-assistant/db:/office-db:ro
     entrypoint:
       - bash
       - -ceu
