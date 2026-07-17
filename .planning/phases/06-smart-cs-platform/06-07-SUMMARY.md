@@ -75,7 +75,7 @@ completed: 2026-07-17
 2. **Task 2: Integration Tests + API Key 门控** - `4f22bfb` (feat)
 3. **Task 3: HANDOFF §7 + uat-smart-cs.sh + 06-UAT.md** - `fac8934` (feat)
 
-**Plan metadata:** （docs commit 见下）
+**Plan metadata:** `51a21b9` (docs: complete plan)
 
 ## Files Created/Modified
 
