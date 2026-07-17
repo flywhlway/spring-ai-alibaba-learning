@@ -177,7 +177,7 @@ Plans:
   3. 运营可查看监控/统计/成本（Micrometer + Prometheus + Grafana + Token 成本）；模型/Prompt 后台 CRUD + Nacos 热更新
   4. 工程满足统一交付标准；端口 19300；栈为 PostgreSQL + Milvus + Redis + ES + Nacos
 
-**Plans**: 7 plans
+**Plans**: 9 plans（含 2 个 UAT gap closure）
 
 Plans:
 - [x] 06-01-PLAN.md — Wave 0 地基（pom、DDL、compose、Entity/Repository/DTO）
@@ -187,6 +187,8 @@ Plans:
 - [x] 06-05-PLAN.md — Wave 4 会话/工单（SSE Chat、TicketService、HumanHandoffController）
 - [x] 06-06-PLAN.md — Wave 5 admin/ops（model_profile、Prompt、Dashboard、Prometheus 文档）
 - [x] 06-07-PLAN.md — Wave 6 测试/UAT（单测、Testcontainers IT、uat-smart-cs.sh、06-UAT.md）
+- [ ] 06-08-PLAN.md — Gap：三处 override volume 相对 docker/ 路径 + prometheus
+- [ ] 06-09-PLAN.md — Gap：query-rewrite {target}+{query} + 幂等 UPDATE + 冷启动说明
 
 ### Phase 7: 生产化
 
