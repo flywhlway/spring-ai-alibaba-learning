@@ -438,27 +438,19 @@ FunctionCallback
 | A4 | Phase 5 无 `.planning/phases/05-*` 目录，UAT 索引以 `projects/office-agent-assistant/scripts/uat-office-agent.sh` + README 为准 | Open Questions | 索引可能漏链；需人工补链或标注缺失 |
 | A5 | 三项目无需本阶段新增 Dockerfile 即可满足 D-10（文档 + compose 足够）；Dockerfile 为可选 | Discretion | 若验收要求「镜像构建路径」，需补 1～3 个 Dockerfile |
 
-## Open Questions
+## Open Questions (RESOLVED)
 
 1. **spring-ai-2-readiness 失败阈值取多少？**
-   - What we know: 脚本只计数，无 exit 语义。[VERIFIED]
-   - What's unclear: 当前仓基线数字未在本 research 跑全量采样锁定。
-   - Recommendation: Wave 0 先跑一遍记录基线，写入 `quality-gate.sh` 常量；仅「超过基线」失败。
+   - RESOLVED (07-01): Wave 0 / Task 先跑基线，写入 `quality-gate.sh` 常量；仅「超过基线」失败（`--fail-above`）。
 
 2. **examples 矩阵：静态 48 项 vs 动态 ls？**
-   - What we know: 清单 SSOT 在 `examples/README.md`；目录 48 个已确认。[VERIFIED]
-   - What's unclear: 维护成本偏好。
-   - Recommendation: 动态 `ls examples/[0-9]*` 生成 matrix（少漂移）；或静态列表与 README 同步检查。
+   - RESOLVED (07-02): 动态发现 `examples/[0-9]*` 生成 matrix，`fail-fast: false` + `max-parallel` 4–8。
 
 3. **Phase 5 UAT 文档落点？**
-   - What we know: `.planning/phases/` 无 `05-*`；存在 `projects/office-agent-assistant/scripts/uat-office-agent.sh`。[VERIFIED]
-   - What's unclear: 是否有归档 HUMAN-UAT。
-   - Recommendation: UAT 索引表注明「Phase 5：脚本路径；planning UAT 文档缺失则链 README §测试」。
+   - RESOLVED (07-04): UAT 债务索引注明 Phase 5 planning 目录缺失，链到 `projects/office-agent-assistant/scripts/uat-office-agent.sh` 与 README §测试。
 
 4. **projects CI 是否依赖 Docker 必绿？**
-   - What we know: 有 Docker 则跑 Testcontainers。[VERIFIED: DockerAvailableCondition]
-   - What's unclear: 当前 IT 在干净 CI 是否 100% 绿（未在本 research 实跑）。
-   - Recommendation: 实现后第一波以 CI 实跑为准；红则修测试，不关 Docker。
+   - RESOLVED (07-02): CI runner 保留 Docker；Testcontainers 红则修 IT，不关 Docker；无 Key 路径仍须绿。
 
 ## Environment Availability
 
