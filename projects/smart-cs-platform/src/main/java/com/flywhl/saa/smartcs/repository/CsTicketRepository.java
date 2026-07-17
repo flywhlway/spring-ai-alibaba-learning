@@ -26,4 +26,6 @@ public interface CsTicketRepository extends JpaRepository<CsTicket, Long> {
     Page<CsTicket> findByCustomerId(Long customerId, Pageable pageable);
 
     long countByStatus(TicketStatus status);
+
+    long countByTicketNoStartingWith(String prefix);
 }

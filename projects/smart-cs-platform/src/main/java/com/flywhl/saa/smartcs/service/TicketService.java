@@ -66,6 +66,14 @@ public class TicketService {
     }
 
     /**
+     * 工单状态机转移（Wave 5 stub — RED 阶段占位，GREEN 实现 ALLOWED_TRANSITIONS）。
+     */
+    @Transactional
+    public CsTicket transition(Long ticketId, TicketStatus to, String actor, String reason) {
+        throw new UnsupportedOperationException("TicketService.transition not implemented");
+    }
+
+    /**
      * 创建或将会话已有工单流转为 {@link TicketStatus#PENDING_HUMAN}，供
      * {@code HandoffTools.requestHumanHandoff} 调用；HITL 坐席 approve 后的
      * {@code HUMAN_HANDLING}/{@code RESOLVED} 流转由 Wave 5 {@code HumanHandoffController} 实现。
