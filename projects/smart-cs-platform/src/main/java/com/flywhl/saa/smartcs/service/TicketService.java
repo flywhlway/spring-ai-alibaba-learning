@@ -77,6 +77,10 @@ public class TicketService {
         return ticketRepository.findById(ticketId);
     }
 
+    public Optional<CsTicket> findLatestByConversationId(String conversationId) {
+        return ticketRepository.findFirstByConversationIdOrderByCreatedAtDesc(conversationId);
+    }
+
     @Transactional
     public CsTicket urgeTicket(String ticketNo, String actor) {
         CsTicket ticket = ticketRepository.findByTicketNo(ticketNo)
