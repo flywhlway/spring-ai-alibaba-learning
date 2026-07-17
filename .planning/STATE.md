@@ -3,13 +3,13 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: Full Delivery
 status: executing
-last_updated: "2026-07-17T14:20:31.482Z"
-last_activity: 2026-07-17 -- Completed 06-05 会话/工单/HITL
+last_updated: "2026-07-17T14:28:11.349Z"
+last_activity: 2026-07-17 -- Completed 06-06 admin/ops
 progress:
   total_phases: 7
   completed_phases: 1
   total_plans: 28
-  completed_plans: 25
+  completed_plans: 26
   percent: 14
 ---
 
@@ -25,11 +25,11 @@ See: .planning/PROJECT.md (updated 2026-07-05)
 ## Current Position
 
 Phase: 06 (smart-cs-platform) — EXECUTING
-Plan: 6 of 7
+Plan: 7 of 7
 Status: Ready to execute
-Last activity: 2026-07-17 -- Completed 06-05 会话/工单/HITL
+Last activity: 2026-07-17 -- Completed 06-06 admin/ops
 
-Progress: [█████████░] 93%
+Progress: [██████████] 96%
 
 ## Performance Metrics
 
@@ -48,6 +48,7 @@ Progress: [█████████░] 93%
 | 4. 知识库问答 | 6/6 | ✅ Complete | 2026-07-05 |
 | 5. 办公 Agent | delivered | ✅ Complete | 2026-07-05 |
 | Phase 06 P05 | 5min | 3 tasks | 10 files |
+| Phase 06 P06 | 6min | 3 tasks | 29 files |
 
 ## Accumulated Context
 
@@ -64,6 +65,9 @@ Progress: [█████████░] 93%
 - [Phase 06]: createOrEscalate 经 OPEN→AI_PROCESSING→PENDING_HUMAN 合法路径 — ALLOWED_TRANSITIONS 不含 OPEN→PENDING_HUMAN 直边
 - [Phase 06]: HITL pending 演示用 ConcurrentHashMap，生产需 Redis/DB 持久化 — 与 37-demo 一致，类注释标明生产约束
 - [Phase 06]: approve 同时支持 query threadId 与 JSON body — 兼容计划契约与 api.http
+- [Phase 06]: ModelAdmin 双路径 /api/admin/models 与 /api/admin/model-profiles — 对齐计划与 Wave 0 api.http
+- [Phase 06]: AiClientConfig 默认 ChatClient.Builder 使用 FAQ scene 路由
+- [Phase 06]: monitor profile pin Prometheus v2.55.1 / Grafana 11.2.0（T-06-SC）
 
 ### Pending Todos
 
@@ -75,6 +79,6 @@ None.
 
 ## Session Continuity
 
-Stopped at: Completed 06-05-PLAN.md
-Next: Execute 06-06-PLAN.md (admin/ops)
+Stopped at: Completed 06-06-PLAN.md
+Next: Execute 06-07-PLAN.md (tests/UAT)
 Resume: None
