@@ -177,7 +177,7 @@ Plans:
   3. 运营可查看监控/统计/成本（Micrometer + Prometheus + Grafana + Token 成本）；模型/Prompt 后台 CRUD + Nacos 热更新
   4. 工程满足统一交付标准；端口 19300；栈为 PostgreSQL + Milvus + Redis + ES + Nacos
 
-**Plans**: 9 plans（含 2 个 UAT gap closure）
+**Plans**: 10 plans（含 3 个 UAT gap closure）
 
 Plans:
 - [x] 06-01-PLAN.md — Wave 0 地基（pom、DDL、compose、Entity/Repository/DTO）
