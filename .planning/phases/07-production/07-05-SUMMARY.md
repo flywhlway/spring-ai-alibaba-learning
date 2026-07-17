@@ -62,7 +62,7 @@ completed: 2026-07-17
 1. **Task 1: 本地全量门禁与产物清单核对** - `eda29a4` (docs)
 2. **Task 2: 人工确认生产化收口可读可跑** - `n/a`（checkpoint:human-verify，⚡ Auto-approved；无代码变更）
 
-**Plan metadata:** （见 final docs commit）
+**Plan metadata:** `fddb19a` (docs: complete plan)
 
 ## Files Created/Modified
 
