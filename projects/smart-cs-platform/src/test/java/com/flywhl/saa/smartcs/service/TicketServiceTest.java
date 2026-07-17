@@ -3,6 +3,7 @@ package com.flywhl.saa.smartcs.service;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -10,7 +11,9 @@ import static org.mockito.Mockito.when;
 import java.time.LocalDate;
 import java.time.OffsetDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Map;
 import java.util.Optional;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicLong;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -38,17 +41,23 @@ class TicketServiceTest {
     private final CsTicketEventRepository ticketEventRepository = mock(CsTicketEventRepository.class);
     private TicketService ticketService;
     private final AtomicLong idSeq = new AtomicLong(1);
+    private final Map<Long, CsTicket> store = new ConcurrentHashMap<>();
 
     @BeforeEach
     void setUp() {
+        store.clear();
+        idSeq.set(1);
         ticketService = new TicketService(ticketRepository, ticketEventRepository);
         when(ticketRepository.save(any(CsTicket.class))).thenAnswer(invocation -> {
             CsTicket t = invocation.getArgument(0);
             if (t.getId() == null) {
                 t.setId(idSeq.getAndIncrement());
             }
+            store.put(t.getId(), t);
             return t;
         });
+        when(ticketRepository.findById(anyLong())).thenAnswer(invocation ->
+                Optional.ofNullable(store.get(invocation.getArgument(0))));
         when(ticketEventRepository.save(any(CsTicketEvent.class))).thenAnswer(invocation -> invocation.getArgument(0));
         String todayPrefix = "SCS-" + LocalDate.now().format(DateTimeFormatter.BASIC_ISO_DATE) + "-";
         when(ticketRepository.countByTicketNoStartingWith(todayPrefix)).thenReturn(0L);
@@ -57,7 +66,7 @@ class TicketServiceTest {
     @Test
     void transition_allowsOpenToAiProcessing() {
         CsTicket ticket = existingTicket(1L, TicketStatus.OPEN);
-        when(ticketRepository.findById(1L)).thenReturn(Optional.of(ticket));
+        store.put(1L, ticket);
 
         CsTicket result = ticketService.transition(1L, TicketStatus.AI_PROCESSING, "AGENT", "开始 AI 处理");
 
@@ -68,7 +77,7 @@ class TicketServiceTest {
     @Test
     void transition_allowsAiProcessingToPendingHuman() {
         CsTicket ticket = existingTicket(2L, TicketStatus.AI_PROCESSING);
-        when(ticketRepository.findById(2L)).thenReturn(Optional.of(ticket));
+        store.put(2L, ticket);
 
         CsTicket result = ticketService.transition(2L, TicketStatus.PENDING_HUMAN, "SYSTEM", "升级人工");
 
@@ -79,7 +88,7 @@ class TicketServiceTest {
     @Test
     void transition_rejectsOpenToClosed() {
         CsTicket ticket = existingTicket(3L, TicketStatus.OPEN);
-        when(ticketRepository.findById(3L)).thenReturn(Optional.of(ticket));
+        store.put(3L, ticket);
 
         assertThatThrownBy(() -> ticketService.transition(3L, TicketStatus.CLOSED, "AGENT", "非法关闭"))
                 .isInstanceOf(BizException.class)
