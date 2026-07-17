@@ -35,7 +35,7 @@ patterns-established:
   - "Pattern: 复用 version-audit / readiness，仅硬化 exit 语义（D-08）"
   - "Pattern: §7 扫描 exclude setup-env.example.sh / target / .git / node_modules"
 
-requirements-completed: [REQ-phase-7-production]
+requirements-completed: []  # 阶段级 REQ-phase-7-production 待 07 全部 plans 完成后再勾选
 
 duration: 3min
 completed: 2026-07-17
@@ -67,7 +67,7 @@ Each task was committed atomically:
 2. **Task 2: 新建 quality-gate.sh 并锁定 readiness 基线** - `b699cca` (feat)
 3. **Task 3: 本地跑通 quality-gate 并修扫描误报** - _(无代码变更；`bash scripts/quality-gate.sh` exit 0，首次即绿)_
 
-**Plan metadata:** _(pending docs commit)_
+**Plan metadata:** `3b2aa64` (docs: complete plan); `c48b175` (docs: STATE/ROADMAP)
 
 ## Files Created/Modified
 
@@ -93,7 +93,19 @@ Each task was committed atomically:
 
 ## Deviations from Plan
 
-None - plan executed exactly as written.
+### Auto-fixed Issues
+
+**1. [Rule 2 - Missing Critical] 撤销阶段级需求过早勾选**
+- **Found during:** 状态收尾
+- **Issue:** `requirements.mark-complete REQ-phase-7-production` 会在仅完成 07-01 时把整阶段需求标 Complete
+- **Fix:** 将 REQUIREMENTS.md 中该条目改回 Pending；SUMMARY `requirements-completed` 置空
+- **Files modified:** `.planning/REQUIREMENTS.md`, `07-01-SUMMARY.md`
+- **Verification:** 勾选框为 `[ ]`，traceability 为 Pending
+
+---
+
+**Total deviations:** 1 auto-fixed (Rule 2)
+**Impact on plan:** 仅修正规划状态准确性，不影响门禁实现。
 
 Task 3 无需改扫描范围或 exclude：首次全绿，无误报。
 

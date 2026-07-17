@@ -33,7 +33,7 @@ Brownfield registration: Phase 1–2 VALIDATED（已交付）。Active 工作从
 
 ### Phase 7 — 生产化（Active）
 
-- [x] **REQ-phase-7-production**: 统一测试、CI/CD、部署、调优与排障；质量门禁可在每阶段收口执行（编译、curl、version-audit、spring-ai-2-readiness、无废弃 API/硬编码密钥/TODO）
+- [ ] **REQ-phase-7-production**: 统一测试、CI/CD、部署、调优与排障；质量门禁可在每阶段收口执行（编译、curl、version-audit、spring-ai-2-readiness、无废弃 API/硬编码密钥/TODO）
 
 ## v2 Requirements
 
@@ -59,7 +59,7 @@ Deferred. None registered at ingest.
 | REQ-phase-4-knowledge-qa | Phase 4 | Complete |
 | REQ-phase-5-office-agent | Phase 5 | Pending |
 | REQ-phase-6-smart-cs | Phase 6 | Complete |
-| REQ-phase-7-production | Phase 7 | Complete |
+| REQ-phase-7-production | Phase 7 | Pending |
 
 **Coverage:**
 - v1 requirements: 7 total
