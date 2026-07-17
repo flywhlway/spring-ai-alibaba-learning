@@ -3,13 +3,13 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: Full Delivery
 status: executing
-last_updated: "2026-07-17T15:04:25.209Z"
+last_updated: "2026-07-17T15:08:14.138Z"
 last_activity: 2026-07-17
 progress:
   total_phases: 7
   completed_phases: 2
   total_plans: 33
-  completed_plans: 29
+  completed_plans: 30
   percent: 29
 ---
 
@@ -25,11 +25,11 @@ See: .planning/PROJECT.md (updated 2026-07-17)
 ## Current Position
 
 Phase: 07 (production) — EXECUTING
-Plan: 3 of 5
+Plan: 4 of 5
 Status: Ready to execute
 Last activity: 2026-07-17
 
-Progress: [█████████░] 91%
+Progress: [█████████░] 94%
 
 ## Performance Metrics
 
@@ -52,6 +52,7 @@ Progress: [█████████░] 91%
 | Phase 06 P07 | 8min | 3 tasks | 17 files |
 | Phase 07 P01 | 3min | 3 tasks | 3 files |
 | Phase 07 P02 | 2min | 2 tasks | 2 files |
+| Phase 07 P03 | 2min | 2 tasks | 4 files |
 
 ## Accumulated Context
 
@@ -79,6 +80,9 @@ Progress: [█████████░] 91%
 - [Phase 07]: examples 编译矩阵用 list-examples job 动态 ls，避免 48 项静态漂移
 - [Phase 07]: model-it 独立 workflow + check-dashscope-secret outputs，禁止 job-level if: secrets.*
 - [Phase 07]: optional 模型 IT 仅跑 projects/smart-cs-platform test（step env 注入 Key）
+- [Phase 07]: 企业项目中间件经 docker compose + override，非仅 infra.sh（override 含建库/redis-stack）
+- [Phase 07]: 文档显式链到既有 ci.yml/model-it.yml，不复制 YAML
+- [Phase 07]: 无 K8s/Helm；Dockerfile 仅可选 spring-boot:build-image 说明（D-10/D-11）
 
 ### Pending Todos
 
@@ -90,7 +94,7 @@ None.
 
 ## Session Continuity
 
-Last session: 2026-07-17T15:04:25.204Z
-Stopped at: Completed 07-02-PLAN.md
+Last session: 2026-07-17T15:08:14.134Z
+Stopped at: Completed 07-03-PLAN.md
 Resume file: None
 Next: `/gsd-execute-phase 7`（继续 07-02）
