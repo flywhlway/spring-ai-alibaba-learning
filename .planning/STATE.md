@@ -83,14 +83,16 @@ Progress: [█████████░] 94%
 - [Phase 07]: 企业项目中间件经 docker compose + override，非仅 infra.sh（override 含建库/redis-stack）
 - [Phase 07]: 文档显式链到既有 ci.yml/model-it.yml，不复制 YAML
 - [Phase 07]: 无 K8s/Helm；Dockerfile 仅可选 spring-boot:build-image 说明（D-10/D-11）
+- [Phase 07]: UAT 债务索引 docs/00-overview/06-UAT债务索引.md（D-13）；06-REVIEW Critical 记 Pending 不修代码（D-14）
 
 ### Pending Todos
 
-- Phase 4/5/6 人工 UAT（需 infra + AI_DASHSCOPE_API_KEY；Phase 6 用 uat-smart-cs.sh）
+- Phase 4/5/6 人工 UAT（需 infra + AI_DASHSCOPE_API_KEY；Phase 6 用 uat-smart-cs.sh；入口见 `docs/00-overview/06-UAT债务索引.md`）
+- **[06-REVIEW Critical / D-14]** CR-01：Chat 触发 HITL 中断后未注册 pending、工单未升至 PENDING_HUMAN，坐席 approve 404；伴随会话→工单隔离缺口（WR-01 等）。处置：`/gsd-code-review 6 --fix` 或后续 hotfix。**不阻塞 Phase 7 生产化收口**（本阶段不改 `projects/smart-cs-platform` 业务代码）。
 
 ### Blockers/Concerns
 
-None.
+- None blocking Phase 7. Backlog only: 06-REVIEW Critical（会话→HITL/工单隔离）见 Pending Todos。
 
 ## Session Continuity
 
