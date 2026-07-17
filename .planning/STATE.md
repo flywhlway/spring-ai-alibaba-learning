@@ -18,7 +18,7 @@ stopped_at: Phase 06 complete (7/7) — ready to discuss Phase 7
 
 ## Project Reference
 
-See: .planning/PROJECT.md (updated 2026-07-05)
+See: .planning/PROJECT.md (updated 2026-07-17)
 
 **Core value:** 48 demos + 3 enterprise projects runnable via `mvn spring-boot:run`，通过 HANDOFF §7 质量门禁
 **Current focus:** Phase 7 — 生产化
@@ -30,7 +30,7 @@ Plan: Not started
 Status: Ready to plan
 Last activity: 2026-07-17
 
-Progress: [██████████] 100%
+Progress: [████████░░] 86% phases (6/7)
 
 ## Performance Metrics
 
@@ -84,6 +84,7 @@ None.
 
 ## Session Continuity
 
-Stopped at: Completed 06-07-PLAN.md
-Next: /gsd-verify-work（Phase 06 UAT）
-Resume: None
+Last session: 2026-07-17
+Stopped at: Phase 06 complete, ready to discuss Phase 7
+Resume file: None
+Next: `/gsd-discuss-phase 7 --auto`
