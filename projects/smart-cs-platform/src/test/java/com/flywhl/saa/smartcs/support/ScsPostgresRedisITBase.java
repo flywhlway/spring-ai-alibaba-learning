@@ -1,6 +1,9 @@
 package com.flywhl.saa.smartcs.support;
 
+import org.elasticsearch.client.RestClient;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.springframework.ai.vectorstore.VectorStore;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
 import org.testcontainers.containers.GenericContainer;
@@ -9,9 +12,15 @@ import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 import org.testcontainers.utility.DockerImageName;
 
+import com.alibaba.cloud.ai.graph.agent.flow.agent.LlmRoutingAgent;
+import com.flywhl.saa.smartcs.rag.FaqEtlPipeline;
+
+import io.milvus.client.MilvusServiceClient;
+import redis.clients.jedis.JedisPooled;
+
 /**
  * Testcontainers 基座：PostgreSQL 16（库名 {@code scs_platform}）+ Redis 7；
- * Milvus / ES / Redis Stack 由子类按需 Mock 或连接真机。
+ * Milvus / ES / Redis Stack 由 {@link MockBean} 屏蔽，无 API Key 亦可跑 IT。
  *
  * @author flywhl
  */
@@ -30,6 +39,30 @@ public abstract class ScsPostgresRedisITBase {
     static final GenericContainer<?> REDIS = new GenericContainer<>(DockerImageName.parse("redis:7"))
             .withExposedPorts(6379);
 
+    @MockBean(name = "milvusVectorStore")
+    protected VectorStore milvusVectorStore;
+
+    @MockBean(name = "elasticsearchVectorStore")
+    protected VectorStore elasticsearchVectorStore;
+
+    @MockBean(name = "redisStackVectorStore")
+    protected VectorStore redisStackVectorStore;
+
+    @MockBean(name = "csIntentRouter")
+    protected LlmRoutingAgent csIntentRouter;
+
+    @MockBean
+    protected RestClient restClient;
+
+    @MockBean
+    protected MilvusServiceClient milvusServiceClient;
+
+    @MockBean
+    protected JedisPooled scsCacheJedisPooled;
+
+    @MockBean
+    protected FaqEtlPipeline faqEtlPipeline;
+
     @DynamicPropertySource
     static void registerProperties(DynamicPropertyRegistry registry) {
         registry.add("spring.datasource.url", POSTGRES::getJdbcUrl);
@@ -45,5 +78,6 @@ public abstract class ScsPostgresRedisITBase {
         // 语义缓存指向同容器 Redis，避免 IT 额外依赖 Redis Stack
         registry.add("scs.cache.redis-uri",
                 () -> "redis://" + REDIS.getHost() + ":" + REDIS.getMappedPort(6379));
+        registry.add("spring.elasticsearch.uris", () -> "http://localhost:19200");
     }
 }
