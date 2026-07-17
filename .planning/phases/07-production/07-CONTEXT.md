@@ -1,0 +1,130 @@
+# Phase 7: 生产化 - Context
+
+**Gathered:** 2026-07-17
+**Status:** Ready for planning
+**Mode:** `--auto`（推荐默认项已锁定，可审计）
+
+<domain>
+## Phase Boundary
+
+全仓具备可重复执行的 CI/CD、部署与质量门禁，使任何阶段收口均可验证交付物达标（HANDOFF §7）。
+
+**In scope：** GitHub Actions CI、统一质量门禁脚本（编译 / curl 抽样 / version-audit / spring-ai-2-readiness / 废弃 API·密钥·TODO 扫描）、本地/类生产部署脚本、排障与调优文档收口、Phase 4–6 UAT 债务可追踪。
+
+**Out of scope：** Spring Boot 4 / Spring AI 2.0 升级、Ollama/本地模型、Gradle、完整 K8s 生产集群、商业云托管计费配置。
+
+</domain>
+
+<decisions>
+## Implementation Decisions
+
+### CI 平台与触发
+- **D-01:** 使用 **GitHub Actions**（仓库尚无 `.github/workflows`，本阶段新建）— 推荐默认。
+- **D-02:** 触发：`push`/`pull_request` 到默认分支；`workflow_dispatch` 手动全量。
+- **D-03:** 密钥：默认 job **不依赖** `AI_DASHSCOPE_API_KEY`；带 Key 的模型 IT/UAT 作为 **optional / manual** job（`if: secrets.AI_DASHSCOPE_API_KEY != ''` 或单独 workflow）。
+
+### CI 覆盖矩阵
+- **D-04:** 必跑：`common` + `starter` 的 `clean install`（含单测）。
+- **D-05:** examples：以 **编译矩阵** 为主（`mvn -f examples/NN-*/pom.xml -DskipTests compile`），不在默认 CI 跑全量 48 个 `spring-boot:run`（耗时与 Key 依赖过大）；抽样 curl 留给本地/手动 UAT 或 nightly。
+- **D-06:** projects：三个企业项目各自 `mvn -f projects/*/pom.xml test`（无 Docker 时 Testcontainers 跳过；有 Docker 的 runner 可选开启）。
+
+### 质量门禁包装
+- **D-07:** 新增统一入口脚本（如 `scripts/quality-gate.sh`），串联：真实编译抽样 + `version-audit.sh` + `spring-ai-2-readiness.sh` + 废弃 API/硬编码密钥/TODO 扫描（对齐 HANDOFF §7）。
+- **D-08:** 复用既有脚本，不重写：`version-audit.sh`、`spring-ai-2-readiness.sh`、`uat-phase3.sh`、`uat-knowledge-qa.sh`、`projects/*/scripts/uat-*.sh`。
+- **D-09:** CI 中 quality-gate 失败 → workflow fail（blocking）；模型真机路径保持 non-blocking optional。
+
+### 部署路径
+- **D-10:** **Docker Compose 部署路径**（推荐）：文档化 `scripts/infra.sh` profiles + 三项目 override；提供「一键起中间件 + 起应用」的 deploy/smoke 说明与脚本骨架。
+- **D-11:** 不引入完整 K8s/Helm（教学仓库过重）；若需容器镜像，仅 Dockerfile + 本地 build 说明即可。
+
+### 文档与排障
+- **D-12:** 在 `docs/` 或根 README 增补 Phase 7 生产化章节：CI 说明、门禁命令、部署步骤、常见排障（Milvus 冷启动、redis-stack、API Key、端口冲突）。
+- **D-13:** Phase 4/5/6 人工 UAT 债务保留在各自 `*-HUMAN-UAT.md` / `*-UAT.md`；本阶段提供 **汇总索引**（或 `/gsd-audit-uat` 可发现），不强制在 CI 内跑通真机 UAT。
+
+### Phase 6 review 债务
+- **D-14:** `06-REVIEW.md` Critical（会话→HITL/工单隔离）**不在本阶段强制修代码**，除非门禁扫描发现安全阻断；记入 backlog / STATE Pending，由 `/gsd-code-review 6 --fix` 或后续 hotfix 处理。
+
+### Claude's Discretion
+- Workflow YAML 拆分（单文件 vs ci.yml + release.yml）、缓存策略（Maven cache）、examples 编译并行度、Dockerfile 是否三项目各一份 — 由 planner/executor 按仓库惯例决定。
+- 调优文档深度（JVM/连接池/向量维度）保持「教学够用」即可。
+
+[--auto] Selected all gray areas: CI 平台与触发, CI 覆盖矩阵, 质量门禁包装, 部署路径, 文档与排障, Phase 6 review 债务.
+
+[auto] CI 平台 — Q: "用哪套 CI？" → Selected: "GitHub Actions"（recommended default）
+[auto] 覆盖矩阵 — Q: "examples 在 CI 跑什么？" → Selected: "编译矩阵，不默认全量 run+curl"（recommended default）
+[auto] 部署 — Q: "部署目标？" → Selected: "Compose + 脚本/文档，非 K8s"（recommended default）
+[auto] Key 依赖 — Q: "CI 是否强制 DashScope？" → Selected: "默认无 Key；模型 IT optional"（recommended default）
+[auto] P6 Critical — Q: "是否阻塞 Phase 7？" → Selected: "不阻塞；记债务"（recommended default）
+
+</decisions>
+
+<canonical_refs>
+## Canonical References
+
+**Downstream agents MUST read these before planning or implementing.**
+
+### 需求与路线图
+- `.planning/ROADMAP.md` — Phase 7 Goal / Success Criteria
+- `.planning/REQUIREMENTS.md` — `REQ-phase-7-production`
+- `.planning/PROJECT.md` — Core Value、Constraints、Validated Phase 1–6
+
+### 质量门禁 SSOT
+- `HANDOFF-TO-CLAUDE-CODE.md` §7 — 每阶段收口必过门禁清单
+- `CLAUDE.md` — 版本锁定、常用命令、集成测试约定
+- `.claude/skills/saa-conventions/SKILL.md` — 工程约定
+
+### 既有脚本与 UAT
+- `scripts/version-audit.sh`
+- `scripts/spring-ai-2-readiness.sh`
+- `scripts/infra.sh` / `scripts/env-check.sh` / `scripts/setup-env.example.sh`
+- `scripts/uat-phase3.sh` / `scripts/uat-knowledge-qa.sh`
+- `projects/smart-cs-platform/scripts/uat-smart-cs.sh`
+- `.planning/phases/06-smart-cs-platform/06-UAT.md` / `06-HUMAN-UAT.md`
+- `.planning/phases/06-smart-cs-platform/06-REVIEW.md` — Critical 债务
+
+### 企业项目交付物
+- `projects/README.md` — 三项目蓝图与端口（19100/19200/19300）
+- `examples/README.md` — Demo 编号/端口 SSOT
+
+</canonical_refs>
+
+<code_context>
+## Existing Code Insights
+
+### Reusable Assets
+- `scripts/version-audit.sh` / `spring-ai-2-readiness.sh`：已可直接被 CI 调用
+- `scripts/infra.sh` profiles：core/vector/mq/search/cloud — 部署文档应引用
+- 各 project `pom.xml` 独立（不在父 modules）：CI 必须用 `mvn -f path/pom.xml`
+
+### Established Patterns
+- 无 Key / 无 Docker：测试用 `@EnabledIfEnvironmentVariable` / Testcontainers 条件跳过，CI 仍绿
+- 企业项目端口：19100 / 19200 / 19300
+- Demo 端口：`180NN`
+
+### Integration Points
+- 新建 `.github/workflows/*.yml` 挂到仓库根
+- 统一 `scripts/quality-gate.sh`（或等价）作为本地与 CI 共同入口
+- README / docs 指向门禁与部署命令
+
+</code_context>
+
+<specifics>
+## Specific Ideas
+
+- 教学仓库优先「一键可验证」而非「云上持续部署到生产」。
+- 与 Phase 6 一致：`mvn -f projects/smart-cs-platform/pom.xml` 模式，勿假设父 reactor 已挂载 projects。
+
+</specifics>
+
+<deferred>
+## Deferred Ideas
+
+- 完整 K8s/Helm/云托管发布
+- Spring AI 2.0 / Boot 4 迁移专题
+- 强制在 CI 跑通全部 48 Demo 真机 curl（成本过高）
+- Phase 6 Critical 代码修复（建议 `/gsd-code-review 6 --fix`）
+
+</deferred>
+
+---
+*Generated by discuss-phase --auto on 2026-07-17*
