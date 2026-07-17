@@ -19,5 +19,7 @@ public interface FaqArticleRepository extends JpaRepository<FaqArticle, Long> {
 
     Page<FaqArticle> findByStatus(FaqArticleStatus status, Pageable pageable);
 
+    Page<FaqArticle> findByCategory(String category, Pageable pageable);
+
     boolean existsByTitle(String title);
 }

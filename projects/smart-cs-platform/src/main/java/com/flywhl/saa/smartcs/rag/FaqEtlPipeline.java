@@ -83,6 +83,34 @@ public class FaqEtlPipeline implements ApplicationRunner {
         }
     }
 
+    /**
+     * 手动重建单篇 FAQ 索引：先清理 Milvus/ES/faq_chunk，再重新 Embedding 双写。
+     */
+    public void reindexArticle(Long articleId) {
+        FaqArticle article = articleRepository.findById(articleId)
+                .orElseThrow(() -> new IllegalArgumentException("FAQ 文章不存在: " + articleId));
+        deleteIndex(articleId);
+        indexArticle(article);
+    }
+
+    /**
+     * 删除文章对应的向量与 chunk 溯源记录。
+     */
+    public void deleteIndex(Long articleId) {
+        List<FaqChunk> chunks = chunkRepository.findByArticleId(articleId);
+        if (!chunks.isEmpty()) {
+            List<String> milvusIds = chunks.stream().map(FaqChunk::getMilvusPk).filter(id -> id != null && !id.isBlank()).toList();
+            List<String> esIds = chunks.stream().map(FaqChunk::getEsDocId).filter(id -> id != null && !id.isBlank()).toList();
+            if (!milvusIds.isEmpty()) {
+                milvusVectorStore.delete(milvusIds);
+            }
+            if (!esIds.isEmpty()) {
+                elasticsearchVectorStore.delete(esIds);
+            }
+            chunkRepository.deleteByArticleId(articleId);
+        }
+    }
+
     private void indexArticle(FaqArticle article) {
         try {
             String text = "问题：" + article.getQuestion() + "\n答案：" + article.getAnswer();
