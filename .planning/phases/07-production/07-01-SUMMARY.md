@@ -67,7 +67,7 @@ Each task was committed atomically:
 2. **Task 2: 新建 quality-gate.sh 并锁定 readiness 基线** - `b699cca` (feat)
 3. **Task 3: 本地跑通 quality-gate 并修扫描误报** - _(无代码变更；`bash scripts/quality-gate.sh` exit 0，首次即绿)_
 
-**Plan metadata:** `3b2aa64` (docs: complete plan); `c48b175` (docs: STATE/ROADMAP)
+**Plan metadata:** `3b2aa64` (docs: complete plan); `c48b175` / `892bb50` (docs: STATE/ROADMAP/REQ sync)
 
 ## Files Created/Modified
 
