@@ -65,7 +65,7 @@ Each task was committed atomically:
 1. **Task 1: 新建 deploy-smoke.sh 骨架** - `a4aa755` (feat)
 2. **Task 2: 撰写 05-生产化与运维.md 并更新索引** - `8a588da` (docs)
 
-**Plan metadata:** （见下方 final docs commit）
+**Plan metadata:** `050e47d` (docs: complete plan)
 
 ## Files Created/Modified
 
