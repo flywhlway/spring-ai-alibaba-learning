@@ -64,7 +64,7 @@ Each task was committed atomically:
 1. **Task 1: 创建 blocking ci.yml** - `3142ca6` (feat)
 2. **Task 2: 创建 optional model-it.yml（check-secret 模式）** - `ebd2962` (feat)
 
-**Plan metadata:** （本 SUMMARY 提交后回填）
+**Plan metadata:** `bed42d9` (docs: complete plan)
 
 ## Files Created/Modified
 
