@@ -41,6 +41,9 @@ mvn clean install
 
 跑 RAG 相关内容时追加向量库：`bash scripts/infra.sh up core vector`。
 
+质量门禁（本地 / CI 共用）：`bash scripts/quality-gate.sh`。  
+生产化与运维（CI、Compose 部署、排障）：[docs/00-overview/05-生产化与运维.md](docs/00-overview/05-生产化与运维.md)。
+
 ---
 
 ## 仓库结构
@@ -62,7 +65,8 @@ images/     文档截图与静态资源
 2. [版本调研报告](docs/00-overview/02-版本调研报告.md)
 3. [总体架构与目录规划](docs/00-overview/03-总体架构与目录规划.md)
 4. [技术选型 ADR](docs/00-overview/04-技术选型ADR.md)
-5. [教程目录（docs/README）](docs/README.md)
+5. [生产化与运维](docs/00-overview/05-生产化与运维.md) —— CI / quality-gate / Compose 部署
+6. [教程目录（docs/README）](docs/README.md)
 
 ## 交付阶段
 
