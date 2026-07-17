@@ -1,149 +1,122 @@
 ---
 phase: 06-smart-cs-platform
-verified: 2026-07-17T14:43:00Z
+verified: 2026-07-17T16:20:00Z
 status: human_needed
-score: 27/28 must-haves verified
+score: 34/35 must-haves verified
 overrides_applied: 0
+re_verification:
+  previous_status: human_needed
+  previous_score: 27/28
+  gaps_closed:
+    - "按文档 compose + smartcs profile 后，scs_platform 自动拥有 schema/data（scs-db-init 挂载）"
+    - "query-rewrite Prompt 满足 RewriteQueryTransformer 必填占位符 {target}+{query}，Bean 可创建"
+  gaps_remaining: []
+  regressions: []
 human_verification:
-  - test: "按 06-UAT.md 前置条件起 infra（core+vector+search+cloud+smartcs）并 spring-boot:run，执行 §0 health + §1 三角色 login"
-    expected: "health UP；admin/agent1/customer1 均 code=0 且拿到 accessToken；角色 claim 正确"
-    why_human: "需 Docker 中间件与进程内 JWT 真签发；本机 Docker 不可用，Auth IT 亦被 DockerAvailableCondition 跳过"
+  - test: "冷启动已修复后，重新执行 06-UAT.md §1 三角色 login（admin/agent1/customer1）"
+    expected: "均 code=0 且拿到 accessToken；角色 claim 正确"
+    why_human: "需进程内 JWT 真签发；本轮 verifier 仅确认 health 曾 UP，未复跑 login"
   - test: "设置 AI_DASHSCOPE_API_KEY 后执行 06-UAT.md §2 同步 ask + SSE stream（退货政策种子问）"
     expected: "ask 返回答案；stream 含 message/done（FAQ 路径可出现 cacheHit）；cs_message 持久化"
-    why_human: "需 DashScope + Milvus/ES/Redis Stack 真链路，静态分析无法证明秒答与混合检索召回"
-  - test: "执行 06-UAT.md 工单流转 + §handoff start/approve（坐席 JWT）"
-    expected: "非法 transition 400；approve 后工单 HUMAN_HANDLING，HITL resume 成功"
-    why_human: "Graph interrupt + HumanInTheLoopHook 依赖真模型工具调用与进程内 pending 表"
-  - test: "ADMIN 调 GET /api/admin/dashboard/stats 与 model/prompt publish；可选起 monitor profile 看 Prometheus/Grafana"
-    expected: "stats 含会话/工单/cacheHitRate/成本字段；Nacos 出现 scs.model.profiles 与 prompt Data ID；prometheus 可 scrape"
-    why_human: "Nacos 热更新与 Grafana 面板需运行时观测"
+    why_human: "需 DashScope + Milvus/ES/Redis Stack 真链路；先前 UAT 被冷启动 blocker 挡住，需补跑"
+  - test: "执行 06-UAT.md 工单流转；handoff start 路径按能力验证（approve 404 见 D-14 Pending，勿当本轮新 gap）"
+    expected: "非法 transition 400；合法流转成功；HITL approve 已知 Pending Todo 不阻塞本报告"
+    why_human: "Graph interrupt 与真模型工具调用需运行时；CR-01 另案 /gsd-code-review 6 --fix"
+  - test: "ADMIN 调 GET /api/admin/dashboard/stats 与 model/prompt publish；可选 monitor profile 看 Prometheus/Grafana"
+    expected: "stats 含会话/工单/cacheHitRate/成本字段；Nacos 出现 scs.model.profiles 与 prompt Data ID"
+    why_human: "Nacos 热更新与 Grafana 面板需运行时观测；先前被冷启动挡住"
   - test: "bash projects/smart-cs-platform/scripts/uat-smart-cs.sh（有 Key 全量 / 无 Key 仅 health+login+RBAC）"
-    expected: "脚本 exit 0；与 06-UAT.md 预期一致"
-    why_human: "端到端 smoke 需已启动的 19300 应用与中间件"
+    expected: "脚本 exit 0；与 06-UAT.md 预期一致（HITL approve 已知 D-14 除外）"
+    why_human: "端到端 smoke 需已启动的 19300 应用与中间件；冷启动修复后需补跑"
 ---
 
 # Phase 6: 智能客服平台 Verification Report
 
 **Phase Goal:** 客服场景可通过 smart-cs-platform 完成 FAQ 秒答、多智能体协作、工单流转与人工接管，并具备运营看板  
-**Verified:** 2026-07-17T14:43:00Z  
+**Verified:** 2026-07-17T16:20:00Z  
 **Status:** human_needed  
-**Re-verification:** No — initial verification
+**Re-verification:** Yes — after gap closure plans 06-08 / 06-09
 
 ## Goal Achievement
 
-### Observable Truths
+### Gap Closure (本轮重点)
+
+| # | Truth | Status | Evidence |
+|---|-------|--------|----------|
+| G1 | 多文件 compose 下 scs-db-init 挂载到 `projects/smart-cs-platform/db`，而非 `docker/db` | ✓ VERIFIED | override: `../projects/smart-cs-platform/db:/scs-db:ro`；`docker inspect` Mounts.Source = `.../projects/smart-cs-platform/db`；容器 `exited 0` |
+| G2 | kqa-db-init / office-db-init 同样挂载到各自 `projects/<proj>/db` | ✓ VERIFIED | 三处均 `../projects/.../db:`；`! grep './db:'` 于企业项目 override — PASS |
+| G3 | scs-prometheus 挂载到 `projects/smart-cs-platform/monitor/prometheus.yml` | ✓ VERIFIED | `../projects/smart-cs-platform/monitor/prometheus.yml:...`；无 `./monitor/` 残留 |
+| G4 | classpath `query-rewrite.st` 同时含 `{target}` 与 `{query}` | ✓ VERIFIED | 文件正文含两占位符 |
+| G5 | `db/data.sql` 与 test 副本种子含 `{target}`+`{query}`，且有幂等 UPDATE | ✓ VERIFIED | INSERT + `UPDATE ... WHERE content NOT LIKE '%{target}%'` 主/test 均有 |
+| G6 | RewriteQueryTransformer 构造不再因缺 target 抛 IllegalArgumentException | ✓ VERIFIED | `RagPipelineFactory`→`getQueryRewriteTemplate()`→`RewriteQueryTransformer.builder()`；orchestrator：boot 日志无 `placeholders must be present ... target`；health 曾 UP |
+| G7 | Docker 可用时 actuator/health 为 UP（G-06-09-health 硬门禁） | ✓ VERIFIED | orchestrator：`curl .../actuator/health` → `{"status":"UP"}`；SUMMARY 非 residual。本轮 spot-check 时进程已停（HEALTH_UNREACHABLE）— 不否定已达成门禁 |
+
+**Gap closure score:** 7/7
+
+### Observable Truths（回归：原 ROADMAP + PLAN）
 
 | # | Truth | Status | Evidence |
 |---|-------|--------|----------|
 | **ROADMAP** | | | |
-| 1 | FAQ/知识库问答可用（Milvus + Redis 语义缓存 + ES 全文混合检索） | ✓ VERIFIED | `FaqAnswerService`：`lookup`→`hybridSearch`→ChatClient→`put`；`HybridSearchService` RRF_K=60 + `accumulateRrf`；`SemanticCacheService`→`redisStackVectorStore`；`FaqEtlPipeline` 双写 Milvus/ES |
-| 2 | RoutingAgent + Supervisor + Handoffs；工单域 + Graph interrupt（HITL） | ✓ VERIFIED | `CsAgentConfig`：`LlmRoutingAgent` 四分支；`businessSupervisor`+`AgentTool.create`；`HumanInTheLoopHook.approvalOn`；`TicketService.ALLOWED_TRANSITIONS`；`HumanHandoffController` start/approve+`resume` |
-| 3 | 运营监控/成本；模型/Prompt CRUD + Nacos 热更新 | ✓ VERIFIED | `DashboardStatsService`+`DashboardAdminController`；`ModelAdminController` CRUD+publish；`ModelProfileNacosPublisher` Data ID `scs.model.profiles`；`PromptPublishService` Data ID `spring.ai.alibaba.configurable.prompt`；actuator prometheus + compose monitor |
-| 4 | 统一交付标准；端口 19300；栈 PG+Milvus+Redis+ES+Nacos | ✓ VERIFIED | `application.yml` port 19300、`scs_platform`、milvus/ES/nacos；`docker-compose.override.yml` smartcs+monitor；`mvn -f … compile` / `clean install -DskipTests` BUILD SUCCESS |
-| **PLAN 06-01** | | | |
-| 5 | 工程可独立 compile，包根 `com.flywhl.saa.smartcs`，不挂父 modules | ✓ VERIFIED | `pom.xml` parent 仓库父 POM；根 `pom.xml` modules 仅 common/starter；主类包路径正确 |
-| 6 | `db/schema.sql` 11 业务表与 Entity 对齐 | ✓ VERIFIED | 11×`CREATE TABLE`；11 Entity；角色/工单状态枚举齐全；`data.sql` 4 用户 + 12 FAQ + 2 工单 |
-| 7 | compose smartcs：`scs-db-init` + `scs-redis-stack:6380` | ✓ VERIFIED | override 含 `psql -f schema/data`、`6380:6379` |
-| 8 | `ScsProperties` 绑定 `scs.rag/cache/memory/security/ticket` | ✓ VERIFIED | `@ConfigurationProperties(prefix="scs")`；yml `scs.*` 键完整 |
-| **PLAN 06-02** | | | |
-| 9 | JWT 登录链就绪（Security + Auth） | ✓ VERIFIED | `SecurityConfig.oauth2ResourceServer`；`permitAll` `/api/auth/login`；`AuthService`/`AuthController` |
-| 10 | 双 Redis 隔离：6379 ChatMemory vs 6380 语义缓存 | ✓ VERIFIED | `spring.data.redis` 6379 + `RedisChatMemoryRepository`；`RedisStackCacheConfig`/`scs.cache.redis-uri` 6380 |
-| 11 | Milvus `scs_faq` + ES `scs-faq` VectorStore Bean | ✓ VERIFIED | `MilvusVectorStoreConfig` / `ElasticsearchVectorStoreConfig` `@Bean` + `@Qualifier` |
-| 12 | Actuator 暴露 health + prometheus | ✓ VERIFIED | `management.endpoints…include=health,info,prometheus,metrics` |
-| **PLAN 06-03** | | | |
-| 13 | 语义缓存命中返回 `cacheHit=true` | ✓ VERIFIED | `FaqAnswerService` 命中分支构造 `ChatAnswerVO(..., true, …)`；单测 `SemanticCacheServiceTest` 3/3 |
-| 14 | 未命中走 RRF 混合检索 + 生成 + 回写缓存 | ✓ VERIFIED | `hybridSearch`→Prompt→`chatClient`→`semanticCacheService.put`；空上下文短路不调模型 |
-| 15 | FAQ ETL 双写并记 `faq_chunk` 溯源 | ✓ VERIFIED | `FaqEtlPipeline.indexAllSeedFaqs` ApplicationRunner；milvus/es add + chunk 元数据 |
-| **PLAN 06-04** | | | |
-| 16 | LlmRoutingAgent 四分支 FAQ/business/ticket/human | ✓ VERIFIED | `csIntentRouter.subAgents(List.of(faqAgent, businessSupervisor, ticketAgent, humanEscalationAgent))` |
-| 17 | business-supervisor 用 `AgentTool.create` 调度子 Agent | ✓ VERIFIED | `orderAgent`/`afterSalesAgent`/`techSupportAgent` |
-| 18 | HITL：`approvalOn("requestHumanHandoff")`，无 `interruptBefore` | ✓ VERIFIED | `HumanInTheLoopHook`；全仓无禁用 API 命中 |
-| 19 | `CsOrchestratorService` 以 conversationId 作 threadId | ✓ VERIFIED | `RunnableConfig.builder().threadId(threadId)` |
-| **PLAN 06-05** | | | |
-| 20 | GET `/api/chat/stream` SSE + 消息持久化 | ✓ VERIFIED | `ChatController.stream`→`ChatService.stream`；`saveUserMessage`/`saveAssistantMessage` |
-| 21 | 工单状态机非法转移返回 400 | ✓ VERIFIED | `TicketService.transition`→`BizException(BAD_REQUEST)`；`TicketServiceTest` 4/4 |
-| 22 | 坐席 approve 恢复 HITL 且工单 `HUMAN_HANDLING` | ✓ VERIFIED | `HumanHandoffController.approve`→`addHumanFeedback`+`resume`→`transitionToHumanHandling` |
-| 23 | conversationId 全链路 UUID 与 threadId 一致 | ✓ VERIFIED | Chat/Handoff/Orchestrator 均 UUID/`conversationId` 绑定 |
-| **PLAN 06-06** | | | |
-| 24 | ADMIN CRUD `model_profile` 并按 scene 路由 | ✓ VERIFIED | `ModelAdminController`；`ConfigurableModelRouter.routeForScene` |
-| 25 | Prompt / model_profile 发布推 Nacos | ✓ VERIFIED | `PromptPublishService` + `ModelProfileNacosPublisher.publishConfig` |
-| 26 | Dashboard stats + Prometheus/Grafana 文档 | ✓ VERIFIED | `DashboardStatsVO` 聚合；`monitor/prometheus.yml`；README §7 Grafana |
-| **PLAN 06-07** | | | |
-| 27 | 无 Key 编译/单测绿；UAT 清单与 smoke 脚本存在 | ✓ VERIFIED | unit 15 pass / 4 skip；`06-UAT.md`；`uat-smart-cs.sh` syntax OK；无 TODO/FIXME/硬编码密钥 |
-| 28 | 有 API Key 时 login/chat/ticket/handoff 各 ≥1 IT 可运行 | ? UNCERTAIN | IT 类存在（`Auth`/`Chat`/`Ticket`/`ModelIntegrationTest`）；本机 Docker 不可用致 Testcontainers 跳过；未跑真模型 IT |
+| 1 | FAQ/知识库问答可用（Milvus + Redis 语义缓存 + ES 全文混合检索） | ✓ VERIFIED | 回归：`FaqAnswerService` / `HybridSearchService` / `SemanticCacheService` 仍在 |
+| 2 | RoutingAgent + Supervisor + Handoffs；工单域 + Graph interrupt（HITL） | ✓ VERIFIED | 回归：`CsAgentConfig` / `TicketService` / `HumanHandoffController` 仍在 |
+| 3 | 运营监控/成本；模型/Prompt CRUD + Nacos 热更新 | ✓ VERIFIED | 回归：Dashboard / ModelAdmin / PromptPublish 仍在 |
+| 4 | 统一交付标准；端口 19300；栈 PG+Milvus+Redis+ES+Nacos | ✓ VERIFIED | 回归：`application.yml` + compose override；冷启动路径已修 |
+| **PLAN 06-01…07** | | | |
+| 5–27 | 原 23 项 PLAN must-haves（工程/JWT/RAG/Agent/SSE/Admin/UAT 资产） | ✓ VERIFIED | 快速回归：关键产物存在；无 TBD/FIXME/XXX；编译门禁此前已绿 |
+| 28 | 有 API Key 时 login/chat/ticket/handoff 各 ≥1 IT 可运行 | ? UNCERTAIN | IT 类存在；本轮未重跑 Testcontainers/真模型 IT |
 
-**Score:** 27/28 truths verified（1 UNCERTAIN → 人工）
+**Score:** 34/35 truths verified（含 gap 7 项；1 UNCERTAIN → 人工）
+
+### Deferred Items
+
+| # | Item | Addressed In | Evidence |
+|---|------|--------------|----------|
+| 1 | 06-REVIEW Critical HITL/approve 404（CR-01 / D-14） | Pending Todo（非本 gap_closure） | STATE.md Pending Todos；Phase 7 明确不改 smart-cs 业务代码；**本报告按指示不重开为 gap** |
 
 ### Required Artifacts
 
 | Artifact | Expected | Status | Details |
 |----------|----------|--------|---------|
-| `projects/smart-cs-platform/pom.xml` | 独立工程 | ✓ VERIFIED | 含 common/starter/agent-framework/milvus/ES/nacos/actuator |
-| `db/schema.sql` | DDL SSOT | ✓ VERIFIED | 11 表，`scs_platform` |
-| `config/ScsProperties.java` | scs.* 绑定 | ✓ VERIFIED | `@ConfigurationProperties(prefix="scs")` |
-| `config/SecurityConfig.java` | JWT RS | ✓ VERIFIED | `oauth2ResourceServer` |
-| `config/RedisStackCacheConfig.java` | 6380 VS | ✓ VERIFIED | `redisStackVectorStore` |
-| `config/AiClientConfig.java` | ChatClient.Builder | ✓ VERIFIED | AuditLoggingAdvisor + scene 路由 |
-| `rag/HybridSearchService.java` | RRF | ✓ VERIFIED | `RRF_K` + `accumulateRrf` |
-| `service/SemanticCacheService.java` | 语义缓存 | ✓ VERIFIED | threshold + expiresAt |
-| `service/FaqAnswerService.java` | 缓存→混合→RAG | ✓ VERIFIED | lookup 优先 |
-| `agent/CsAgentConfig.java` | Agent 图 | ✓ VERIFIED | LlmRoutingAgent + Supervisor + HITL |
-| `agent/FlowStateExtractor.java` | 文本提取 | ✓ VERIFIED | `extractText` |
-| `tool/HandoffTools.java` | `@Tool` handoff | ✓ VERIFIED | `requestHumanHandoff` |
-| `controller/ChatController.java` | SSE 网关 | ✓ VERIFIED | ask + stream |
-| `service/TicketService.java` | 状态机 | ✓ VERIFIED | `ALLOWED_TRANSITIONS` |
-| `controller/HumanHandoffController.java` | HITL API | ✓ VERIFIED | start/approve |
-| `admin/service/DashboardStatsService.java` | 看板 | ✓ VERIFIED | DB + MeterRegistry |
-| `admin/controller/ModelAdminController.java` | model CRUD | ✓ VERIFIED | gsd `contains: model_profile` 字面未命中属误报；实体/API 齐全 |
-| `prompt/PromptPublishService.java` | Nacos Prompt | ✓ VERIFIED | publishConfig |
-| `support/ScsPostgresRedisITBase.java` | IT 基座 | ✓ VERIFIED | PG+Redis Testcontainers + Docker 门控 |
-| `scripts/uat-smart-cs.sh` | smoke | ✓ VERIFIED | health/login/RBAC/可选模型路径 |
-| `06-UAT.md` | 验收清单 | ✓ VERIFIED | 254 行，覆盖 api.http |
+| `projects/smart-cs-platform/docker-compose.override.yml` | scs-db-init + prometheus 相对 docker/ | ✓ VERIFIED | gsd verify.artifacts 06-08: 3/3；含路径注释 |
+| `projects/knowledge-qa-platform/docker-compose.override.yml` | kqa-db-init 正确 volume | ✓ VERIFIED | `../projects/knowledge-qa-platform/db` |
+| `projects/office-agent-assistant/docker-compose.override.yml` | office-db-init 正确 volume | ✓ VERIFIED | `../projects/office-agent-assistant/db` |
+| `src/main/resources/prompts/query-rewrite.st` | `{target}`+`{query}` | ✓ VERIFIED | gsd artifacts 06-09: 3/3 |
+| `db/data.sql` | INSERT + 幂等 UPDATE | ✓ VERIFIED | `content NOT LIKE '%{target}%'` |
+| `src/test/resources/db/data.sql` | 与主库一致 | ✓ VERIFIED | 同模板 + UPDATE |
+| `README.md` | 已有库/{target}/force-recreate 说明 | ✓ VERIFIED | §4.2 排障三条 |
+| （原 06-01…07 产物） | 见初验报告 | ✓ VERIFIED | 回归抽查：pom / schema / Security / FAQ / Agent / Chat / Ticket / Dashboard / uat 脚本仍在 |
 
 ### Key Link Verification
 
 | From | To | Via | Status | Details |
 |------|----|-----|--------|---------|
-| `docker-compose.override.yml` | `db/schema.sql` | `scs-db-init` psql -f | ✓ WIRED | entrypoint 执行 schema+data |
-| `ScsProperties` | `application.yml` | `prefix=scs` | ✓ WIRED | yml `scs.rag/cache/memory/security/ticket` |
-| `SecurityConfig` | `/api/auth/login` | permitAll | ✓ WIRED | 路径放行 |
-| `RedisStackCacheConfig` | scs.cache 6380 | 独立连接 | ✓ WIRED | JedisPooled + uri |
-| `FaqAnswerService` | `SemanticCacheService` | lookup 优先 | ✓ WIRED | L60-64 |
-| `HybridSearchService` | milvus+ES | `accumulateRrf` | ✓ WIRED | Qualifier 注入 |
-| `CsOrchestratorService` | `csIntentRouter` | threadId | ✓ WIRED | invoke→LlmRoutingAgent |
-| `businessSupervisor` | 子 Agent | `AgentTool.create` | ✓ WIRED | 三工具 |
-| `ChatService` | `CsOrchestratorService` | ask/stream | ✓ WIRED | FAQ 空答回退 `FaqAnswerService` |
-| `HumanHandoffController` | `humanEscalationAgent` | invoke+resume | ✓ WIRED | Qualifier Bean |
-| `ModelProfileNacosPublisher` | Nacos ConfigService | `scs.model.profiles` | ✓ WIRED | publishConfig |
-| `DashboardStatsService` | cs_message + MeterRegistry | cache_hit/token | ✓ WIRED | 仓储计数 + gen_ai meter |
-| `AuthIntegrationTest` | `/api/auth/login` | MockMvc | ✓ WIRED | 文件存在；运行需 Docker |
-| `uat-smart-cs.sh` | `:19300` | curl | ✓ WIRED | 脚本含 health/login/dashboard |
-
-> 注：`gsd-sdk query verify.key-links` 对短名 from 报 “Source file not found”，以上为人工 grep 接线结论。
+| `docker-compose.override.yml` (smartcs) | `db/schema.sql` | `../projects/smart-cs-platform/db:/scs-db:ro` | ✓ WIRED | 人工 grep + inspect Source；gsd key-links 对 `../` 转义误报「not found」 |
+| `docker-compose.override.yml` (smartcs) | `monitor/prometheus.yml` | prometheus volume | ✓ WIRED | 同上 |
+| `RagPipelineFactory` | `PromptTemplateProvider.getQueryRewriteTemplate` | `RewriteQueryTransformer.builder().promptTemplate(...)` | ✓ WIRED | gsd key-links 06-09 verified |
+| `PromptTemplateProvider` | `prompt_template` / classpath `query-rewrite.st` | `get("query-rewrite")` DB PUBLISHED 优先 | ✓ WIRED | Nacos→DB→classpath 三级回退仍在 |
 
 ### Data-Flow Trace (Level 4)
 
 | Artifact | Data Variable | Source | Produces Real Data | Status |
 |----------|---------------|--------|--------------------|--------|
-| `FaqAnswerService` | answer / cacheHit | SemanticCache → HybridSearch → ChatClient | 是（运行时依赖向量库/模型） | ✓ FLOWING |
-| `ChatService` | OrchestratorResult / ChatAnswerVO | `CsOrchestratorService` + 可选 FAQ 回退 | 是；消息写入 `cs_message` | ✓ FLOWING |
-| `DashboardStatsService` | DashboardStatsVO | JPA count + MeterRegistry | 是（库空时为零值，非硬编码空壳） | ✓ FLOWING |
-| `HumanHandoffController` | pendingByThread | InterruptionMetadata | 是（进程内 Map；文档已注明生产需持久化） | ✓ FLOWING |
-| `RagPipelineFactory` | `RetrievalAugmentationAdvisor` | Bean 已注册 | 无消费者注入（FAQ 走 Hybrid 链路） | ⚠️ ORPHANED |
-| `ChatMemoryConfig` | `MessageChatMemoryAdvisor` | Bean 已注册 | 未挂入 `ChatClient.Builder`；会话靠 JPA | ⚠️ ORPHANED |
+| `scs-db-init` | `/scs-db/*.sql` | bind `projects/.../db` | schema+data 可导入（exit 0） | ✓ FLOWING |
+| `PromptTemplateProvider.getQueryRewriteTemplate` | template content | DB PUBLISHED / classpath `.st` | 含 `{target}`+`{query}` | ✓ FLOWING |
+| `RewriteQueryTransformer` | promptTemplate | Provider 注入 | PromptAssert 可通过（health 曾 UP） | ✓ FLOWING |
+| `FaqAnswerService` / `ChatService` / `DashboardStatsService` | （初验） | 同初验 | ✓ FLOWING | 回归未发现空洞化 |
+| `RagPipelineFactory` Bean | `RetrievalAugmentationAdvisor` | 已注册 | FAQ 主路径仍走 Hybrid；Advisor 消费者仍少 | ⚠️ ORPHANED（初验 WARNING，非本轮 blocker） |
 
 ### Behavioral Spot-Checks
 
 | Behavior | Command | Result | Status |
 |----------|---------|--------|--------|
-| 独立编译 | `mvn -f projects/smart-cs-platform/pom.xml -DskipTests compile` | BUILD SUCCESS | ✓ PASS |
-| clean install | `mvn -f … clean install -DskipTests` | BUILD SUCCESS | ✓ PASS |
-| 单测（无 Docker） | `mvn -f … -Dtest='*Test,*Tests' test` | 15 run, 0 fail, 4 skip | ✓ PASS |
-| 禁用 API 门禁 | rg `interruptBefore\|SupervisorAgent\|PromptChatMemoryAdvisor\|FunctionCallback` | 0 命中 | ✓ PASS |
-| UAT 脚本语法 | `bash -n scripts/uat-smart-cs.sh` | OK | ✓ PASS |
-| version-audit（仓库） | `bash scripts/version-audit.sh` | BOM OK；子工程不在 reactor 故未解析 SAA 坐标（预期） | ✓ PASS* |
-| spring-ai-2-readiness | `bash scripts/spring-ai-2-readiness.sh projects/smart-cs-platform` | Jackson2 引用 8（1.x 锁定期预期）；MCP 0 | ✓ PASS* |
-| 真机 UAT / Testcontainers IT | — | Docker 不可用 | ? SKIP |
+| G-06-08-db | 三处 `../projects/.../db:` 计数 | 3 | ✓ PASS |
+| G-06-08-no-rel | 无企业项目 `./db:` | OK | ✓ PASS |
+| G-06-08-prom | prometheus 路径 + 无 `./monitor/` | OK | ✓ PASS |
+| G-06-09-ph/upd | 三处 `{target}`+`{query}` + 幂等 UPDATE | OK | ✓ PASS |
+| scs-db-init mount | `docker inspect` Mounts.Source | `.../projects/smart-cs-platform/db`；exit 0 | ✓ PASS |
+| health（本轮） | `curl localhost:19300/actuator/health` | 进程未在跑 | ? SKIP（orchestrator 已证 UP） |
+| 债务标记 | TBD/FIXME/XXX in smart-cs | 0 | ✓ PASS |
 
 ### Probe Execution
 
@@ -155,58 +128,62 @@ human_verification:
 
 | Requirement | Source Plan | Description | Status | Evidence |
 |-------------|-------------|-------------|--------|----------|
-| **REQ-phase-6-smart-cs** | 06-01…06-07 全部 | smart-cs-platform：FAQ 秒答、多智能体、工单、人工接管、运营看板；RoutingAgent+Supervisor+Handoffs、Milvus+Redis 缓存+ES、HITL、Micrometer/Prometheus/Grafana、Nacos；DB PG+Milvus+Redis+ES | ✓ SATISFIED（代码） | 四项 ROADMAP SC 均有实现证据；E2E 待人工 |
-| （孤儿检查） | REQUIREMENTS.md Phase 6 | 仅此一条映射到 Phase 6 | ✓ 无 ORPHANED | Traceability 表仅 `REQ-phase-6-smart-cs` |
+| **REQ-phase-6-smart-cs** | 06-01…06-09 | smart-cs-platform：FAQ/多智能体/工单/接管/看板 + 冷启动可 UP | ✓ SATISFIED（代码+冷启动门禁） | ROADMAP SC + gap 关闭；E2E UAT 待人工补跑 |
+| （孤儿检查） | REQUIREMENTS.md Phase 6 | 仅此一条 | ✓ 无 ORPHANED | Traceability 仅 `REQ-phase-6-smart-cs` |
 
 ### Anti-Patterns Found
 
 | File | Line | Pattern | Severity | Impact |
 |------|------|---------|----------|--------|
-| `rag/RagPipelineFactory.java` | Bean | `RetrievalAugmentationAdvisor` 无注入点 | ⚠️ Warning | FAQ 主路径用 Hybrid+ChatClient，目标仍达成；Advisor 成死 Bean |
-| `config/ChatMemoryConfig.java` | Bean | `MessageChatMemoryAdvisor` 未挂 ChatClient | ⚠️ Warning | 会话靠 `cs_message` JPA；双 Redis 配置仍在 |
-| `agent/CsAgentConfig.java` | faqParallelContext | ParallelAgent 未接入顶层路由 | ℹ️ Info | 注释写明供后续消费；非 must-have |
-| `HumanHandoffController.java` | pending Map | 进程内 ConcurrentHashMap | ℹ️ Info | 计划允许演示用内存；文档已声明生产应持久化 |
-| — | — | TBD/FIXME/XXX / 硬编码 sk- | （无） | — |
+| `rag/RagPipelineFactory.java` | Bean | Advisor 主 FAQ 路径未消费（初验遗留） | ⚠️ Warning | 冷启动已可建 Bean；非功能空洞 |
+| `config/ChatMemoryConfig.java` | Bean | MessageChatMemoryAdvisor 未挂 ChatClient（初验遗留） | ⚠️ Warning | 会话靠 JPA |
+| — | — | TBD/FIXME/XXX / 硬编码密钥 | （无） | — |
+| 06-REVIEW CR-01 | — | HITL approve 404 | ℹ️ Info | **故意不记入 gaps**（D-14 Pending Todo） |
 
 ### Human Verification Required
 
-#### 1. 健康检查与三角色登录
+#### 1. 三角色登录（冷启动后补跑）
 
-**Test:** 起 compose profiles + 应用后，执行 06-UAT.md §0–§1  
-**Expected:** health UP；admin/agent1/customer1 登录拿 token  
-**Why human:** Docker 本轮不可用；需真 JWT 签发
+**Test:** 起应用后执行 06-UAT.md §1  
+**Expected:** admin/agent1/customer1 登录拿 token  
+**Why human:** verifier 未复跑 JWT 登录
 
 #### 2. FAQ ask + SSE（需 API Key）
 
-**Test:** 06-UAT.md §2，问「收到商品后多久可以申请退货？」  
-**Expected:** 同步/流式均有答案；可选二次命中 cacheHit  
-**Why human:** 依赖 Embedding/Milvus/ES/Redis Stack/DashScope
+**Test:** 06-UAT.md §2  
+**Expected:** 同步/流式有答案；可选 cacheHit  
+**Why human:** 先前被冷启动挡住，需补跑真链路
 
-#### 3. 工单 + HITL handoff
+#### 3. 工单流转（HITL approve 已知 Pending）
 
-**Test:** 创建/流转工单；handoff start→坐席 approve  
-**Expected:** 非法转移 400；approve 后 HUMAN_HANDLING  
-**Why human:** Graph interrupt 与真工具调用
+**Test:** 工单合法/非法流转；handoff 按能力验证  
+**Expected:** 非法 400；**approve 404 不作为本轮新 gap**（D-14）  
+**Why human:** 运行时 Graph/工具调用
 
 #### 4. 运营看板 + Nacos + 监控
 
-**Test:** dashboard/stats、model/prompt publish；可选 Grafana  
-**Expected:** 统计字段非空结构正确；Nacos Data ID 更新；prometheus scrape  
-**Why human:** 运行时配置中心与监控栈
+**Test:** dashboard/stats、publish、可选 Grafana  
+**Expected:** 字段结构正确；Nacos Data ID 更新  
+**Why human:** 运行时观测
 
 #### 5. uat-smart-cs.sh smoke
 
 **Test:** `bash projects/smart-cs-platform/scripts/uat-smart-cs.sh`  
-**Expected:** exit 0  
-**Why human:** 需已运行的应用与中间件
+**Expected:** exit 0（HITL D-14 除外）  
+**Why human:** 需已运行应用；验证冷启动修复后 smoke 可达
 
 ### Gaps Summary
 
-无代码级 BLOCKER。相位目标在代码库中可达成：FAQ 混合检索+语义缓存、多智能体路由/Supervisor/HITL、工单状态机、运营看板与 Nacos 发布、19300 交付栈均已落地；单测与编译通过；Testcontainers IT 在 Docker 不可用时跳过（符合约定）。
+**UAT 冷启动两个 blocker 已关闭：**
 
-剩余为 **human_needed**：真机 UAT / 有 Key IT / Nacos·Grafana 观测。另有两处非阻断 WARNING（`RetrievalAugmentationAdvisor` 与 `MessageChatMemoryAdvisor` Bean 未接入主问答链）。
+1. **06-08** — 三处企业项目 compose override volume 改为相对首文件 `docker/` 的 `../projects/<proj>/db`（及 smartcs prometheus）；运行时 Mounts.Source 正确且 init exit 0。  
+2. **06-09** — `query-rewrite` classpath + 主/test `data.sql` 补齐 `{target}`+`{query}` 与幂等 UPDATE；orchestrator 证实 health UP 且无 PromptAssert target 错误。
+
+无代码级 **BLOCKER** / 无待 `gaps:` 结构化项。相位目标在代码与冷启动门禁上可达。
+
+剩余 **human_needed**：冷启动修复后的全链路 UAT 补跑（login / FAQ / 工单 / 看板 / smoke）。**06-REVIEW Critical HITL/approve 404（D-14）保持 Pending Todo，不记入本轮 gaps。**
 
 ---
 
-_Verified: 2026-07-17T14:43:00Z_  
+_Verified: 2026-07-17T16:20:00Z_  
 _Verifier: Claude (gsd-verifier)_

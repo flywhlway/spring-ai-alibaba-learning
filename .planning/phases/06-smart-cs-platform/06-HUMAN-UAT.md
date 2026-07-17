@@ -1,107 +1,74 @@
 ---
-status: diagnosed
+status: partial
 phase: 06-smart-cs-platform
 source:
   - 06-VERIFICATION.md
-  - projects/smart-cs-platform/scripts/uat-smart-cs.sh
-  - .planning/phases/06-smart-cs-platform/uat-logs/scs-uat.log
+  - 06-08-SUMMARY.md
+  - 06-09-SUMMARY.md
 started: 2026-07-17T14:45:00Z
-updated: 2026-07-17T16:00:00Z
-scope: automated curl UAT (--auto)
+updated: 2026-07-17T16:25:00Z
+scope: post-gap-closure human retest
 ---
 
 ## Current Test
 
-[testing complete]
+[awaiting human testing — 冷启动 blocker 已清除，需补跑全链路 UAT]
 
 ## Tests
 
 ### 1. 健康检查与三角色登录
 expected: health UP；admin/agent1/customer1 均 code=0 且拿到 accessToken；角色 claim 正确
-result: issue
-reported: "应用冷启动失败：先因 scs-db-init 未挂上 db/（model_profile 表不存在），手工灌库后仍因 RewriteQueryTransformer 要求 {target} 占位符而 Bean 创建失败，19300 从未 UP"
-severity: blocker
+result: pending
+note: "Gap 关闭后 orchestrator 已证 health 曾 UP；三角色 login 待人工复跑"
 
 ### 2. FAQ ask + SSE stream
 expected: ask 返回答案；stream 含 message/done（FAQ 路径可出现 cacheHit）；cs_message 持久化
-result: blocked
-blocked_by: server
-reason: "应用未启动，无法执行 ask/stream"
+result: pending
+note: "需 DashScope + 向量/检索栈；先前被冷启动挡住"
 
 ### 3. 工单流转 + HITL handoff start/approve
-expected: 非法 transition 400；approve 后工单 HUMAN_HANDLING，HITL resume 成功
-result: blocked
-blocked_by: server
-reason: "应用未启动；另 STATE Pending 已记 06-REVIEW Critical（HITL pending 未注册）"
+expected: 非法 transition 400；合法流转成功；approve 404 见 D-14 Pending（勿当新 gap）
+result: pending
+note: "CR-01 / D-14 另案 /gsd-code-review 6 --fix"
 
 ### 4. 运营看板 + Nacos + 监控
-expected: stats 含会话/工单/cacheHitRate/成本字段；Nacos 出现 scs.model.profiles 与 prompt Data ID；prometheus 可 scrape
-result: blocked
-blocked_by: server
-reason: "应用未启动，无法调 dashboard/stats 与 scrape"
+expected: stats 含会话/工单/cacheHitRate/成本字段；Nacos 出现 scs.model.profiles 与 prompt Data ID
+result: pending
 
 ### 5. uat-smart-cs.sh smoke
-expected: 脚本 exit 0；与 06-UAT.md 预期一致
-result: issue
-reported: "两次运行均 exit 1：应用启动超时。日志 scs-uat.log 先后报 model_profile 不存在、以及 placeholders must be present: target"
-severity: blocker
+expected: 脚本 exit 0；与 06-UAT.md 预期一致（HITL approve 已知 D-14 除外）
+result: pending
+note: "冷启动修复后应可达；验收：bash projects/smart-cs-platform/scripts/uat-smart-cs.sh"
 
 ## Summary
 
 total: 5
 passed: 0
-issues: 2
-pending: 0
+issues: 0
+pending: 5
 skipped: 0
-blocked: 3
+blocked: 0
 
 ## UAT Run
 
 | Run | Date | Pass | Fail | Notes |
 |-----|------|------|------|-------|
-| v1 --auto | 2026-07-17 23:44~23:47 | 0 | startup | scs-db-init 挂载到 docker/db（空目录），schema 未导入 |
-| v1+manual-db | 2026-07-17 23:48~23:51 | 0 | startup | 手工灌库后 RewriteQueryTransformer 缺 {target} |
+| v1 --auto | 2026-07-17 23:44~23:47 | 0 | startup | scs-db-init 挂载到 docker/db（空目录） |
+| v1+manual-db | 2026-07-17 23:48~23:51 | 0 | startup | 缺 {target} |
+| gap-closure | 2026-07-18 | — | — | 06-08/09 已修；health UP 已证；全链路待补跑 |
 
 **验收命令：** `bash projects/smart-cs-platform/scripts/uat-smart-cs.sh`（需 Key + smartcs compose profiles）
-
-**证据：**
-- `docker inspect saa-scs-db-init` Mounts.Source = `.../docker/db`（应为 `projects/smart-cs-platform/db`）
-- `scs-uat.log`: `relation "public.model_profile" does not exist` → 随后 `placeholders must be present in the prompt template: target`
 
 ## Gaps
 
 - truth: "按文档 compose + smartcs profile 后，scs_platform 自动拥有 schema/data，应用可冷启动 health UP"
-  status: failed
-  reason: "User reported: scs-db-init volume ./db 相对首个 compose 文件解析到 docker/db，schema.sql 缺失，init exit 1"
-  severity: blocker
-  test: 1
-  root_cause: "多文件 compose 时 override 内 ./db 相对首个文件父目录 docker/ 解析，挂载到空的 docker/db；kqa/office/smartcs 三处 override 同模式"
-  artifacts:
-    - path: "projects/smart-cs-platform/docker-compose.override.yml"
-      issue: "volumes ./db:/scs-db:ro 解析错误"
-    - path: "projects/knowledge-qa-platform/docker-compose.override.yml"
-      issue: "同样 ./db 相对路径风险"
-    - path: "projects/office-agent-assistant/docker-compose.override.yml"
-      issue: "同样 ./db 相对路径风险"
-  missing:
-    - "将 volume 改为 ../projects/<proj>/db（相对 docker/）或统一 --project-directory"
-    - "smartcs monitor 的 ./monitor/prometheus.yml 同步修正"
+  status: resolved
+  resolved_by: 06-08
+  evidence: "volume ../projects/.../db；inspect Source 正确；init exit 0；health UP"
   debug_session: ".planning/debug/scs-db-init-volume.md"
 
 - truth: "query-rewrite Prompt 满足 Spring AI RewriteQueryTransformer 必填占位符 {target}+{query}，RetrievalAugmentationAdvisor Bean 可创建"
-  status: failed
-  reason: "User reported: 应用启动失败 IllegalArgumentException: placeholders must be present: target；DB/classpath 模板仅有 {query}"
-  severity: blocker
-  test: 5
-  root_cause: "Spring AI 1.1.2 RewriteQueryTransformer 强制 {target}+{query}；classpath 与 db/data.sql 种子均缺 {target}；DB PUBLISHED 优先于 classpath"
-  artifacts:
-    - path: "projects/smart-cs-platform/src/main/resources/prompts/query-rewrite.st"
-      issue: "仅含 {query}"
-    - path: "projects/smart-cs-platform/db/data.sql"
-      issue: "query-rewrite 种子仅含 {query}"
-    - path: "projects/smart-cs-platform/src/main/java/com/flywhl/saa/smartcs/rag/RagPipelineFactory.java"
-      issue: "注入自定义 promptTemplate 触发 PromptAssert"
-  missing:
-    - "模板补齐 {target}+{query}（classpath + data.sql + test 副本）"
-    - "已有库需重跑 init 或幂等 UPDATE 已发布 query-rewrite"
+  status: resolved
+  resolved_by: 06-09
+  evidence: "classpath+种子+幂等 UPDATE；boot 无 PromptAssert target 错误；health UP"
   debug_session: ".planning/debug/query-rewrite-target.md"
