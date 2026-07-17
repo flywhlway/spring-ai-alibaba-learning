@@ -9,6 +9,7 @@
 | [00-overview/03-总体架构与目录规划.md](00-overview/03-总体架构与目录规划.md) | 仓库结构、模块依赖、运行时架构、SSOT 清单、编码/接口/测试规范 |
 | [00-overview/04-技术选型ADR.md](00-overview/04-技术选型ADR.md) | ADR-001~006：框架/Boot 版本/模型策略/向量库/构建/文档六大决策 |
 | [00-overview/05-生产化与运维.md](00-overview/05-生产化与运维.md) | Phase 7：CI、quality-gate、Compose 部署、排障与教学级调优 |
+| [00-overview/06-UAT债务索引.md](00-overview/06-UAT债务索引.md) | Phase 3–6 UAT / HUMAN-UAT 与脚本入口汇总（不进默认 CI） |
 
 ## 1. 教程正文（tutorial/，Phase 2 交付，22 章）
 
