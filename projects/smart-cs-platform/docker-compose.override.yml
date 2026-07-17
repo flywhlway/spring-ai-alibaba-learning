@@ -77,7 +77,7 @@ services:
     ports:
       - "9090:9090"
     volumes:
-      - ./monitor/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      - ../projects/smart-cs-platform/monitor/prometheus.yml:/etc/prometheus/prometheus.yml:ro
     command:
       - "--config.file=/etc/prometheus/prometheus.yml"
       - "--storage.tsdb.path=/prometheus"
