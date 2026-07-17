@@ -3,13 +3,13 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: Full Delivery
 status: executing
-last_updated: "2026-07-17T15:01:21.632Z"
+last_updated: "2026-07-17T15:04:25.209Z"
 last_activity: 2026-07-17
 progress:
   total_phases: 7
   completed_phases: 2
   total_plans: 33
-  completed_plans: 28
+  completed_plans: 29
   percent: 29
 ---
 
@@ -25,11 +25,11 @@ See: .planning/PROJECT.md (updated 2026-07-17)
 ## Current Position
 
 Phase: 07 (production) — EXECUTING
-Plan: 2 of 5
+Plan: 3 of 5
 Status: Ready to execute
 Last activity: 2026-07-17
 
-Progress: [█████████░] 88%
+Progress: [█████████░] 91%
 
 ## Performance Metrics
 
@@ -51,6 +51,7 @@ Progress: [█████████░] 88%
 | Phase 06 P06 | 6min | 3 tasks | 29 files |
 | Phase 06 P07 | 8min | 3 tasks | 17 files |
 | Phase 07 P01 | 3min | 3 tasks | 3 files |
+| Phase 07 P02 | 2min | 2 tasks | 2 files |
 
 ## Accumulated Context
 
@@ -75,6 +76,9 @@ Progress: [█████████░] 88%
 - [Phase 06]: HANDOFF TODO 扫描使用词边界避免 mapToDouble 假阳性
 - [Phase 07]: readiness 采用 --fail-above；基线锁定 Jackson=43/MCP=10/withXxx=29
 - [Phase 07]: quality-gate.sh 为本地与 CI 唯一 blocking 入口（D-07/D-09）
+- [Phase 07]: examples 编译矩阵用 list-examples job 动态 ls，避免 48 项静态漂移
+- [Phase 07]: model-it 独立 workflow + check-dashscope-secret outputs，禁止 job-level if: secrets.*
+- [Phase 07]: optional 模型 IT 仅跑 projects/smart-cs-platform test（step env 注入 Key）
 
 ### Pending Todos
 
@@ -86,7 +90,7 @@ None.
 
 ## Session Continuity
 
-Last session: 2026-07-17T15:00:59.230Z
-Stopped at: Completed 07-01-PLAN.md
+Last session: 2026-07-17T15:04:25.204Z
+Stopped at: Completed 07-02-PLAN.md
 Resume file: None
 Next: `/gsd-execute-phase 7`（继续 07-02）

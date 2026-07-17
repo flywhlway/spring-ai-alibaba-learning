@@ -203,7 +203,7 @@ Plans:
 
 Plans:
 - [x] 07-01-PLAN.md — 硬化 version-audit/readiness + 统一 quality-gate.sh（§7 扫描）
-- [ ] 07-02-PLAN.md — GitHub Actions ci.yml（blocking）+ model-it.yml（secret-gated）
+- [x] 07-02-PLAN.md — GitHub Actions ci.yml（blocking）+ model-it.yml（secret-gated）
 - [ ] 07-03-PLAN.md — deploy-smoke.sh + docs/00-overview/05 生产化与运维
 - [ ] 07-04-PLAN.md — UAT 债务索引 + STATE 登记 Phase 6 Critical（不修代码）
 - [ ] 07-05-PLAN.md — 本地门禁收口验证 + 人工确认
@@ -221,4 +221,4 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 → 7
 | 4. 知识库问答平台 | 6/6 | Complete | 2026-07-05 |
 | 5. 办公 Agent 助手 | delivered | Complete | 2026-07-05 |
 | 6. 智能客服平台 | 7/7 | Complete    | 2026-07-17 |
-| 7. 生产化 | 1/5 | In Progress|  |
+| 7. 生产化 | 2/5 | In Progress|  |
