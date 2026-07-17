@@ -21,7 +21,7 @@
 - [x] **Phase 3: 48 个独立 Demo** - examples/ 全量可 `mvn spring-boot:run` 的最小 Demo (verified 2026-07-05, UAT 48/48)
 - [x] **Phase 4: 知识库问答平台** - knowledge-qa-platform（端口 19100） (completed 2026-07-05)
 - [x] **Phase 5: 办公 Agent 助手** - office-agent-assistant（端口 19200） (completed 2026-07-05)
-- [ ] **Phase 6: 智能客服平台** - smart-cs-platform（端口 19300）
+- [x] **Phase 6: 智能客服平台** - smart-cs-platform（端口 19300） (completed 2026-07-17)
 - [ ] **Phase 7: 生产化** - CI/CD、部署、调优、排障与质量门禁收口
 
 ## Phase Details
@@ -186,7 +186,7 @@ Plans:
 - [x] 06-04-PLAN.md — Wave 3 Agent（LlmRoutingAgent、Supervisor、子 Agent、HITL hooks）
 - [x] 06-05-PLAN.md — Wave 4 会话/工单（SSE Chat、TicketService、HumanHandoffController）
 - [x] 06-06-PLAN.md — Wave 5 admin/ops（model_profile、Prompt、Dashboard、Prometheus 文档）
-- [ ] 06-07-PLAN.md — Wave 6 测试/UAT（单测、Testcontainers IT、uat-smart-cs.sh、06-UAT.md）
+- [x] 06-07-PLAN.md — Wave 6 测试/UAT（单测、Testcontainers IT、uat-smart-cs.sh、06-UAT.md）
 
 ### Phase 7: 生产化
 
@@ -213,5 +213,5 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 → 7
 | 3. 48 个独立 Demo | 14/14 | Verified | 2026-07-05 |
 | 4. 知识库问答平台 | 6/6 | Complete | 2026-07-05 |
 | 5. 办公 Agent 助手 | delivered | Complete | 2026-07-05 |
-| 6. 智能客服平台 | 6/7 | In Progress|  |
+| 6. 智能客服平台 | 7/7 | Complete   | 2026-07-17 |
 | 7. 生产化 | 0/TBD | Not started | - |

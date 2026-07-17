@@ -2,15 +2,15 @@
 gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: Full Delivery
-status: executing
-last_updated: "2026-07-17T14:28:11.349Z"
-last_activity: 2026-07-17 -- Completed 06-06 admin/ops
+status: verifying
+last_updated: "2026-07-17T14:38:32.304Z"
+last_activity: 2026-07-17
 progress:
   total_phases: 7
-  completed_phases: 1
+  completed_phases: 2
   total_plans: 28
-  completed_plans: 26
-  percent: 14
+  completed_plans: 27
+  percent: 29
 ---
 
 # Project State
@@ -24,12 +24,12 @@ See: .planning/PROJECT.md (updated 2026-07-05)
 
 ## Current Position
 
-Phase: 06 (smart-cs-platform) — EXECUTING
+Phase: 06 (smart-cs-platform) — READY FOR VERIFICATION
 Plan: 7 of 7
-Status: Ready to execute
-Last activity: 2026-07-17 -- Completed 06-06 admin/ops
+Status: Phase complete — ready for verification
+Last activity: 2026-07-17 -- Completed 06-07 tests/UAT
 
-Progress: [██████████] 96%
+Progress: [██████████] 100%
 
 ## Performance Metrics
 
@@ -49,6 +49,7 @@ Progress: [██████████] 96%
 | 5. 办公 Agent | delivered | ✅ Complete | 2026-07-05 |
 | Phase 06 P05 | 5min | 3 tasks | 10 files |
 | Phase 06 P06 | 6min | 3 tasks | 29 files |
+| Phase 06 P07 | 8min | 3 tasks | 17 files |
 
 ## Accumulated Context
 
@@ -68,10 +69,13 @@ Progress: [██████████] 96%
 - [Phase 06]: ModelAdmin 双路径 /api/admin/models 与 /api/admin/model-profiles — 对齐计划与 Wave 0 api.http
 - [Phase 06]: AiClientConfig 默认 ChatClient.Builder 使用 FAQ scene 路由
 - [Phase 06]: monitor profile pin Prometheus v2.55.1 / Grafana 11.2.0（T-06-SC）
+- [Phase 06]: IT 基座统一 Mock 向量库与 csIntentRouter，无 API Key 可跑
+- [Phase 06]: Docker 不可用时跳过 IT，CI 无 Key 仍绿
+- [Phase 06]: HANDOFF TODO 扫描使用词边界避免 mapToDouble 假阳性
 
 ### Pending Todos
 
-- Phase 4/5 人工 UAT（需 Milvus/MySQL infra + AI_DASHSCOPE_API_KEY）
+- Phase 4/5/6 人工 UAT（需 infra + AI_DASHSCOPE_API_KEY；Phase 6 用 uat-smart-cs.sh）
 
 ### Blockers/Concerns
 
@@ -79,6 +83,6 @@ None.
 
 ## Session Continuity
 
-Stopped at: Completed 06-06-PLAN.md
-Next: Execute 06-07-PLAN.md (tests/UAT)
+Stopped at: Completed 06-07-PLAN.md
+Next: /gsd-verify-work（Phase 06 UAT）
 Resume: None
