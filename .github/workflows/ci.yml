@@ -1,0 +1,120 @@
+# Blocking CI — 无 AI_DASHSCOPE_API_KEY 依赖（D-01~D-06 / D-09）
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  common-starter:
+    name: common + starter install
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21'
+          cache: maven
+          cache-dependency-path: |
+            pom.xml
+            common/pom.xml
+            starter/pom.xml
+            examples/*/pom.xml
+            projects/*/pom.xml
+      - name: Install common + starter
+        run: mvn -B -pl common,starter -am clean install
+
+  list-examples:
+    name: Discover examples matrix
+    runs-on: ubuntu-latest
+    outputs:
+      matrix: ${{ steps.set-matrix.outputs.matrix }}
+    steps:
+      - uses: actions/checkout@v4
+      - id: set-matrix
+        name: Build examples JSON matrix
+        run: |
+          demos=$(ls -d examples/[0-9]*-*/ | sed 's|examples/||;s|/$||' | jq -R -s -c 'split("\n") | map(select(length>0))')
+          echo "matrix=$demos" >> "$GITHUB_OUTPUT"
+          echo "Discovered $(echo "$demos" | jq 'length') demos"
+
+  examples-compile:
+    name: Compile examples/${{ matrix.demo }}
+    needs: [common-starter, list-examples]
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      max-parallel: 6
+      matrix:
+        demo: ${{ fromJson(needs.list-examples.outputs.matrix) }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21'
+          cache: maven
+          cache-dependency-path: |
+            pom.xml
+            common/pom.xml
+            starter/pom.xml
+            examples/*/pom.xml
+            projects/*/pom.xml
+      - name: Install common + starter (cache warm)
+        run: mvn -B -pl common,starter -am clean install -DskipTests
+      - name: Compile example
+        run: mvn -B -f examples/${{ matrix.demo }}/pom.xml -DskipTests compile
+
+  projects-test:
+    name: Test ${{ matrix.path }}
+    needs: [common-starter]
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - path: projects/knowledge-qa-platform
+          - path: projects/office-agent-assistant
+          - path: projects/smart-cs-platform
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21'
+          cache: maven
+          cache-dependency-path: |
+            pom.xml
+            common/pom.xml
+            starter/pom.xml
+            examples/*/pom.xml
+            projects/*/pom.xml
+      - name: Install common + starter (cache warm)
+        run: mvn -B -pl common,starter -am clean install -DskipTests
+      - name: Test project
+        # 不设 AI_DASHSCOPE_API_KEY — 模型 IT 由 @EnabledIfEnvironmentVariable 跳过
+        run: mvn -B -f ${{ matrix.path }}/pom.xml test
+
+  quality-gate:
+    name: quality-gate
+    needs: [common-starter]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21'
+          cache: maven
+          cache-dependency-path: |
+            pom.xml
+            common/pom.xml
+            starter/pom.xml
+            examples/*/pom.xml
+            projects/*/pom.xml
+      - name: Run quality-gate
+        run: bash scripts/quality-gate.sh
