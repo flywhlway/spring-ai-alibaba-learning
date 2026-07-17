@@ -7,7 +7,7 @@
 ## Milestones
 
 - ✅ **Phase 3: 48 Demo** — 14 plans, UAT 48/48（shipped 2026-07-05）→ [archive](milestones/phase-3-48-demos-ROADMAP.md)
-- 🚧 **v1.0 Full Delivery** — Phases 1–7（3/7 complete）
+- 🚧 **v1.0 Full Delivery** — Phases 1–7 计划已齐；人工 UAT / 06-REVIEW Critical 债务见索引（未整里程碑归档）
 
 ## Phases
 
@@ -22,7 +22,7 @@
 - [x] **Phase 4: 知识库问答平台** - knowledge-qa-platform（端口 19100） (completed 2026-07-05)
 - [x] **Phase 5: 办公 Agent 助手** - office-agent-assistant（端口 19200） (completed 2026-07-05)
 - [x] **Phase 6: 智能客服平台** - smart-cs-platform（端口 19300） (completed 2026-07-17)
-- [ ] **Phase 7: 生产化** - CI/CD、部署、调优、排障与质量门禁收口
+- [x] **Phase 7: 生产化** - CI/CD、部署、调优、排障与质量门禁收口 (completed 2026-07-17)
 
 ## Phase Details
 
@@ -206,7 +206,15 @@ Plans:
 - [x] 07-02-PLAN.md — GitHub Actions ci.yml（blocking）+ model-it.yml（secret-gated）
 - [x] 07-03-PLAN.md — deploy-smoke.sh + docs/00-overview/05 生产化与运维
 - [x] 07-04-PLAN.md — UAT 债务索引 + STATE 登记 Phase 6 Critical（不修代码）
-- [ ] 07-05-PLAN.md — 本地门禁收口验证 + 人工确认
+- [x] 07-05-PLAN.md — 本地门禁收口验证 + 人工确认
+
+**Status**: Complete（2026-07-17）— 本地 `quality-gate` 全绿；远程 Actions 首次绿为可选备注，不阻塞本阶段收口
+
+**Success Criteria 对照（07-05 验证）:**
+
+1. ✅ CI/CD + 部署脚本路径存在并可构建 — `ci.yml` / `model-it.yml` / `deploy-smoke.sh`
+2. ✅ quality-gate 一键覆盖编译抽样 + version-audit + readiness 阈值 — `scripts/quality-gate.sh` exit 0
+3. ✅ §7 扫描无废弃 API / 硬编码密钥 / TODO — quality-gate step 6/6 OK
 
 ## Progress
 
@@ -220,5 +228,5 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 → 7
 | 3. 48 个独立 Demo | 14/14 | Verified | 2026-07-05 |
 | 4. 知识库问答平台 | 6/6 | Complete | 2026-07-05 |
 | 5. 办公 Agent 助手 | delivered | Complete | 2026-07-05 |
-| 6. 智能客服平台 | 7/7 | Complete    | 2026-07-17 |
-| 7. 生产化 | 4/5 | In Progress|  |
+| 6. 智能客服平台 | 7/7 | Complete | 2026-07-17 |
+| 7. 生产化 | 5/5 | Complete | 2026-07-17 |

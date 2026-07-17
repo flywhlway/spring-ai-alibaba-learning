@@ -31,9 +31,9 @@ Brownfield registration: Phase 1–2 VALIDATED（已交付）。Active 工作从
 
 - [x] **REQ-phase-6-smart-cs**: smart-cs-platform（端口 19300）——FAQ 秒答、多智能体协作、工单、人工接管、运营看板；RoutingAgent+Supervisor+Handoffs、Milvus+Redis 语义缓存+ES、HITL、Micrometer/Prometheus/Grafana、Nacos；DB：PostgreSQL + Milvus + Redis + ES
 
-### Phase 7 — 生产化（Active）
+### Phase 7 — 生产化（Validated 2026-07-17）
 
-- [x] **REQ-phase-7-production**: 统一测试、CI/CD、部署、调优与排障；质量门禁可在每阶段收口执行（编译、curl、version-audit、spring-ai-2-readiness、无废弃 API/硬编码密钥/TODO）
+- [x] **REQ-phase-7-production**: 统一测试、CI/CD、部署、调优与排障；质量门禁可在每阶段收口执行（编译、curl、version-audit、spring-ai-2-readiness、无废弃 API/硬编码密钥/TODO）— **本地 quality-gate + 五大交付物核对通过 2026-07-17**
 
 ## v2 Requirements
 
@@ -68,4 +68,4 @@ Deferred. None registered at ingest.
 
 ---
 *Requirements defined: 2026-07-04*
-*Last updated: 2026-07-05 after Phase 3 milestone closure*
+*Last updated: 2026-07-17 after Phase 7 local quality-gate closeout*
