@@ -3,8 +3,8 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: Full Delivery
 status: executing
-last_updated: "2026-07-17T14:19:23.495Z"
-last_activity: 2026-07-17
+last_updated: "2026-07-17T14:20:31.482Z"
+last_activity: 2026-07-17 -- Completed 06-05 会话/工单/HITL
 progress:
   total_phases: 7
   completed_phases: 1
@@ -25,9 +25,9 @@ See: .planning/PROJECT.md (updated 2026-07-05)
 ## Current Position
 
 Phase: 06 (smart-cs-platform) — EXECUTING
-Plan: 2 of 7
+Plan: 6 of 7
 Status: Ready to execute
-Last activity: 2026-07-17
+Last activity: 2026-07-17 -- Completed 06-05 会话/工单/HITL
 
 Progress: [█████████░] 93%
 
@@ -47,6 +47,7 @@ Progress: [█████████░] 93%
 | 3. 48 Demo | 14/14 | ✅ Verified | 2026-07-05 |
 | 4. 知识库问答 | 6/6 | ✅ Complete | 2026-07-05 |
 | 5. 办公 Agent | delivered | ✅ Complete | 2026-07-05 |
+| Phase 06 P05 | 5min | 3 tasks | 10 files |
 
 ## Accumulated Context
 
@@ -60,6 +61,9 @@ Progress: [█████████░] 93%
 - Phase 5：MySQL 业务库 + pgvector 轻量知识 + Redis 短期记忆 + JDBC 长期记忆
 - Phase 5 审批：SequentialAgent（摘要→意见）+ LlmRoutingAgent（金额超阈值升级）
 - SQL Tool 白名单：report_sales, report_attendance, approval_request
+- [Phase 06]: createOrEscalate 经 OPEN→AI_PROCESSING→PENDING_HUMAN 合法路径 — ALLOWED_TRANSITIONS 不含 OPEN→PENDING_HUMAN 直边
+- [Phase 06]: HITL pending 演示用 ConcurrentHashMap，生产需 Redis/DB 持久化 — 与 37-demo 一致，类注释标明生产约束
+- [Phase 06]: approve 同时支持 query threadId 与 JSON body — 兼容计划契约与 api.http
 
 ### Pending Todos
 
@@ -71,6 +75,6 @@ None.
 
 ## Session Continuity
 
-Stopped at: Phase 5 execution complete
-Next: `/gsd-discuss-phase 6` 或 `/gsd-plan-phase 6 --auto`
-Resume: `projects/office-agent-assistant/README.md`
+Stopped at: Completed 06-05-PLAN.md
+Next: Execute 06-06-PLAN.md (admin/ops)
+Resume: None

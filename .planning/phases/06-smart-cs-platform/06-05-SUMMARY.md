@@ -79,7 +79,7 @@ Each task was committed atomically:
 3. **Task 2: ChatController + ChatService SSE** - `6eddb72` (feat)
 4. **Task 3: HumanHandoffController** - `599014d` (feat)
 
-**Plan metadata:** （待 docs 提交）
+**Plan metadata:** `28811ab` (docs: complete plan)
 
 ## Files Created/Modified
 
