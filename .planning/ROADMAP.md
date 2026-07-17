@@ -187,7 +187,7 @@ Plans:
 - [x] 06-05-PLAN.md — Wave 4 会话/工单（SSE Chat、TicketService、HumanHandoffController）
 - [x] 06-06-PLAN.md — Wave 5 admin/ops（model_profile、Prompt、Dashboard、Prometheus 文档）
 - [x] 06-07-PLAN.md — Wave 6 测试/UAT（单测、Testcontainers IT、uat-smart-cs.sh、06-UAT.md）
-- [ ] 06-08-PLAN.md — Gap：三处 override volume 相对 docker/ 路径 + prometheus
+- [x] 06-08-PLAN.md — Gap：三处 override volume 相对 docker/ 路径 + prometheus
 - [ ] 06-09-PLAN.md — Gap：query-rewrite {target}+{query} + 幂等 UPDATE + 冷启动说明
 
 ### Phase 7: 生产化
@@ -230,5 +230,5 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 → 7
 | 3. 48 个独立 Demo | 14/14 | Verified | 2026-07-05 |
 | 4. 知识库问答平台 | 6/6 | Complete | 2026-07-05 |
 | 5. 办公 Agent 助手 | delivered | Complete | 2026-07-05 |
-| 6. 智能客服平台 | 7/7 | Complete | 2026-07-17 |
+| 6. 智能客服平台 | 8/9 | In Progress|  |
 | 7. 生产化 | 5/5 | Complete    | 2026-07-17 |
