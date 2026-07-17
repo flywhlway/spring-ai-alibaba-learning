@@ -28,10 +28,15 @@ VALUES ('cs-router-system', 1,
         'FAQ 问答系统提示词', 'PUBLISHED', now(),
         (SELECT id FROM sys_user WHERE username = 'admin')),
        ('query-rewrite', 1,
-        '将用户问题改写为适合向量检索的独立查询语句，保留关键实体与限定词，输出改写后的查询本身，不要解释。原问题：{query}',
+        E'将用户问题改写为适合查询 {target} 的独立检索语句，保留关键实体与限定词，输出改写后的查询本身，不要解释。\n\n原问题：\n{query}',
         '检索前置的查询改写模板', 'PUBLISHED', now(),
         (SELECT id FROM sys_user WHERE username = 'admin'))
 ON CONFLICT (template_key, version) DO NOTHING;
+
+-- 幂等修复：已有库 ON CONFLICT 不会刷新 content；缺 {target} 时补齐（RewriteQueryTransformer 强制占位符）
+UPDATE prompt_template
+SET content = E'将用户问题改写为适合查询 {target} 的独立检索语句，保留关键实体与限定词，输出改写后的查询本身，不要解释。\n\n原问题：\n{query}'
+WHERE template_key = 'query-rewrite' AND content NOT LIKE '%{target}%';
 
 -- ---------------------------------------------------------------
 -- 模型配置：FAQ 场景优先 qwen-plus，BUSINESS/TICKET 场景同款，DeepSeek 作为降级备份
