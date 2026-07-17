@@ -110,6 +110,11 @@ docker compose -f docker/docker-compose.yml \
 
 拉起：Redis(6379) / PostgreSQL / Milvus(+etcd) / Elasticsearch / Nacos，并叠加本项目 `scs-db-init`（建库 `scs_platform` + 导入 DDL/演示数据）与 `scs-redis-stack`（6380，语义缓存专用）。**Milvus 冷启动约 30~60s**，等 `docker compose ps` 全部 healthy 再启动应用。
 
+**排障（冷启动）：**
+- override 内 db volume 相对首文件目录 `docker/`，已写为 `../projects/smart-cs-platform/db`；若曾用错误 `./db` 挂载起过 init，请 `--force-recreate scs-db-init`。
+- 已有 `scs_platform` 且 `query-rewrite` Prompt 缺 `{target}`：重跑 init（`data.sql` 含幂等 UPDATE），或 `DROP DATABASE scs_platform` 后重建。仅改 classpath `.st` 不够——DB 中 PUBLISHED 模板优先。
+- 健康检查：`curl http://localhost:19300/actuator/health` 期望 UP。
+
 可选监控栈（Prometheus + Grafana）：
 
 ```bash
