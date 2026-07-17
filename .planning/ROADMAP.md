@@ -189,6 +189,7 @@ Plans:
 - [x] 06-07-PLAN.md — Wave 6 测试/UAT（单测、Testcontainers IT、uat-smart-cs.sh、06-UAT.md）
 - [x] 06-08-PLAN.md — Gap：三处 override volume 相对 docker/ 路径 + prometheus
 - [x] 06-09-PLAN.md — Gap：query-rewrite {target}+{query} + 幂等 UPDATE + 冷启动说明
+- [ ] 06-10-PLAN.md — Gap：AccessDenied→403 + UAT 脚本 D-14 soft-allow + HS256/SSE hotfix 提交
 
 ### Phase 7: 生产化
 
