@@ -61,7 +61,7 @@ completed: 2026-07-17
 1. **Task 1: 编写 UAT 债务索引页** - `9133ca7` (docs)
 2. **Task 2: STATE 登记 Phase 6 Critical 债务** - `6c0b7f9` (docs)
 
-**Plan metadata:** （见 final docs commit）
+**Plan metadata:** `7b91565` (docs: complete plan)
 
 ## Files Created/Modified
 
