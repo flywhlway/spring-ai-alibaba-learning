@@ -81,7 +81,7 @@ Each task was committed atomically:
 2. **Task 2: PromptAdmin + FaqAdmin + PromptPublishService** - `0fe59a6` (feat)
 3. **Task 3: Dashboard + Prometheus/Grafana 文档** - `f53c9e2` (feat)
 
-**Plan metadata:** （本提交）
+**Plan metadata:** `208b08a` (docs: complete plan)
 
 ## Files Created/Modified
 
