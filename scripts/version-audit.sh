@@ -20,5 +20,20 @@ else
 fi
 
 echo "== 4. 确认父 POM 同时导入两个 BOM =="
-grep -q "spring-ai-alibaba-bom" pom.xml && echo "  [OK] 主 BOM 已导入" || echo "  [缺失] spring-ai-alibaba-bom"
-grep -q "spring-ai-alibaba-extensions-bom" pom.xml && echo "  [OK] extensions BOM 已导入" || echo "  [缺失] extensions BOM"
+BOM_MISSING=0
+if grep -q "spring-ai-alibaba-bom" pom.xml; then
+  echo "  [OK] 主 BOM 已导入"
+else
+  echo "  [缺失] spring-ai-alibaba-bom — 父 POM 必须同时导入双 BOM"
+  BOM_MISSING=1
+fi
+if grep -q "spring-ai-alibaba-extensions-bom" pom.xml; then
+  echo "  [OK] extensions BOM 已导入"
+else
+  echo "  [缺失] extensions BOM — 父 POM 必须同时导入双 BOM"
+  BOM_MISSING=1
+fi
+if [[ "$BOM_MISSING" -ne 0 ]]; then
+  echo "  [失败] 缺少必需 BOM，退出码 1"
+  exit 1
+fi
