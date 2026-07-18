@@ -67,10 +67,11 @@ public class TicketService {
     public CsTicket createTicket(String conversationId, Long customerId, String summary, String priority,
             String actor) {
         String normalizedPriority = priority == null || priority.isBlank() ? "NORMAL" : priority.toUpperCase();
+        TicketService proxy = self != null ? self : this;
         DataIntegrityViolationException lastConflict = null;
         for (int attempt = 1; attempt <= TICKET_NO_MAX_RETRIES; attempt++) {
             try {
-                return self.createTicketInNewTx(conversationId, customerId, summary, normalizedPriority, actor);
+                return proxy.createTicketInNewTx(conversationId, customerId, summary, normalizedPriority, actor);
             } catch (DataIntegrityViolationException ex) {
                 lastConflict = ex;
             }

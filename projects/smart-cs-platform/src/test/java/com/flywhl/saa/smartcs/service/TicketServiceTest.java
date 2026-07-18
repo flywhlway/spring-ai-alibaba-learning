@@ -47,15 +47,18 @@ class TicketServiceTest {
     void setUp() {
         store.clear();
         idSeq.set(1);
-        ticketService = new TicketService(ticketRepository, ticketEventRepository);
-        when(ticketRepository.save(any(CsTicket.class))).thenAnswer(invocation -> {
+        // 单测无 Spring 代理：self=null 时回退 this（生产由 @Lazy 自注入）
+        ticketService = new TicketService(ticketRepository, ticketEventRepository, null);
+        org.mockito.stubbing.Answer<CsTicket> persist = invocation -> {
             CsTicket t = invocation.getArgument(0);
             if (t.getId() == null) {
                 t.setId(idSeq.getAndIncrement());
             }
             store.put(t.getId(), t);
             return t;
-        });
+        };
+        when(ticketRepository.save(any(CsTicket.class))).thenAnswer(persist);
+        when(ticketRepository.saveAndFlush(any(CsTicket.class))).thenAnswer(persist);
         when(ticketRepository.findById(anyLong())).thenAnswer(invocation ->
                 Optional.ofNullable(store.get(invocation.getArgument(0))));
         when(ticketEventRepository.save(any(CsTicketEvent.class))).thenAnswer(invocation -> invocation.getArgument(0));
