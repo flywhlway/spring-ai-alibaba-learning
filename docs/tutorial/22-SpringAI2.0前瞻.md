@@ -183,7 +183,8 @@ bash scripts/spring-ai-2-readiness.sh .
 
 ## 下一章预告
 
-本章是 Phase 2（教程正文 01~22 章）的收官。接下来的 Phase 3 将基于这套完整知识体系，交付 40~60 个独立可运行的 Demo 工程（`examples/` 目录），把每一章的核心 API 都落成可以 `git clone` 后直接 `mvn spring-boot:run` 的最小可运行样例；再往后的 Phase 4~6 将交付三个真实企业级项目，在复杂真实场景中检验本教程知识体系的完整性。
+本章是 Phase 2（教程正文 01~22 章）的收官。  
+> **交付更新（2026-07-18）**：Phase 3（48 Demo）、Phase 4～6（三企业项目）与 Phase 7（生产化）均已随 **v1.0 Full Delivery** 落地——入口见根 [`README.md`](../../README.md)、清单见 [`examples/README.md`](../../examples/README.md) / [`projects/README.md`](../../projects/README.md)。
 
 ## 本章总结
 
@@ -213,4 +214,4 @@ Spring AI 2.0 已于 2026-06-12 GA，带来了 Jackson 3、MCP 包重组、Optio
 - **16~18 章**：StructuredOutput、Streaming、Observability——生产级工程化能力；
 - **19~22 章**：BestPractice（统一 Starter 落地）、企业实践、版本升级指南、2.0 前瞻——从"会用 API"到"能负责任地运营一个企业级 AI 系统"的最后一公里。
 
-第 3 部分（Phase 3）将基于这套完整知识体系，交付 48 个独立可运行的 Demo 工程；第 4~6 部分交付三个真实企业级项目，检验本教程知识体系在复杂真实场景下的完整性与实用性。
+第 3～7 部分（48 Demo · 三企业项目 · 生产化）已随 v1.0 交付完毕；建议按根 README 学习大纲「教程 → Demo → 企业项目 → 生产化」路径实操验证本教程知识体系。

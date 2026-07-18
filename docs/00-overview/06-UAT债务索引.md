@@ -21,7 +21,7 @@
 ## 快速入口
 
 ```bash
-source scripts/setup-env.sh && bash scripts/env-check.sh
+source scripts/setup-env.local.sh && bash scripts/env-check.sh
 bash scripts/infra.sh up core   # 按项目再叠 vector/search 等
 
 bash scripts/uat-phase3.sh

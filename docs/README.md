@@ -1,6 +1,8 @@
 # docs —— 教程总目录
 
-## 0. 总览文档（Phase 1，已交付）
+> **v1.0（2026-07-18）**：总览 + 22 章教程均已交付；学习入口见根 [`README.md`](../README.md)。
+
+## 0. 总览文档（Phase 1 / 7，已交付）
 
 | 文档 | 内容 |
 |---|---|
@@ -11,7 +13,7 @@
 | [00-overview/05-生产化与运维.md](00-overview/05-生产化与运维.md) | Phase 7：CI、quality-gate、Compose 部署、排障与教学级调优 |
 | [00-overview/06-UAT债务索引.md](00-overview/06-UAT债务索引.md) | Phase 3–6 UAT / HUMAN-UAT 与脚本入口汇总（不进默认 CI） |
 
-## 1. 教程正文（tutorial/，Phase 2 交付，22 章）
+## 1. 教程正文（tutorial/，Phase 2 已交付，22 章）
 
 | 章 | 文件 | 主题 |
 |---|---|---|

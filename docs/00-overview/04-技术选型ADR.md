@@ -67,7 +67,7 @@
 
 ## ADR-005：Maven 多模块 + 四 BOM 叠加导入
 
-**Context**：禁止 Gradle；仓库含 40~60 Demo + 3 项目，版本漂移风险极高。
+**Context**：禁止 Gradle；仓库含 48 Demo + 3 项目，版本漂移风险极高。
 
 **Decision**：单仓多模块；父 POM 依序导入 `spring-boot-dependencies` → `spring-ai-bom` → `spring-ai-alibaba-bom` → `spring-ai-alibaba-extensions-bom`；不使用 `spring-boot-starter-parent` 作为 parent（保留自定义父 POM 的继承位），Boot 插件与编译链在父 POM pluginManagement 统一。子模块与所有 Demo/项目**禁止出现任何版本号**。
 
