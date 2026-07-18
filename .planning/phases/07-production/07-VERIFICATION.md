@@ -1,9 +1,14 @@
 ---
 phase: 07-production
 verified: 2026-07-17T15:19:53Z
-status: human_needed
+status: passed
 score: 12/12 must-haves verified
 overrides_applied: 0
+human_verification_closed: 2026-07-18
+human_verification_evidence: 07-HUMAN-UAT.md（required 2/2 pass；optional Actions/smoke deferred）
+deferred_human_items:
+  - "远程 GitHub Actions 首次绿（可选）"
+  - "deploy-smoke runtime 全量（可选）"
 re_verification: false
 human_verification:
   - test: "打开 docs/00-overview/05-生产化与运维.md，快速通读 CI / 门禁 / 部署 / 排障章节"

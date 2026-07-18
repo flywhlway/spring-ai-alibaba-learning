@@ -19,15 +19,15 @@ Brownfield registration: Phase 1–2 VALIDATED（已交付）。Active 工作从
 
 - [x] **REQ-phase-3-demos**: 将教程各章核心 API 落成 48 个可独立 `mvn spring-boot:run` 的最小 Demo；编号/命名/端口以 examples/README.md 为 SSOT，满足 HANDOFF §3 验收（独立 pom、端口 180NN、infra profiles、环境变量密钥、REST+curl+README+api.http、Testcontainers/EnabledIfEnvironmentVariable、复用 common/starter、零 TODO/零废弃 API）— **UAT 48/48 通过 2026-07-05**
 
-### Phase 4 — 知识库问答（Active）
+### Phase 4 — 知识库问答（Validated 2026-07-18）
 
 - [x] **REQ-phase-4-knowledge-qa**: knowledge-qa-platform（端口 19100）——制度/手册/技术文档统一问答；MinIO+ETL、DashScope Embedding、RAG+Citation、多模型、Redis ChatMemory、Prompt 管理、Security+审计+Micrometer、SSE；DB：PostgreSQL + Milvus + Redis
 
-### Phase 5 — 办公 Agent（Active）
+### Phase 5 — 办公 Agent（Validated 2026-07-18）
 
-- [ ] **REQ-phase-5-office-agent**: office-agent-assistant（端口 19200）——会议纪要/日报/邮件/数据查询/日程与审批；Prompt 模板+结构化输出、SQL/HTTP/Excel/Calendar Tools、MCP Client、Agent 编排、Redis+JDBC 记忆；DB：MySQL + pgvector + Redis
+- [x] **REQ-phase-5-office-agent**: office-agent-assistant（端口 19200）——会议纪要/日报/邮件/数据查询/日程与审批；Prompt 模板+结构化输出、SQL/HTTP/Excel/Calendar Tools、MCP Client、Agent 编排、Redis+JDBC 记忆；DB：MySQL + pgvector + Redis — **脚本 UAT 12/0 通过 2026-07-18**
 
-### Phase 6 — 智能客服（Active）
+### Phase 6 — 智能客服（Validated 2026-07-18）
 
 - [x] **REQ-phase-6-smart-cs**: smart-cs-platform（端口 19300）——FAQ 秒答、多智能体协作、工单、人工接管、运营看板；RoutingAgent+Supervisor+Handoffs、Milvus+Redis 语义缓存+ES、HITL、Micrometer/Prometheus/Grafana、Nacos；DB：PostgreSQL + Milvus + Redis + ES
 
@@ -57,7 +57,7 @@ Deferred. None registered at ingest.
 | REQ-phase-2-tutorials-starter | Phase 2 | Complete |
 | REQ-phase-3-demos | Phase 3 | Complete |
 | REQ-phase-4-knowledge-qa | Phase 4 | Complete |
-| REQ-phase-5-office-agent | Phase 5 | Pending |
+| REQ-phase-5-office-agent | Phase 5 | Complete |
 | REQ-phase-6-smart-cs | Phase 6 | Complete |
 | REQ-phase-7-production | Phase 7 | Complete |
 
@@ -68,4 +68,4 @@ Deferred. None registered at ingest.
 
 ---
 *Requirements defined: 2026-07-04*
-*Last updated: 2026-07-17 after Phase 7 local quality-gate closeout*
+*Last updated: 2026-07-18 after Phase 4/5 HUMAN-UAT closeout + v1.0 milestone audit*

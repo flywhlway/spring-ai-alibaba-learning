@@ -1,9 +1,13 @@
 ---
 phase: 04-knowledge-qa-platform
 verified: 2026-07-05T15:42:00Z
-status: human_needed
+status: passed
 score: 28/29 must-haves verified
 overrides_applied: 0
+human_verification_closed: 2026-07-18
+human_verification_evidence: 04-HUMAN-UAT.md (script UAT 8/0 exit 0)
+deferred_human_items:
+  - "管理员上传文档并 reindex 全路径未单独压测（ask/stream citations 已覆盖索引就绪）"
 human_verification:
   - test: "启动 infra + 应用后执行 04-UAT.md §2.1 同步问答"
     expected: "code=0，data.answer 含差旅/住宿费相关内容，data.citations 非空"

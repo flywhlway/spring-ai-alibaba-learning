@@ -1,15 +1,18 @@
 ---
 phase: 06-smart-cs-platform
 verified: 2026-07-17T16:20:00Z
-status: human_needed
+status: passed
 score: 34/35 must-haves verified
 overrides_applied: 0
+human_verification_closed: 2026-07-18
+human_verification_evidence: 06-HUMAN-UAT.md 5/5 + uat-smart-cs.sh exit 0 + 06-REVIEW-FIX 8/8
 re_verification:
   previous_status: human_needed
   previous_score: 27/28
   gaps_closed:
     - "按文档 compose + smartcs profile 后，scs_platform 自动拥有 schema/data（scs-db-init 挂载）"
     - "query-rewrite Prompt 满足 RewriteQueryTransformer 必填占位符 {target}+{query}，Bean 可创建"
+    - "HUMAN-UAT + REVIEW-FIX 关闭 human_needed（2026-07-18）"
   gaps_remaining: []
   regressions: []
 human_verification:
