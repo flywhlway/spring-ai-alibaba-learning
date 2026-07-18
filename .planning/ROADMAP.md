@@ -189,7 +189,7 @@ Plans:
 - [x] 06-07-PLAN.md — Wave 6 测试/UAT（单测、Testcontainers IT、uat-smart-cs.sh、06-UAT.md）
 - [x] 06-08-PLAN.md — Gap：三处 override volume 相对 docker/ 路径 + prometheus
 - [x] 06-09-PLAN.md — Gap：query-rewrite {target}+{query} + 幂等 UPDATE + 冷启动说明
-- [ ] 06-10-PLAN.md — Gap：AccessDenied→403 + UAT 脚本 D-14 soft-allow + HS256/SSE hotfix 提交
+- [x] 06-10-PLAN.md — Gap：AccessDenied→403 + UAT 脚本 D-14 soft-allow + HS256/SSE hotfix 提交
 
 ### Phase 7: 生产化
 
@@ -231,5 +231,5 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 → 7
 | 3. 48 个独立 Demo | 14/14 | Verified | 2026-07-05 |
 | 4. 知识库问答平台 | 6/6 | Complete | 2026-07-05 |
 | 5. 办公 Agent 助手 | delivered | Complete | 2026-07-05 |
-| 6. 智能客服平台 | 9/9 | Complete    | 2026-07-17 |
+| 6. 智能客服平台 | 10/10 | Complete   | 2026-07-18 |
 | 7. 生产化 | 5/5 | Complete    | 2026-07-17 |

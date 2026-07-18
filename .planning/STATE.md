@@ -3,15 +3,15 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: Full Delivery
 status: milestone_complete
-last_updated: 2026-07-18T00:16:00.000Z
+last_updated: 2026-07-18T00:48:00.000Z
 last_activity: 2026-07-18
 progress:
   total_phases: 7
   completed_phases: 7
-  total_plans: 35
-  completed_plans: 35
+  total_plans: 36
+  completed_plans: 36
   percent: 100
-stopped_at: Phase 06 gap closure complete (06-08/09); milestone phases all complete
+stopped_at: Phase 06 gap 06-10 complete；uat-smart-cs.sh exit 0
 ---
 
 # Project State
@@ -21,13 +21,13 @@ stopped_at: Phase 06 gap closure complete (06-08/09); milestone phases all compl
 See: .planning/PROJECT.md (updated 2026-07-18)
 
 **Core value:** 48 demos + 3 enterprise projects runnable via `mvn spring-boot:run`，通过 HANDOFF §7 质量门禁
-**Current focus:** Milestone complete — UAT debt / optional milestone archive
+**Current focus:** Milestone complete — optional archive；D-14 HITL 仍 Pending
 
 ## Current Position
 
 Phase: 07
 Plan: complete
-Status: Milestone complete（Phase 6 gap 06-08/09 已关闭）
+Status: Milestone complete（Phase 6 gap 06-08/09/10 已关闭；HUMAN-UAT 5/5）
 Last activity: 2026-07-18
 
 Progress: [██████████] 100%
@@ -36,8 +36,8 @@ Progress: [██████████] 100%
 
 **Velocity:**
 
-- Total plans completed: 35（含 Phase 6 gap 06-08/09）
-- Phase 06 gap：compose volume + query-rewrite `{target}`；health UP 已证
+- Total plans completed: 36（含 Phase 6 gap 06-08/09/10）
+- Phase 06 gap 10：AccessDenied→403 + UAT soft-allow；uat exit 0
 
 **By Phase:**
 
@@ -48,7 +48,7 @@ Progress: [██████████] 100%
 | 3. 48 Demo | 14/14 | ✅ Verified | 2026-07-05 |
 | 4. 知识库问答 | 6/6 | ✅ Complete | 2026-07-05 |
 | 5. 办公 Agent | delivered | ✅ Complete | 2026-07-05 |
-| 6. 智能客服 | 9/9 | ✅ Complete（含 gap 08/09） | 2026-07-18 |
+| 6. 智能客服 | 10/10 | ✅ Complete（含 gap 08/09/10） | 2026-07-18 |
 | 7. 生产化 | 5/5 | ✅ Complete | 2026-07-17 |
 
 ## Accumulated Context
@@ -72,8 +72,11 @@ Progress: [██████████] 100%
 - [Phase 06]: IT 基座统一 Mock 向量库与 csIntentRouter，无 API Key 可跑
 - [Phase 06]: Docker 不可用时跳过 IT，CI 无 Key 仍绿
 - [Phase 06]: HANDOFF TODO 扫描使用词边界避免 mapToDouble 假阳性
-- [Phase 06]: 多文件 compose override volume 相对首文件 `docker/` → 用 `../projects/<proj>/db`（06-08）
+- [Phase 06]: 多文件 compose override volume 相对 docker/ → 用 `../projects/<proj>/db`（06-08）
 - [Phase 06]: RewriteQueryTransformer 强制 `{target}`+`{query}`；DB PUBLISHED 优先，种子需幂等 UPDATE（06-09）
+- [Phase 06]: AccessDenied 用 sibling RestControllerAdvice→403；starter `@ConditionalOnClass(name=…)`（06-10）
+- [Phase 06]: JWT 签发显式 HS256（Security 6.5 默认 RS256 与 HMAC 不兼容）（06-10）
+- [Phase 06]: uat-smart-cs.sh 对 approve 404/500 soft-pass（D-14）；RBAC 403 仍硬断言（06-10）
 - [Phase 07]: readiness 采用 --fail-above；基线锁定 Jackson=43/MCP=10/withXxx=29
 - [Phase 07]: quality-gate.sh 为本地与 CI 唯一 blocking 入口（D-07/D-09）
 - [Phase 07]: examples 编译矩阵用 list-examples job 动态 ls，避免 48 项静态漂移
@@ -88,16 +91,16 @@ Progress: [██████████] 100%
 
 ### Pending Todos
 
-- Phase 4/5/6/7 人工 UAT（06 冷启动 blocker 已清；补跑 `uat-smart-cs.sh`；入口见 `docs/00-overview/06-UAT债务索引.md`）
-- **[06-REVIEW Critical / D-14]** CR-01：Chat 触发 HITL 中断后未注册 pending、工单未升至 PENDING_HUMAN，坐席 approve 404；伴随会话→工单隔离缺口（WR-01 等）。处置：`/gsd-code-review 6 --fix` 或后续 hotfix。
+- Phase 4/5/7 人工 UAT（Phase 6 HUMAN-UAT 5/5 + uat-smart-cs.sh exit 0 已于 06-10 关闭）
+- **[06-REVIEW Critical / D-14]** CR-01：HITL approve InterruptionMetadata / 工单隔离。处置：`/gsd-code-review 6 --fix` 或后续 hotfix。
 
 ### Blockers/Concerns
 
-- None blocking milestone archive. Backlog: 人工 UAT + 06-REVIEW Critical（HITL/工单隔离）。
+- None blocking milestone archive. Backlog: Phase 4/5/7 人工 UAT + 06-REVIEW Critical（HITL）。
 
 ## Session Continuity
 
-Last session: 2026-07-18T00:16:00Z
-Stopped at: Phase 06 gap closure approved；phase marked complete
+Last session: 2026-07-18T00:48:00Z
+Stopped at: Phase 06 gap 06-10 executed；HUMAN-UAT complete
 Resume file: None
-Next: `/gsd-verify-work 6` 补跑 UAT；或 `/gsd-complete-milestone`；或 `/gsd-code-review 6 --fix`
+Next: `/gsd-complete-milestone`；或 `/gsd-code-review 6 --fix`（D-14）

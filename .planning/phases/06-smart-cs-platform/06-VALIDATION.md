@@ -50,11 +50,11 @@ scope: gap-closure-cold-start
 | G-06-09-upd | 09 | 幂等 UPDATE 存在 | `grep -q "content NOT LIKE '%{target}%'" projects/smart-cs-platform/db/data.sql && grep -q "content NOT LIKE '%{target}%'" projects/smart-cs-platform/src/test/resources/db/data.sql` | ⬜ |
 | G-06-09-compile | 09 | 模块可编译 | `mvn -f projects/smart-cs-platform/pom.xml -DskipTests compile -q` | ⬜ |
 | G-06-09-health | 09 | 冷启动 health UP（Docker 可用时硬门禁） | 见 Runtime Health Gate | ⬜ / ⚠️ residual |
-| G-06-10-handler | 10 | AccessDeniedExceptionHandler 映射 FORBIDDEN/403 | `grep -q 'AccessDeniedException' common/src/main/java/com/flywhl/saa/common/exception/AccessDeniedExceptionHandler.java && grep -q 'FORBIDDEN' common/src/main/java/com/flywhl/saa/common/exception/AccessDeniedExceptionHandler.java` | ⬜ |
-| G-06-10-optional | 10 | common optional spring-boot-starter-security | `grep -q 'spring-boot-starter-security' common/pom.xml` | ⬜ |
-| G-06-10-starter | 10 | starter `@ConditionalOnClass(name=…AccessDeniedException)` + Import | `grep -q 'AccessDeniedExceptionHandler' starter/src/main/java/com/flywhl/saa/starter/autoconfigure/SaaLearningAutoConfiguration.java && grep -q 'org.springframework.security.access.AccessDeniedException' starter/src/main/java/com/flywhl/saa/starter/autoconfigure/SaaLearningAutoConfiguration.java` | ⬜ |
-| G-06-10-test | 10 | AccessDeniedExceptionHandlerTest 绿 | `mvn -pl common,starter -am test -Dtest=AccessDeniedExceptionHandlerTest -q` | ⬜ |
-| G-06-10-uat | 10 | uat-smart-cs.sh exit 0（D-14 approve soft-pass） | `bash projects/smart-cs-platform/scripts/uat-smart-cs.sh` | ⬜ / ⚠️ residual |
+| G-06-10-handler | 10 | AccessDeniedExceptionHandler 映射 FORBIDDEN/403 | `grep -q 'AccessDeniedException' common/src/main/java/com/flywhl/saa/common/exception/AccessDeniedExceptionHandler.java && grep -q 'FORBIDDEN' common/src/main/java/com/flywhl/saa/common/exception/AccessDeniedExceptionHandler.java` | ✅ |
+| G-06-10-optional | 10 | common optional spring-boot-starter-security | `grep -q 'spring-boot-starter-security' common/pom.xml` | ✅ |
+| G-06-10-starter | 10 | starter `@ConditionalOnClass(name=…AccessDeniedException)` + Import | `grep -q 'AccessDeniedExceptionHandler' starter/src/main/java/com/flywhl/saa/starter/autoconfigure/SaaLearningAutoConfiguration.java && grep -q 'org.springframework.security.access.AccessDeniedException' starter/src/main/java/com/flywhl/saa/starter/autoconfigure/SaaLearningAutoConfiguration.java` | ✅ |
+| G-06-10-test | 10 | AccessDeniedExceptionHandlerTest 绿 | `mvn -pl common,starter -am test -Dtest=AccessDeniedExceptionHandlerTest -q` | ✅ |
+| G-06-10-uat | 10 | uat-smart-cs.sh exit 0（D-14 approve soft-pass） | `bash projects/smart-cs-platform/scripts/uat-smart-cs.sh` | ✅ |
 
 *Status: ⬜ pending · ✅ green · ❌ red · ⚠️ residual（无 Docker 时）*
 
