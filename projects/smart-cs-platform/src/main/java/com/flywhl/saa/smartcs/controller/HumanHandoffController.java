@@ -3,7 +3,6 @@ package com.flywhl.saa.smartcs.controller;
 import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
-import java.util.concurrent.ConcurrentHashMap;
 
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -30,6 +29,7 @@ import com.flywhl.saa.smartcs.model.entity.CsTicket;
 import com.flywhl.saa.smartcs.model.entity.SysUser;
 import com.flywhl.saa.smartcs.model.vo.HitlSessionResponse;
 import com.flywhl.saa.smartcs.service.AuthService;
+import com.flywhl.saa.smartcs.service.HitlPendingStore;
 import com.flywhl.saa.smartcs.service.TicketService;
 
 import jakarta.validation.Valid;
@@ -38,8 +38,8 @@ import jakarta.validation.Valid;
  * 人工接管 HITL API：start 触发 {@code humanEscalationAgent} 中断；approve 携带
  * {@code addHumanFeedback} + {@code resume()} 恢复，并推进工单至 HUMAN_HANDLING。
  *
- * <p>演示环境用进程内 {@link ConcurrentHashMap} 缓存 pending
- * {@link InterruptionMetadata}；生产应持久化（Redis/DB），进程重启会丢失待审批会话。
+ * <p>pending {@link InterruptionMetadata} 由 {@link HitlPendingStore} 统一管理，
+ * 与 Chat 中断路径共享；演示环境进程内存储，生产应持久化（Redis/DB）。
  *
  * <p>{@code threadId} 与 {@code cs_conversation.conversation_id} 绑定（全链路 UUID）。
  *
@@ -53,19 +53,17 @@ public class HumanHandoffController {
     private final ReactAgent humanEscalationAgent;
     private final TicketService ticketService;
     private final AuthService authService;
-
-    /**
-     * 演示用内存 pending 表；生产应改为 Redis/DB 持久化。
-     */
-    private final ConcurrentHashMap<String, InterruptionMetadata> pendingByThread = new ConcurrentHashMap<>();
+    private final HitlPendingStore hitlPendingStore;
 
     public HumanHandoffController(
             @Qualifier("humanEscalationAgent") ReactAgent humanEscalationAgent,
             TicketService ticketService,
-            AuthService authService) {
+            AuthService authService,
+            HitlPendingStore hitlPendingStore) {
         this.humanEscalationAgent = humanEscalationAgent;
         this.ticketService = ticketService;
         this.authService = authService;
+        this.hitlPendingStore = hitlPendingStore;
     }
 
     @PostMapping("/start")
@@ -82,7 +80,7 @@ public class HumanHandoffController {
         Optional<NodeOutput> output = humanEscalationAgent.invokeAndGetOutput(taggedQuery, config);
 
         if (output.isPresent() && output.get() instanceof InterruptionMetadata interruption) {
-            pendingByThread.put(threadId, interruption);
+            hitlPendingStore.put(threadId, interruption, HitlPendingStore.ResumeAgent.HUMAN_ESCALATION);
             CsTicket ticket = ticketService.transitionToPendingHuman(
                     threadId, user.getId(), request.query(), user.getRole().name());
             return Result.ok(new HitlSessionResponse(
@@ -108,23 +106,24 @@ public class HumanHandoffController {
         String resolvedThreadId = resolveThreadId(threadId, body);
         SysUser agent = authService.requireCurrentUser();
 
-        InterruptionMetadata pending = pendingByThread.remove(resolvedThreadId);
-        if (pending == null) {
+        HitlPendingStore.PendingSession pendingSession = hitlPendingStore.remove(resolvedThreadId);
+        if (pendingSession == null) {
             throw new BizException(CommonResultCode.NOT_FOUND,
                     "无待审批会话或 threadId 无效：" + resolvedThreadId);
         }
 
-        InterruptionMetadata approvedFeedback = buildApprovedFeedback(pending);
+        InterruptionMetadata approvedFeedback = buildApprovedFeedback(pendingSession.metadata());
         RunnableConfig resumeConfig = RunnableConfig.builder()
                 .threadId(resolvedThreadId)
                 .addHumanFeedback(approvedFeedback)
                 .resume()
                 .build();
 
+        // HITL checkpoint 写在 humanEscalationAgent（含 chat 经路由委派）；与 start 共用 MemorySaver
         Optional<NodeOutput> output = humanEscalationAgent.invokeAndGetOutput(Map.of(), resumeConfig);
 
         if (output.isPresent() && output.get() instanceof InterruptionMetadata again) {
-            pendingByThread.put(resolvedThreadId, again);
+            hitlPendingStore.put(resolvedThreadId, again, HitlPendingStore.ResumeAgent.HUMAN_ESCALATION);
             String ticketNo = ticketService.findLatestByConversationId(resolvedThreadId)
                     .map(CsTicket::getTicketNo)
                     .orElse(null);

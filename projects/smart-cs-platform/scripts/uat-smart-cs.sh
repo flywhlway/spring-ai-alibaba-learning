@@ -202,13 +202,10 @@ else
     -d "{\"threadId\":\"${CONV_ID}\"}")
   body=$(echo "$raw" | sed '$d')
   code=$(echo "$raw" | tail -n1)
-  # D-14 / CR-01：HITL approve 已知债（InterruptionMetadata），404/500 soft-pass，留给 code-review --fix
   if [ "$code" = "200" ] && parse_json_code "$body"; then
     ok "POST /api/handoff/approve — 坐席确认"
-  elif [ "$code" = "404" ] || [ "$code" = "500" ]; then
-    warn "POST /api/handoff/approve — HTTP ${code} soft-pass（已知 D-14/CR-01 HITL 债，勿当新 gap）"
   else
-    bad "POST /api/handoff/approve — HTTP ${code}"
+    bad "POST /api/handoff/approve — HTTP ${code} body=${body:0:200}"
   fi
 
   # admin dashboard

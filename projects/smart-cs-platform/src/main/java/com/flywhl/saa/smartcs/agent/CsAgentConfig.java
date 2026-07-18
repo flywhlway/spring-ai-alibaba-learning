@@ -41,6 +41,15 @@ import com.flywhl.saa.smartcs.tool.TicketTools;
 @Configuration(proxyBeanMethods = false)
 public class CsAgentConfig {
 
+    /**
+     * 人工升级 HITL 与顶层路由共用同一 {@link MemorySaver}，保证 chat 中断与
+     * {@code /api/handoff/approve} 使用相同 threadId 可 resume。
+     */
+    @Bean
+    MemorySaver csHitlMemorySaver() {
+        return new MemorySaver();
+    }
+
     @Bean
     ReactAgent faqAgent(ChatModel dashScopeChatModel, FaqTool faqTool) {
         return ReactAgent.builder()
@@ -175,7 +184,8 @@ public class CsAgentConfig {
     }
 
     @Bean
-    ReactAgent humanEscalationAgent(ChatModel dashScopeChatModel, HandoffTools handoffTools) {
+    ReactAgent humanEscalationAgent(ChatModel dashScopeChatModel, HandoffTools handoffTools,
+            MemorySaver csHitlMemorySaver) {
         HumanInTheLoopHook hitl = HumanInTheLoopHook.builder()
                 .approvalOn("requestHumanHandoff", "人工接管需坐席确认")
                 .build();
@@ -190,14 +200,15 @@ public class CsAgentConfig {
                         """)
                 .methodTools(handoffTools)
                 .hooks(hitl, ModelCallLimitHook.builder().runLimit(6).build())
-                .saver(new MemorySaver())
+                .saver(csHitlMemorySaver)
                 .build();
     }
 
     @Bean
     LlmRoutingAgent csIntentRouter(ChatModel dashScopeChatModel,
             ReactAgent faqAgent, ReactAgent businessSupervisor,
-            ReactAgent ticketAgent, ReactAgent humanEscalationAgent) {
+            ReactAgent ticketAgent, ReactAgent humanEscalationAgent,
+            MemorySaver csHitlMemorySaver) {
         return LlmRoutingAgent.builder()
                 .name("cs-intent-router")
                 .description("客服意图路由：FAQ / 业务 / 工单 / 人工")
@@ -211,6 +222,7 @@ public class CsAgentConfig {
                         """)
                 .subAgents(List.of(faqAgent, businessSupervisor, ticketAgent, humanEscalationAgent))
                 .hooks(ModelCallLimitHook.builder().runLimit(6).build())
+                .saver(csHitlMemorySaver)
                 .build();
     }
 }

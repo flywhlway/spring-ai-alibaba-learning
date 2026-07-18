@@ -45,6 +45,8 @@ public class ChatService {
     private final AuthService authService;
     private final CsOrchestratorService orchestratorService;
     private final FaqAnswerService faqAnswerService;
+    private final TicketService ticketService;
+    private final HitlPendingStore hitlPendingStore;
     private final CsConversationRepository conversationRepository;
     private final CsMessageRepository messageRepository;
     private final ObjectMapper objectMapper;
@@ -53,12 +55,16 @@ public class ChatService {
             AuthService authService,
             CsOrchestratorService orchestratorService,
             FaqAnswerService faqAnswerService,
+            TicketService ticketService,
+            HitlPendingStore hitlPendingStore,
             CsConversationRepository conversationRepository,
             CsMessageRepository messageRepository,
             ObjectMapper objectMapper) {
         this.authService = authService;
         this.orchestratorService = orchestratorService;
         this.faqAnswerService = faqAnswerService;
+        this.ticketService = ticketService;
+        this.hitlPendingStore = hitlPendingStore;
         this.conversationRepository = conversationRepository;
         this.messageRepository = messageRepository;
         this.objectMapper = objectMapper;
@@ -76,6 +82,7 @@ public class ChatService {
         long latencyMs = System.currentTimeMillis() - startedAt;
 
         if (result.interrupted()) {
+            registerHitlInterrupt(conversationId, user, request.question(), result);
             saveAssistantMessage(conversationId, "[INTERRUPT] 等待人工确认", result.routeAgent(), false,
                     new ChatAnswerVO.TokenUsageVO(0, 0), latencyMs);
             touchConversation(conversation, request.question());
@@ -114,6 +121,7 @@ public class ChatService {
                 .flatMapMany(result -> {
                     if (result.interrupted()) {
                         long latencyMs = System.currentTimeMillis() - startedAt;
+                        registerHitlInterrupt(resolvedId, user, question, result);
                         saveAssistantMessage(resolvedId, "[INTERRUPT] 等待人工确认", result.routeAgent(), false,
                                 new ChatAnswerVO.TokenUsageVO(0, 0), latencyMs);
                         touchConversation(conversation, question);
@@ -165,13 +173,43 @@ public class ChatService {
         return UUID.randomUUID().toString();
     }
 
-    CsConversation ensureConversation(SysUser user, String conversationId, String question) {
+    /**
+     * 确保会话存在且当前用户可访问（CUSTOMER 仅限本人）。供工单创建 / handoff start 复用。
+     */
+    public CsConversation ensureConversation(SysUser user, String conversationId, String question) {
         return conversationRepository.findByConversationId(conversationId)
                 .map(existing -> {
                     assertAccess(existing, user);
                     return existing;
                 })
                 .orElseGet(() -> createConversation(user, conversationId, question));
+    }
+
+    /**
+     * 校验已有会话归属；不存在则 404。
+     */
+    public CsConversation requireAccessibleConversation(SysUser user, String conversationId) {
+        CsConversation conversation = conversationRepository.findByConversationId(conversationId)
+                .orElseThrow(() -> new BizException(CommonResultCode.NOT_FOUND, "会话不存在：" + conversationId));
+        assertAccess(conversation, user);
+        return conversation;
+    }
+
+    /**
+     * Chat 路径 HITL 中断：注册 pending 并升工单至 PENDING_HUMAN（钩子在工具执行前中断，
+     * {@code HandoffTools} 不会跑，须在此补齐 start 路径同等副作用）。
+     */
+    private void registerHitlInterrupt(
+            String conversationId, SysUser user, String question, OrchestratorResult result) {
+        if (result.interruptionMetadata() == null) {
+            throw new BizException(CommonResultCode.INTERNAL_ERROR, "HITL 中断缺少 InterruptionMetadata");
+        }
+        hitlPendingStore.put(
+                conversationId,
+                result.interruptionMetadata(),
+                HitlPendingStore.ResumeAgent.HUMAN_ESCALATION);
+        ticketService.transitionToPendingHuman(
+                conversationId, user.getId(), question, user.getRole().name());
     }
 
     private CsConversation createConversation(SysUser user, String conversationId, String question) {
