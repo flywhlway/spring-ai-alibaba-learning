@@ -169,10 +169,11 @@ else
     bad "POST /api/chat/ask (FAQ) — HTTP ${code}"
   fi
 
-  # SSE stream
+  # SSE stream（中文 query 必须 URL 编码，否则 Tomcat 拒收非 RFC 字符）
+  STREAM_Q=$(python3 -c 'import urllib.parse; print(urllib.parse.quote("如何查询我的订单物流信息"))')
   sse=$(curl -sS --max-time 120 -H "Authorization: Bearer ${CUSTOMER_TOKEN}" \
     -H 'Accept: text/event-stream' \
-    "${HOST}/api/chat/stream?conversationId=${CONV_ID}&question=如何查询我的订单物流信息")
+    "${HOST}/api/chat/stream?conversationId=${CONV_ID}&question=${STREAM_Q}")
   if echo "$sse" | grep -qE 'event:\s*message|event:message' \
       && echo "$sse" | grep -qE 'event:\s*done|event:done'; then
     ok "GET /api/chat/stream — message + done 事件"
