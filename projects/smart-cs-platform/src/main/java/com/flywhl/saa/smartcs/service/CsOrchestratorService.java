@@ -13,6 +13,7 @@ import com.alibaba.cloud.ai.graph.exception.GraphRunnerException;
 import com.flywhl.saa.common.exception.BizException;
 import com.flywhl.saa.common.result.CommonResultCode;
 import com.flywhl.saa.smartcs.agent.FlowStateExtractor;
+import com.flywhl.saa.smartcs.tool.ToolSecuritySupport;
 
 /**
  * 客服编排统一入口：以 {@code conversationId} 作 {@link RunnableConfig#threadId(String)}
@@ -21,9 +22,8 @@ import com.flywhl.saa.smartcs.agent.FlowStateExtractor;
  * {@code HumanInTheLoopHook} 拦截 {@code requestHumanHandoff} 时产生），供 Wave 4
  * SSE 会话网关与 HITL Controller 消费。
  *
- * <p>本 Wave 不实现 SSE 流式与 HITL 恢复（approve/resume），仅提供同步 invoke 入口与
- * 中断态透传；{@code routeAgent} 归一化为四类常量供 {@code cs_message.route_agent} 落库
- * （落库动作由 Wave 4 {@code ChatService} 执行）。
+ * <p>编排入口将当前用户 {@code userId}/{@code role}/{@code conversationId} 写入
+ * {@link RunnableConfig} metadata，经 Agent 框架注入 {@code ToolContext}（威胁登记 T-06-06）。
  *
  * @author flywhl
  * @since 1.0.0
@@ -40,12 +40,25 @@ public class CsOrchestratorService {
     /**
      * @param conversationId 会话 ID（UUID 字符串）；为空时自动生成，禁止自增 ID 作 threadId
      * @param question       用户问题原文
+     * @param userId         当前用户 ID（注入 ToolContext）
+     * @param role           当前用户角色名（注入 ToolContext）
      */
-    public OrchestratorResult invoke(String conversationId, String question) {
+    public OrchestratorResult invoke(String conversationId, String question, Long userId, String role) {
+        if (userId == null) {
+            throw new BizException(CommonResultCode.UNAUTHORIZED, "编排调用缺少 userId");
+        }
+        if (role == null || role.isBlank()) {
+            throw new BizException(CommonResultCode.UNAUTHORIZED, "编排调用缺少 role");
+        }
         String threadId = (conversationId == null || conversationId.isBlank())
                 ? UUID.randomUUID().toString()
                 : conversationId;
-        RunnableConfig config = RunnableConfig.builder().threadId(threadId).build();
+        RunnableConfig config = RunnableConfig.builder()
+                .threadId(threadId)
+                .addMetadata(ToolSecuritySupport.META_USER_ID, userId)
+                .addMetadata(ToolSecuritySupport.META_ROLE, role)
+                .addMetadata(ToolSecuritySupport.META_CONVERSATION_ID, threadId)
+                .build();
         // 子 Agent（ticket-agent/human-escalation-agent）需要 conversationId 作为工具入参，
         // 通过消息前缀标记传递，系统 Prompt 已约定原样透传给 createTicket/urgeTicket/requestHumanHandoff。
         String taggedQuestion = "[conversationId=" + threadId + "] " + question;

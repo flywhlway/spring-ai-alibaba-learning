@@ -31,6 +31,7 @@ import com.flywhl.saa.smartcs.model.vo.HitlSessionResponse;
 import com.flywhl.saa.smartcs.service.AuthService;
 import com.flywhl.saa.smartcs.service.HitlPendingStore;
 import com.flywhl.saa.smartcs.service.TicketService;
+import com.flywhl.saa.smartcs.tool.ToolSecuritySupport;
 
 import jakarta.validation.Valid;
 
@@ -76,7 +77,12 @@ public class HumanHandoffController {
                 : UUID.randomUUID().toString();
 
         String taggedQuery = "[conversationId=" + threadId + "] " + request.query();
-        RunnableConfig config = RunnableConfig.builder().threadId(threadId).build();
+        RunnableConfig config = RunnableConfig.builder()
+                .threadId(threadId)
+                .addMetadata(ToolSecuritySupport.META_USER_ID, user.getId())
+                .addMetadata(ToolSecuritySupport.META_ROLE, user.getRole().name())
+                .addMetadata(ToolSecuritySupport.META_CONVERSATION_ID, threadId)
+                .build();
         Optional<NodeOutput> output = humanEscalationAgent.invokeAndGetOutput(taggedQuery, config);
 
         if (output.isPresent() && output.get() instanceof InterruptionMetadata interruption) {
@@ -113,9 +119,13 @@ public class HumanHandoffController {
         }
 
         InterruptionMetadata approvedFeedback = buildApprovedFeedback(pendingSession.metadata());
+        // resume 时注入坐席身份；工单客户归属已在 PENDING_HUMAN 阶段落库
         RunnableConfig resumeConfig = RunnableConfig.builder()
                 .threadId(resolvedThreadId)
                 .addHumanFeedback(approvedFeedback)
+                .addMetadata(ToolSecuritySupport.META_USER_ID, agent.getId())
+                .addMetadata(ToolSecuritySupport.META_ROLE, agent.getRole().name())
+                .addMetadata(ToolSecuritySupport.META_CONVERSATION_ID, resolvedThreadId)
                 .resume()
                 .build();
 

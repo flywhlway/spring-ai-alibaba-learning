@@ -31,12 +31,14 @@ public class HandoffTools {
             @ToolParam(description = "会话ID，取自用户消息开头 [conversationId=...] 标记") String conversationId,
             @ToolParam(description = "升级原因") String reason,
             ToolContext toolContext) {
-        if (ToolSecuritySupport.requireRole(toolContext, "CUSTOMER", "AGENT") == null) {
+        // approve resume 时调用方为 AGENT/ADMIN；发起升级可为 CUSTOMER/AGENT
+        if (ToolSecuritySupport.requireRole(toolContext, "CUSTOMER", "AGENT", "ADMIN") == null) {
             return "权限不足：无权请求人工接管";
         }
+        String resolvedConversationId = ToolSecuritySupport.conversationIdOf(toolContext, conversationId);
         Long customerId = ToolSecuritySupport.userIdOf(toolContext);
         String actor = ToolSecuritySupport.roleOf(toolContext);
-        CsTicket ticket = ticketService.createOrEscalate(conversationId, customerId, reason, actor);
+        CsTicket ticket = ticketService.createOrEscalate(resolvedConversationId, customerId, reason, actor);
         return "已提交人工接管请求，工单号：" + ticket.getTicketNo() + "，状态：" + ticket.getStatus() + "，等待坐席确认";
     }
 }

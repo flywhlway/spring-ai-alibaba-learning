@@ -36,9 +36,10 @@ public class TicketTools {
         if (ToolSecuritySupport.requireRole(toolContext, "CUSTOMER", "AGENT", "ADMIN") == null) {
             return "权限不足：无法创建工单";
         }
+        String resolvedConversationId = ToolSecuritySupport.conversationIdOf(toolContext, conversationId);
         Long customerId = ToolSecuritySupport.userIdOf(toolContext);
         String actor = ToolSecuritySupport.roleOf(toolContext);
-        CsTicket ticket = ticketService.createTicket(conversationId, customerId, summary, priority, actor);
+        CsTicket ticket = ticketService.createTicket(resolvedConversationId, customerId, summary, priority, actor);
         return "工单创建成功，工单号：" + ticket.getTicketNo() + "，状态：" + ticket.getStatus();
     }
 

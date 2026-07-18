@@ -6,6 +6,8 @@ import java.util.Map;
 import java.util.UUID;
 
 import org.springframework.http.codec.ServerSentEvent;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
@@ -78,7 +80,8 @@ public class ChatService {
         CsConversation conversation = ensureConversation(user, conversationId, request.question());
         saveUserMessage(conversationId, request.question());
 
-        OrchestratorResult result = orchestratorService.invoke(conversationId, request.question());
+        OrchestratorResult result = orchestratorService.invoke(
+                conversationId, request.question(), user.getId(), user.getRole().name());
         long latencyMs = System.currentTimeMillis() - startedAt;
 
         if (result.interrupted()) {
@@ -117,7 +120,18 @@ public class ChatService {
         CsConversation conversation = ensureConversation(user, resolvedId, question);
         saveUserMessage(resolvedId, question);
 
-        return Mono.fromCallable(() -> orchestratorService.invoke(resolvedId, question))
+        // SSE 经 reactor 线程池执行：捕获并恢复 SecurityContext，同时编排入口显式注入 uid/role
+        SecurityContext securityContext = SecurityContextHolder.getContext();
+        Long userId = user.getId();
+        String role = user.getRole().name();
+        return Mono.fromCallable(() -> {
+                    SecurityContextHolder.setContext(securityContext);
+                    try {
+                        return orchestratorService.invoke(resolvedId, question, userId, role);
+                    } finally {
+                        SecurityContextHolder.clearContext();
+                    }
+                })
                 .flatMapMany(result -> {
                     if (result.interrupted()) {
                         long latencyMs = System.currentTimeMillis() - startedAt;
