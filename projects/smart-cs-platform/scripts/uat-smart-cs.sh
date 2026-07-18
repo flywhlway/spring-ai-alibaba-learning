@@ -171,16 +171,17 @@ else
     bad "POST /api/chat/ask (FAQ) — HTTP ${code}"
   fi
 
-  # SSE stream（中文 query 必须 URL 编码，否则 Tomcat 拒收非 RFC 字符）
-  STREAM_Q=$(python3 -c 'import urllib.parse; print(urllib.parse.quote("如何查询我的订单物流信息"))')
-  sse=$(curl -sS --max-time 120 -H "Authorization: Bearer ${CUSTOMER_TOKEN}" \
+  # SSE stream：POST + JSON body，避免问题原文进入 query string / 访问日志
+  sse=$(curl -sS --max-time 120 -X POST "${HOST}/api/chat/stream" \
+    -H "Authorization: Bearer ${CUSTOMER_TOKEN}" \
+    -H 'Content-Type: application/json' \
     -H 'Accept: text/event-stream' \
-    "${HOST}/api/chat/stream?conversationId=${CONV_ID}&question=${STREAM_Q}")
+    -d "{\"conversationId\":\"${CONV_ID}\",\"question\":\"如何查询我的订单物流信息\"}")
   if echo "$sse" | grep -qE 'event:\s*message|event:message' \
       && echo "$sse" | grep -qE 'event:\s*done|event:done'; then
-    ok "GET /api/chat/stream — message + done 事件"
+    ok "POST /api/chat/stream — message + done 事件"
   else
-    bad "GET /api/chat/stream — SSE 事件不完整"
+    bad "POST /api/chat/stream — SSE 事件不完整"
   fi
 
   # handoff start + agent approve

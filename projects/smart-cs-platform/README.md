@@ -160,7 +160,7 @@ curl -X POST http://localhost:19300/api/auth/login \
 |---|---|---|---|---|
 | 认证 | POST | `/api/auth/login` | 匿名 | 登录签发 JWT |
 | 认证 | GET | `/api/auth/me` | 登录 | 当前用户信息 |
-| 会话 | GET | `/api/chat/stream` | CUSTOMER/AGENT/ADMIN | SSE 流式对话（意图路由） |
+| 会话 | POST | `/api/chat/stream` | CUSTOMER/AGENT/ADMIN | SSE 流式对话（JSON body，意图路由） |
 | 会话 | POST | `/api/chat/ask` | CUSTOMER/AGENT/ADMIN | 同步问答 |
 | 工单 | POST | `/api/tickets` | CUSTOMER | 创建工单 |
 | 工单 | GET | `/api/tickets/{ticketNo}` | CUSTOMER/AGENT/ADMIN | 工单详情 |

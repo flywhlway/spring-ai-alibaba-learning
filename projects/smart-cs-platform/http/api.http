@@ -58,10 +58,16 @@ Content-Type: application/json
   "question": "收到商品后多久可以申请退货？"
 }
 
-### 2.2 SSE 流式对话（事件：message 增量 / meta 路由与 usage / error / done）
-GET {{host}}/api/chat/stream?conversationId=demo-conv-001&question=订单支付成功但库存系统未同步怎么办
+### 2.2 SSE 流式对话（POST body，避免问题进入 query string；事件：message / meta / interrupt / done）
+POST {{host}}/api/chat/stream
 Authorization: Bearer {{customerToken}}
+Content-Type: application/json
 Accept: text/event-stream
+
+{
+  "conversationId": "demo-conv-001",
+  "question": "订单支付成功但库存系统未同步怎么办"
+}
 
 ### ---------------------------------------------------------------
 ### 3. 工单域
