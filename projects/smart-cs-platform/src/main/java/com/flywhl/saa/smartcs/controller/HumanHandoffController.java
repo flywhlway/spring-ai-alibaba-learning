@@ -29,6 +29,7 @@ import com.flywhl.saa.smartcs.model.entity.CsTicket;
 import com.flywhl.saa.smartcs.model.entity.SysUser;
 import com.flywhl.saa.smartcs.model.vo.HitlSessionResponse;
 import com.flywhl.saa.smartcs.service.AuthService;
+import com.flywhl.saa.smartcs.service.ChatService;
 import com.flywhl.saa.smartcs.service.HitlPendingStore;
 import com.flywhl.saa.smartcs.service.TicketService;
 import com.flywhl.saa.smartcs.tool.ToolSecuritySupport;
@@ -54,16 +55,19 @@ public class HumanHandoffController {
     private final ReactAgent humanEscalationAgent;
     private final TicketService ticketService;
     private final AuthService authService;
+    private final ChatService chatService;
     private final HitlPendingStore hitlPendingStore;
 
     public HumanHandoffController(
             @Qualifier("humanEscalationAgent") ReactAgent humanEscalationAgent,
             TicketService ticketService,
             AuthService authService,
+            ChatService chatService,
             HitlPendingStore hitlPendingStore) {
         this.humanEscalationAgent = humanEscalationAgent;
         this.ticketService = ticketService;
         this.authService = authService;
+        this.chatService = chatService;
         this.hitlPendingStore = hitlPendingStore;
     }
 
@@ -75,6 +79,8 @@ public class HumanHandoffController {
         String threadId = StringUtils.hasText(request.conversationId())
                 ? request.conversationId().trim()
                 : UUID.randomUUID().toString();
+
+        chatService.ensureConversation(user, threadId, request.query());
 
         String taggedQuery = "[conversationId=" + threadId + "] " + request.query();
         RunnableConfig config = RunnableConfig.builder()

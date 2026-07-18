@@ -20,6 +20,7 @@ import com.flywhl.saa.smartcs.model.entity.CsTicket;
 import com.flywhl.saa.smartcs.model.entity.SysUser;
 import com.flywhl.saa.smartcs.model.vo.TicketVO;
 import com.flywhl.saa.smartcs.service.AuthService;
+import com.flywhl.saa.smartcs.service.ChatService;
 import com.flywhl.saa.smartcs.service.TicketService;
 
 import jakarta.validation.Valid;
@@ -38,17 +39,25 @@ public class TicketController {
     private final TicketService ticketService;
     private final TicketConverter ticketConverter;
     private final AuthService authService;
+    private final ChatService chatService;
 
-    public TicketController(TicketService ticketService, TicketConverter ticketConverter, AuthService authService) {
+    public TicketController(
+            TicketService ticketService,
+            TicketConverter ticketConverter,
+            AuthService authService,
+            ChatService chatService) {
         this.ticketService = ticketService;
         this.ticketConverter = ticketConverter;
         this.authService = authService;
+        this.chatService = chatService;
     }
 
     @PostMapping
     @PreAuthorize("hasAnyRole('CUSTOMER', 'AGENT', 'ADMIN')")
     public Result<TicketVO> create(@Valid @RequestBody TicketCreateRequest request) {
         SysUser user = authService.requireCurrentUser();
+        // CUSTOMER 仅可为本人会话建单；不存在则创建并绑定当前用户
+        chatService.ensureConversation(user, request.conversationId(), request.summary());
         CsTicket ticket = ticketService.createTicket(
                 request.conversationId(),
                 user.getId(),
