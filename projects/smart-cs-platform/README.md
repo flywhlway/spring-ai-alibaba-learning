@@ -2,7 +2,7 @@
 
 > **Phase 6 企业项目** · 端口 **19300** · 蓝图 SSOT：[`projects/README.md`](../README.md)「项目三」
 >
-> **当前状态**：✅ Wave 0 工程骨架已交付（pom / 配置 / DDL+演示数据 / compose 叠加 / 全接口契约 / 全量 Entity·Repository·DTO·VO·Mapper）；Agent 编排、RAG、会话/工单、admin/看板由 Wave 1~6 后续迭代交付，当前 Java 层仅数据契约，不含业务逻辑。
+> **当前状态**：✅ **v1.0 / Phase 6 已交付**——可 `mvn spring-boot:run`；HUMAN-UAT 5/5 + REVIEW-FIX；脚本见 `bash projects/smart-cs-platform/scripts/uat-smart-cs.sh`。
 
 ---
 
@@ -96,7 +96,7 @@ smart-cs-platform/
 - 密钥（环境变量注入，严禁硬编码）：
 
 ```bash
-source scripts/setup-env.sh && bash scripts/env-check.sh
+source scripts/setup-env.local.sh && bash scripts/env-check.sh
 # 需要：AI_DASHSCOPE_API_KEY（必须）、DEEPSEEK_API_KEY（备用通道）
 ```
 
@@ -152,7 +152,7 @@ curl -X POST http://localhost:19300/api/auth/login \
 
 > 演示口令在 `db/data.sql` 中以 `{noop}` 前缀存储（DelegatingPasswordEncoder），仅限本机；生产用户一律 BCrypt。
 
-## 6. 接口总览（Wave 0 契约，逐波实现）
+## 6. 接口总览
 
 统一协议：同步接口返回 `Result<T>`（`code=0` 成功）；分页 `Result<PageResult<T>>`；流式接口 `text/event-stream`。
 
@@ -225,11 +225,15 @@ docker compose -f docker/docker-compose.yml \
 - **单元测试**：JUnit 5 + AssertJ；**集成测试**：PostgreSQL/Redis/ES 走 Testcontainers，真实模型用例以 `AI_DASHSCOPE_API_KEY` 环境变量门控，无 Key 环境 `mvn clean install` 保持全绿。
 - **部署**：`mvn clean package` 产出 `target/smart-cs-platform.jar`；生产以 `java -jar` + 上述 compose 编排（替换演示口令、Nacos 鉴权与 JWT Secret）。
 
-## 10. 迭代任务清单（Wave 0 骨架 → Wave 1~6 实现）
+## 10. 交付对照（v1.0 已完成）
 
-1. Wave 1 `config/*`：Security（JWT）/ Milvus / ES / Redis 记忆 / Redis Stack 语义缓存 / Nacos / `AiClientConfig`；
-2. Wave 2 `rag/*` + `service/SemanticCacheService`：FAQ ETL、混合检索、RAG 生成、语义缓存读写；
-3. Wave 3 `agent/*`：`LlmRoutingAgent` 顶层路由 + Supervisor + 子 Agent + `HumanInTheLoopHook`；
-4. Wave 4 `controller` + `service`：会话网关（SSE）、`TicketService` 状态机、`HumanHandoffController`；
-5. Wave 5 `admin/*`：模型/Prompt/FAQ/看板后台 API；
-6. Wave 6 测试补齐（Testcontainers + 环境变量门控）+ `bash scripts/version-audit.sh` / `spring-ai-2-readiness.sh` 门禁。
+| Wave | 内容 | 状态 |
+|---|---|---|
+| 1 | `config/*`：Security / Milvus / ES / Redis / Nacos / AI 装配 | ✅ |
+| 2 | FAQ ETL、混合检索、RAG、语义缓存 | ✅ |
+| 3 | `LlmRoutingAgent` + Supervisor + 子 Agent + HITL | ✅ |
+| 4 | 会话 SSE、工单状态机、人工接管 | ✅ |
+| 5 | admin：模型/Prompt/FAQ/看板 | ✅ |
+| 6 | 测试与质量门禁脚本 | ✅ |
+
+已知限制：HITL pending 为进程内 Map（演示级，多实例不共享）——见 `.planning/STATE.md` Deferred Items。

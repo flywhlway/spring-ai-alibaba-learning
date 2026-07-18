@@ -1,6 +1,8 @@
 # 项目二 · 企业 AI Agent 办公助手（office-agent-assistant）
 
-> Phase 5 企业项目 · 端口 **19200** · 蓝图 SSOT：[`projects/README.md`](../README.md)「项目二」
+> **Phase 5 企业项目** · 端口 **19200** · 蓝图 SSOT：[`projects/README.md`](../README.md)「项目二」
+>
+> **当前状态**：✅ **v1.0 / Phase 5 已交付**——可 `mvn spring-boot:run`；UAT 见 `bash projects/office-agent-assistant/scripts/uat-office-agent.sh`。
 
 面向员工的智能办公入口：会议纪要、日报、邮件起草、报表查询、日程与审批协助。
 
@@ -21,7 +23,7 @@
 
 ```bash
 # 1. 密钥
-source scripts/setup-env.sh && bash scripts/env-check.sh
+source scripts/setup-env.local.sh && bash scripts/env-check.sh
 
 # 2. 中间件（MySQL + pgvector + Redis）
 docker compose -f docker/docker-compose.yml \

@@ -2,7 +2,7 @@
 
 > **Phase 4 企业项目** · 端口 **19100** · 蓝图 SSOT：[`projects/README.md`](../README.md)「项目一」
 >
-> **当前状态**：✅ 工程骨架已交付（pom / 配置 / DDL+演示数据 / compose 叠加 / 全接口契约 / Java 占位）；Java 实现由 Phase 4 后续迭代任务交付，占位类不参与 Bean 装配。
+> **当前状态**：✅ **v1.0 / Phase 4 已交付**——可 `mvn spring-boot:run`；脚本 UAT 见 `bash scripts/uat-knowledge-qa.sh`（2026-07-18 关闭）。
 
 ---
 
@@ -77,7 +77,7 @@ knowledge-qa-platform/
 - 密钥（环境变量注入，严禁硬编码）：
 
 ```bash
-source scripts/setup-env.sh && bash scripts/env-check.sh
+source scripts/setup-env.local.sh && bash scripts/env-check.sh
 # 需要：AI_DASHSCOPE_API_KEY（必须）、DEEPSEEK_API_KEY（备用通道）
 ```
 
@@ -161,10 +161,12 @@ curl -X POST http://localhost:19100/api/auth/login \
 - **单元测试**：JUnit 5 + AssertJ；**集成测试**：PostgreSQL/Redis 走 Testcontainers，真实模型用例以 `AI_DASHSCOPE_API_KEY` 环境变量门控，无 Key 环境 `mvn clean install` 保持全绿。
 - **部署**：`mvn clean package` 产出 `target/knowledge-qa-platform.jar`；生产以 `java -jar` + 上述 compose 编排（替换演示口令、Nacos 鉴权与 MinIO 凭据）。详细生产加固见教程第 15/19 章安全与企业实践。
 
-## 9. 迭代任务清单（骨架 → 实现）
+## 9. 交付对照（v1.0 已完成）
 
-1. `config/*`：Security（JWT）/ AI 装配 / VectorStore / Memory / MinIO 落地；
-2. `rag/*`：ETL 流水线与 RAG 管线（含阈值过滤与 Citation）；
-3. `controller` + `service`：问答域（SSE 协议按 §6 契约）；
-4. `admin/*`：知识/Prompt/用户/审计/看板五组后台 API；
-5. 测试补齐（Testcontainers + 环境变量门控）+ `bash scripts/version-audit.sh` / `spring-ai-2-readiness.sh` 门禁。
+| 项 | 状态 |
+|---|---|
+| `config/*`：Security（JWT）/ AI / VectorStore / Memory / MinIO | ✅ |
+| `rag/*`：ETL + RAG（阈值过滤与 Citation） | ✅ |
+| 问答域 SSE（`controller` + `service`） | ✅ |
+| `admin/*`：知识/Prompt/用户/审计/看板 | ✅ |
+| 测试（Testcontainers + Key 门控）与质量脚本 | ✅ |

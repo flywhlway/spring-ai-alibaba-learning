@@ -1,6 +1,7 @@
 # examples —— 独立 Demo 工程目录
 
-本目录在 **Phase 3** 交付 48 个完全独立的 Demo 工程。本 README 是 Demo 清单与规范的 SSOT，Phase 3 逐个实现时不得偏离编号与命名。
+本目录在 **Phase 3** 交付 **48** 个完全独立的 Demo 工程，**v1.0 已全部落地**（UAT 48/48，见 `scripts/uat-phase3.sh`）。  
+本 README 是 Demo 清单与规范的 SSOT：编号、命名与端口约定不得偏离；新增 Demo 须沿用下列规范。
 
 ## 1. 通用约定
 

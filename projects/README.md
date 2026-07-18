@@ -1,6 +1,13 @@
 # projects —— 企业级完整项目目录
 
-本目录在 **Phase 4~6** 交付三个真实企业业务项目（非 Todo Demo）。本 README 是三个项目的蓝图 SSOT：业务边界、技术映射、目录骨架在此锁定，实现阶段不得偏离。
+本目录在 **Phase 4～6** 交付三个真实企业业务项目（非 Todo Demo），**v1.0 已全部落地**（2026-07-18）。  
+本 README 是三项目的蓝图 SSOT：业务边界、技术映射、目录骨架在此锁定；后续变更须先修订本文再改代码。
+
+| 项目 | 目录 | 端口 | Phase | 状态 |
+|---|---|---|---|---|
+| AI 企业知识库问答平台 | [`knowledge-qa-platform`](knowledge-qa-platform) | 19100 | 4 | ✅ |
+| 企业 AI Agent 办公助手 | [`office-agent-assistant`](office-agent-assistant) | 19200 | 5 | ✅ |
+| 智能客服 Agent 平台 | [`smart-cs-platform`](smart-cs-platform) | 19300 | 6 | ✅ |
 
 每个项目交付标准（统一）：完整源码 + 完整数据库脚本（含演示数据）+ 独立 docker-compose 叠加文件 + 完整文档 + 完整接口（OpenAPI/Knife4j）+ 完整 README + 完整部署说明 + 完整测试（单测 + Testcontainers 集成测试）。
 
@@ -104,7 +111,7 @@ flowchart TB
 
 ---
 
-## 三项目共用骨架（实现阶段遵循）
+## 三项目共用骨架（维护时遵循）
 
 ```
 projects/<project-name>/

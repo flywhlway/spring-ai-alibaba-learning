@@ -19,7 +19,7 @@
     <modules>
         <module>common</module>
         <module>starter</module>
-        <!-- examples 与 projects 下各工程为独立可运行应用，随 Phase 3~6 逐个挂载 -->
+        <!-- examples 与 projects 下各工程为独立可运行应用（v1.0 已交付，不强制挂入父 modules） -->
     </modules>
 
     <properties>
