@@ -9,6 +9,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -29,6 +30,8 @@ import com.flywhl.saa.smartcs.repository.CsTicketRepository;
  */
 @Service
 public class TicketService {
+
+    private static final int TICKET_NO_MAX_RETRIES = 5;
 
     private static final Map<TicketStatus, Set<TicketStatus>> ALLOWED_TRANSITIONS;
 
@@ -54,19 +57,29 @@ public class TicketService {
     @Transactional
     public CsTicket createTicket(String conversationId, Long customerId, String summary, String priority,
             String actor) {
-        CsTicket ticket = new CsTicket();
-        ticket.setTicketNo(generateTicketNo());
-        ticket.setConversationId(conversationId);
-        ticket.setCustomerId(customerId);
-        ticket.setStatus(TicketStatus.OPEN);
-        ticket.setPriority(priority == null || priority.isBlank() ? "NORMAL" : priority.toUpperCase());
-        ticket.setSummary(summary);
-        OffsetDateTime now = OffsetDateTime.now();
-        ticket.setCreatedAt(now);
-        ticket.setUpdatedAt(now);
-        ticket = ticketRepository.save(ticket);
-        recordEvent(ticket.getId(), null, TicketStatus.OPEN, actor, "创建工单：" + summary);
-        return ticket;
+        String normalizedPriority = priority == null || priority.isBlank() ? "NORMAL" : priority.toUpperCase();
+        DataIntegrityViolationException lastConflict = null;
+        for (int attempt = 1; attempt <= TICKET_NO_MAX_RETRIES; attempt++) {
+            try {
+                CsTicket ticket = new CsTicket();
+                ticket.setTicketNo(generateTicketNo());
+                ticket.setConversationId(conversationId);
+                ticket.setCustomerId(customerId);
+                ticket.setStatus(TicketStatus.OPEN);
+                ticket.setPriority(normalizedPriority);
+                ticket.setSummary(summary);
+                OffsetDateTime now = OffsetDateTime.now();
+                ticket.setCreatedAt(now);
+                ticket.setUpdatedAt(now);
+                ticket = ticketRepository.saveAndFlush(ticket);
+                recordEvent(ticket.getId(), null, TicketStatus.OPEN, actor, "创建工单：" + summary);
+                return ticket;
+            } catch (DataIntegrityViolationException ex) {
+                // ticket_no UNIQUE 冲突：并发窗口内序号碰撞，重新计数后重试
+                lastConflict = ex;
+            }
+        }
+        throw new BizException(CommonResultCode.INTERNAL_ERROR, "工单号生成冲突，请稍后重试", lastConflict);
     }
 
     public Optional<CsTicket> findByTicketNo(String ticketNo) {
