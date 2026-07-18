@@ -1,3 +1,11 @@
+---
+status: complete
+phase: 04-knowledge-qa-platform
+result: all_pass
+closed: 2026-07-18
+evidence: 04-HUMAN-UAT.md + scripts/uat-knowledge-qa.sh 8/0
+---
+
 # Phase 04 · knowledge-qa-platform UAT 验收清单
 
 > 端口 **19100**；演示账号 `admin/admin123`（ADMIN）、`zhangsan/zhangsan123`（EMPLOYEE）。

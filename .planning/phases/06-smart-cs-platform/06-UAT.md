@@ -1,3 +1,11 @@
+---
+status: complete
+phase: 06-smart-cs-platform
+result: all_pass
+closed: 2026-07-18
+evidence: 06-HUMAN-UAT.md 5/5 + uat-smart-cs.sh exit 0
+---
+
 # Phase 06 · smart-cs-platform UAT 验收清单
 
 > 端口 **19300**；演示账号 `admin/admin123`（ADMIN）、`agent1/agent123`（AGENT）、
