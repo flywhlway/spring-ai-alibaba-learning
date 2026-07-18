@@ -13,6 +13,7 @@ import com.flywhl.saa.common.exception.BizException;
 import com.flywhl.saa.common.result.CommonResultCode;
 import com.flywhl.saa.common.result.Result;
 import com.flywhl.saa.smartcs.mapper.TicketConverter;
+import com.flywhl.saa.smartcs.model.UserRole;
 import com.flywhl.saa.smartcs.model.dto.TicketCreateRequest;
 import com.flywhl.saa.smartcs.model.dto.TicketTransitionRequest;
 import com.flywhl.saa.smartcs.model.entity.CsTicket;
@@ -60,9 +61,19 @@ public class TicketController {
     @GetMapping("/{no}")
     @PreAuthorize("hasAnyRole('CUSTOMER', 'AGENT', 'ADMIN')")
     public Result<TicketVO> getByNo(@PathVariable("no") String ticketNo) {
+        SysUser user = authService.requireCurrentUser();
         CsTicket ticket = ticketService.findByTicketNo(ticketNo)
                 .orElseThrow(() -> new BizException(CommonResultCode.NOT_FOUND, "工单不存在：" + ticketNo));
+        assertTicketAccess(ticket, user);
         return Result.ok(ticketConverter.toVo(ticket));
+    }
+
+    /** CUSTOMER 仅可访问本人工单；AGENT/ADMIN 放行。 */
+    private static void assertTicketAccess(CsTicket ticket, SysUser user) {
+        if (user.getRole() == UserRole.CUSTOMER
+                && (ticket.getCustomerId() == null || !ticket.getCustomerId().equals(user.getId()))) {
+            throw new BizException(CommonResultCode.FORBIDDEN, "无权访问该工单");
+        }
     }
 
     @PatchMapping("/{id}/transition")
