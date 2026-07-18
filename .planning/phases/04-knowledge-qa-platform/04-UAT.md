@@ -290,3 +290,12 @@ curl -s http://localhost:19100/actuator/prometheus | head -20
 ---
 
 *对应 api.http：`projects/knowledge-qa-platform/http/api.http`*
+
+---
+
+## 自动化验收结果（2026-07-18）
+
+| 项 | 结果 |
+|----|------|
+| `bash scripts/uat-knowledge-qa.sh` | **8 通过 / 0 失败**，exit 0 |
+| HUMAN-UAT 记录 | [`04-HUMAN-UAT.md`](./04-HUMAN-UAT.md) |

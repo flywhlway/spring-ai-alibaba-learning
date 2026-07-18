@@ -3,7 +3,7 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: Full Delivery
 status: milestone_complete
-last_updated: 2026-07-18T00:48:00.000Z
+last_updated: 2026-07-18T02:22:00.000Z
 last_activity: 2026-07-18
 progress:
   total_phases: 7
@@ -11,7 +11,7 @@ progress:
   total_plans: 36
   completed_plans: 36
   percent: 100
-stopped_at: Phase 06 gap 06-10 complete；uat-smart-cs.sh exit 0
+stopped_at: Phase 4/5 脚本 UAT 全自动关闭；可 /gsd-complete-milestone 或 /gsd-audit-milestone
 ---
 
 # Project State
@@ -21,13 +21,13 @@ stopped_at: Phase 06 gap 06-10 complete；uat-smart-cs.sh exit 0
 See: .planning/PROJECT.md (updated 2026-07-18)
 
 **Core value:** 48 demos + 3 enterprise projects runnable via `mvn spring-boot:run`，通过 HANDOFF §7 质量门禁
-**Current focus:** Milestone complete — optional archive；D-14 HITL 仍 Pending
+**Current focus:** Milestone complete — 建议 `/gsd-audit-milestone` 后 `/gsd-complete-milestone`
 
 ## Current Position
 
 Phase: 07
 Plan: complete
-Status: Milestone complete（Phase 6 gap 06-08/09/10 已关闭；HUMAN-UAT 5/5）
+Status: Milestone complete（Phase 4/5/6 HUMAN-UAT 脚本化关闭）
 Last activity: 2026-07-18
 
 Progress: [██████████] 100%
@@ -88,19 +88,23 @@ Progress: [██████████] 100%
 - [Phase 07]: UAT 债务索引 docs/00-overview/06-UAT债务索引.md（D-13）；06-REVIEW Critical 记 Pending 不修代码（D-14）
 - [Phase 07]: 07-05 以本地 quality-gate 收口规划执行；不声称远程 Actions 已绿（未 push 验证）
 - [Phase 07]: Phase 7 Complete 不等于整里程碑归档；UAT/06-REVIEW Critical 仍 Pending
+- [UAT 2026-07-18]: Phase 4/5 以脚本 UAT 代人工关闭（04-HUMAN-UAT / 05-HUMAN-UAT）
+- [UAT 2026-07-18]: D-14/CR-01 已由 06-REVIEW-FIX 修复（8/8），不再 Pending
+- [UAT 2026-07-18]: kqa 双 ChatModel → 显式 ChatClient.Builder；query-rewrite 补 {target}
+- [UAT 2026-07-18]: office MySQL @Primary；MCP Client 默认关；JWT 显式 HS256（kqa/office）
 
 ### Pending Todos
 
-- Phase 4/5/7 人工 UAT（Phase 6 HUMAN-UAT 5/5 + uat-smart-cs.sh exit 0 已于 06-10 关闭）
-- **[06-REVIEW Critical / D-14]** CR-01：HITL approve InterruptionMetadata / 工单隔离。处置：`/gsd-code-review 6 --fix` 或后续 hotfix。
+- Phase 7 可选：远程 Actions 首次绿、deploy-smoke runtime（07-HUMAN-UAT 标 skipped/blocked，不阻塞归档）
+- 关闭前 `audit-open` 仍可能提示 debug session / verification human_needed — 归档时 Acknowledge 或清理即可
 
 ### Blockers/Concerns
 
-- None blocking milestone archive. Backlog: Phase 4/5/7 人工 UAT + 06-REVIEW Critical（HITL）。
+- None blocking milestone archive.
 
 ## Session Continuity
 
-Last session: 2026-07-18T00:48:00Z
-Stopped at: Phase 06 gap 06-10 executed；HUMAN-UAT complete
+Last session: 2026-07-18T02:22:00Z
+Stopped at: Phase 4 UAT 8/0 + Phase 5 UAT 12/0（脚本代人工）
 Resume file: None
-Next: `/gsd-complete-milestone`；或 `/gsd-code-review 6 --fix`（D-14）
+Next: `/gsd-audit-milestone` → `/gsd-complete-milestone`
