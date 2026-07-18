@@ -71,15 +71,17 @@ spring:
         version: 1.0.0
         type: SYNC
         instructions: 企业办公工具总线：报表 SQL 查询、内部系统 HTTP 调用、Excel 生成解析、日程管理。
+      # Client 默认关闭：自连 localhost:19200 会在 Tomcat 监听前初始化并超时失败（鸡生蛋）。
+      # Agent 已通过 methodTools 直接挂载 SQL/HTTP/Excel/Calendar；接外部企业 MCP 总线时再开 Client。
       client:
-        enabled: true
+        enabled: ${OFFICE_MCP_CLIENT_ENABLED:false}
         name: office-agent-assistant
         toolcallback:
           enabled: true
         sse:
           connections:
             office-tool-bus:
-              url: http://localhost:19200   # 演示形态：消费本应用内嵌 Server；接企业总线时改为总线地址
+              url: ${OFFICE_MCP_BUS_URL:http://localhost:19200}
 
 # ----------------- 统一 AI Starter（审计 / 成本采集；单模型场景关闭路由降级目标） -----------------
 saa:

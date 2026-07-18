@@ -71,4 +71,5 @@ mvn -f projects/office-agent-assistant/pom.xml clean test
 - Testcontainers：MySQL + Redis 集成测试（需 Docker）
 - 模型测试：`AI_DASHSCOPE_API_KEY` 存在时运行 ModelIntegrationTest
 
-UAT：`bash projects/office-agent-assistant/scripts/uat-office-agent.sh`
+UAT（自启应用 + curl + `mvn test`）：`bash projects/office-agent-assistant/scripts/uat-office-agent.sh`  
+前置：`docker compose -f docker/docker-compose.yml -f projects/office-agent-assistant/docker-compose.override.yml --profile core --profile office up -d`；有 `AI_DASHSCOPE_API_KEY` 时覆盖 chat/tasks/approvals。

@@ -35,7 +35,8 @@ public class VectorStoreConfig {
     }
 
     @Bean(name = "vectorDataSource")
-    DataSource vectorDataSource(DataSourceProperties officeVectorDataSourceProperties) {
+    DataSource vectorDataSource(
+            @Qualifier("officeVectorDataSourceProperties") DataSourceProperties officeVectorDataSourceProperties) {
         return officeVectorDataSourceProperties.initializeDataSourceBuilder()
                 .type(HikariDataSource.class)
                 .build();
