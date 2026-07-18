@@ -15,6 +15,7 @@ import com.flywhl.saa.smartcs.repository.CsMessageRepository;
 import com.flywhl.saa.smartcs.repository.CsTicketRepository;
 import com.flywhl.saa.starter.autoconfigure.SaaLearningProperties;
 
+import io.micrometer.core.instrument.Counter;
 import io.micrometer.core.instrument.MeterRegistry;
 import io.micrometer.core.instrument.search.Search;
 
@@ -114,14 +115,35 @@ public class DashboardStatsService {
                 .sum();
     }
 
+    /**
+     * 按 Micrometer tag {@code gen_ai.token.type}=input|output 分别计价；
+     * {@code total} 跳过以免双重计入；无法识别类型时返回 0，由消息表回退估算。
+     */
     private double sumGenAiUsageCost() {
-        return Search.in(meterRegistry)
-                .name("gen_ai.client.token.usage")
-                .counters()
-                .stream()
-                .mapToDouble(counter -> counter.count()
-                        * saaLearningProperties.costTracking().pricePer1kInputTokens() / 1000.0)
-                .sum();
+        SaaLearningProperties.CostTracking pricing = saaLearningProperties.costTracking();
+        double total = 0.0;
+        boolean anyPriced = false;
+        for (Counter counter : Search.in(meterRegistry).name("gen_ai.client.token.usage").counters()) {
+            String tokenType = counter.getId().getTag("gen_ai.token.type");
+            if (tokenType == null) {
+                tokenType = counter.getId().getTag("token.type");
+            }
+            if (tokenType == null) {
+                continue;
+            }
+            double pricePer1k = switch (tokenType.toLowerCase()) {
+                case "input" -> pricing.pricePer1kInputTokens();
+                case "output" -> pricing.pricePer1kOutputTokens();
+                case "total" -> -1.0; // 跳过 total，避免与 input/output 双重计入
+                default -> -1.0;
+            };
+            if (pricePer1k < 0) {
+                continue;
+            }
+            total += counter.count() * pricePer1k / 1000.0;
+            anyPriced = true;
+        }
+        return anyPriced ? total : 0.0;
     }
 
     private double estimateMessageCost(CsMessage message) {
