@@ -11,7 +11,9 @@ import java.util.Set;
 
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.context.annotation.Lazy;
 
 import com.flywhl.saa.common.exception.BizException;
 import com.flywhl.saa.common.result.CommonResultCode;
@@ -48,38 +50,50 @@ public class TicketService {
 
     private final CsTicketRepository ticketRepository;
     private final CsTicketEventRepository ticketEventRepository;
+    private final TicketService self;
 
-    public TicketService(CsTicketRepository ticketRepository, CsTicketEventRepository ticketEventRepository) {
+    public TicketService(
+            CsTicketRepository ticketRepository,
+            CsTicketEventRepository ticketEventRepository,
+            @Lazy TicketService self) {
         this.ticketRepository = ticketRepository;
         this.ticketEventRepository = ticketEventRepository;
+        this.self = self;
     }
 
-    @Transactional
+    /**
+     * 创建工单。序号生成非原子，捕获 {@code ticket_no} UNIQUE 冲突后以新事务重试。
+     */
     public CsTicket createTicket(String conversationId, Long customerId, String summary, String priority,
             String actor) {
         String normalizedPriority = priority == null || priority.isBlank() ? "NORMAL" : priority.toUpperCase();
         DataIntegrityViolationException lastConflict = null;
         for (int attempt = 1; attempt <= TICKET_NO_MAX_RETRIES; attempt++) {
             try {
-                CsTicket ticket = new CsTicket();
-                ticket.setTicketNo(generateTicketNo());
-                ticket.setConversationId(conversationId);
-                ticket.setCustomerId(customerId);
-                ticket.setStatus(TicketStatus.OPEN);
-                ticket.setPriority(normalizedPriority);
-                ticket.setSummary(summary);
-                OffsetDateTime now = OffsetDateTime.now();
-                ticket.setCreatedAt(now);
-                ticket.setUpdatedAt(now);
-                ticket = ticketRepository.saveAndFlush(ticket);
-                recordEvent(ticket.getId(), null, TicketStatus.OPEN, actor, "创建工单：" + summary);
-                return ticket;
+                return self.createTicketInNewTx(conversationId, customerId, summary, normalizedPriority, actor);
             } catch (DataIntegrityViolationException ex) {
-                // ticket_no UNIQUE 冲突：并发窗口内序号碰撞，重新计数后重试
                 lastConflict = ex;
             }
         }
         throw new BizException(CommonResultCode.INTERNAL_ERROR, "工单号生成冲突，请稍后重试", lastConflict);
+    }
+
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    public CsTicket createTicketInNewTx(
+            String conversationId, Long customerId, String summary, String priority, String actor) {
+        CsTicket ticket = new CsTicket();
+        ticket.setTicketNo(generateTicketNo());
+        ticket.setConversationId(conversationId);
+        ticket.setCustomerId(customerId);
+        ticket.setStatus(TicketStatus.OPEN);
+        ticket.setPriority(priority);
+        ticket.setSummary(summary);
+        OffsetDateTime now = OffsetDateTime.now();
+        ticket.setCreatedAt(now);
+        ticket.setUpdatedAt(now);
+        ticket = ticketRepository.saveAndFlush(ticket);
+        recordEvent(ticket.getId(), null, TicketStatus.OPEN, actor, "创建工单：" + summary);
+        return ticket;
     }
 
     public Optional<CsTicket> findByTicketNo(String ticketNo) {
@@ -187,11 +201,16 @@ public class TicketService {
         ticketEventRepository.save(event);
     }
 
-    /** 生成规则：SCS-yyyyMMdd-序号（当日自增 4 位）。 */
+    /**
+     * 生成规则：SCS-yyyyMMdd-序号（当日自增 4 位）。
+     * 单机内 synchronized 收窄并发窗口；跨实例仍依赖 UNIQUE + REQUIRES_NEW 重试。
+     */
     private String generateTicketNo() {
         String datePart = LocalDate.now().format(DateTimeFormatter.BASIC_ISO_DATE);
         String prefix = "SCS-" + datePart + "-";
-        long seq = ticketRepository.countByTicketNoStartingWith(prefix) + 1;
-        return prefix + String.format("%04d", seq);
+        synchronized (TicketService.class) {
+            long seq = ticketRepository.countByTicketNoStartingWith(prefix) + 1;
+            return prefix + String.format("%04d", seq);
+        }
     }
 }
