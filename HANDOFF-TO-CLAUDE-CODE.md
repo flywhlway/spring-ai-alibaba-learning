@@ -1,16 +1,20 @@
 # 交接文档：spring-ai-alibaba-learning → Claude Code + open-gsd
 
-> **本文件用途**：把本仓库从"对话式生成"平滑移交给 **Claude Code**（配合用户级安装的 **open-gsd** 流程控制插件）继续开发。它同时是一份"全量上下文快照"与"逐步操作手册"。
+> **本文件用途**：全量上下文快照与操作手册（最初用于从对话式生成移交 Claude Code + open-gsd）。
 >
-> **给 Claude Code 的第一条指令**：进入本仓库后，先 `Read` 本文件与根目录 `CLAUDE.md`，再 `Read` `docs/00-overview/` 下四份总览文档，然后按第 6 节的 GSD 流程推进。
+> **状态（2026-07-18）**：✅ **v1.0 Full Delivery 已归档**——Phase 1～7 全部完成。日常入口优先读根 [`README.md`](README.md) 与 [`CLAUDE.md`](CLAUDE.md)；规划状态见 [`.planning/STATE.md`](.planning/STATE.md) / [`.planning/ROADMAP.md`](.planning/ROADMAP.md)。下一里程碑用 `/gsd-new-milestone`。
 >
-> **核验日期**：2026-07-04。GSD 命令族在不同版本间有细微差异，任何以 `/gsd-*` 开头的命令都以你本机 `/gsd-help` 的实际输出为准。
+> **给 Claude Code 的第一条指令**：进入本仓库后，先 `Read` 根 `README.md`、`CLAUDE.md` 与本文件 §0～§1，再按需深入 `docs/00-overview/`。GSD 命令族以本机 `/gsd-help` 为准。
+>
+> **核验日期**：正文技术约束仍以 2026-07-04 调研为准；交付状态已于 2026-07-18 对齐 v1.0。
 
 ---
 
 ## 0. 一句话现状
 
-`spring-ai-alibaba-learning` 是一套"教程正文 + 可运行源码 + 三个企业项目"的 Spring AI Alibaba 企业级教学仓库，按 7 个阶段交付。**Phase 1（脚手架/调研）与 Phase 2（22 章教程 + starter 模块 + 全量 QA）已完成**，下一步是 **Phase 3：40~60 个独立可运行 Demo 工程**。
+`spring-ai-alibaba-learning` 是一套"教程正文 + 可运行源码 + 三个企业项目"的 Spring AI Alibaba 企业级教学仓库。  
+**v1.0 已交付**：Phase 1 基座 · Phase 2（22 章 + starter）· Phase 3（48 Demo，UAT 48/48）· Phase 4～6（三企业项目）· Phase 7（生产化）。  
+**下一步**：`/gsd-new-milestone` 定义 v1.1/v2.0；已知 tech_debt 见 `.planning/STATE.md` Deferred Items。
 
 ---
 
@@ -50,23 +54,24 @@
 ```
 spring-ai-alibaba-learning/
 ├── pom.xml                  # 父工程，多模块，SSOT 版本属性，双 BOM
-├── CLAUDE.md                # ← Claude Code 项目记忆（本次新增，自动加载）
-├── HANDOFF-TO-CLAUDE-CODE.md# ← 本文件
-├── common/          [✅ 完成] saa-learning-common：Result/PageResult/ResultCode/BizException/GlobalExceptionHandler + 单测
-├── starter/         [✅ 完成] saa-learning-starter：统一装配/审计Advisor/模型路由降级/成本采集（第19章落地）
-├── examples/        [⏳ Phase 3] 40~60 个独立 Demo（当前仅 README 目录清单）
-├── projects/        [⏳ Phase 4-6] 三个企业项目（当前仅 README 蓝图）
-├── docker/          [✅ 完成] docker-compose.yml，profiles: core/vector/mq/search/cloud
-├── scripts/         [✅ 完成] env-check.sh / infra.sh / setup-env.example.sh / version-audit.sh / spring-ai-2-readiness.sh
+├── README.md                # 学习大纲与仓库入口（v1.0）
+├── CLAUDE.md                # Claude Code 项目记忆（自动加载）
+├── HANDOFF-TO-CLAUDE-CODE.md # 本文件（历史交接 + 约束 SSOT）
+├── common/          [✅] saa-learning-common：Result/异常/全局处理器 + 单测
+├── starter/         [✅] saa-learning-starter：装配/审计Advisor/路由降级/成本采集
+├── examples/        [✅] 48 个独立 Demo（UAT 48/48，清单见 examples/README.md）
+├── projects/        [✅] 三企业项目：knowledge-qa(19100) / office-agent(19200) / smart-cs(19300)
+├── docker/          [✅] docker-compose.yml，profiles: core/vector/mq/search/cloud
+├── scripts/         [✅] env-check / infra / setup-env / quality-gate / version-audit / UAT / deploy-smoke 等
 ├── docs/
-│   ├── 00-overview/ [✅ 完成] 01-学习路线 / 02-版本调研报告 / 03-总体架构与目录规划 / 04-技术选型ADR
-│   └── tutorial/    [✅ 完成] 01~22 章教材级教程（约 25 万字）
-└── images/          [占位]
+│   ├── 00-overview/ [✅] 01~06（含生产化、UAT 债务索引）
+│   └── tutorial/    [✅] 01~22 章教材级教程（约 25 万字）
+└── images/          [✅] 截图资源约定目录
 ```
 
-父 POM 当前 `<modules>` 仅挂载 `common` 与 `starter`；`examples/`、`projects/` 下各工程是**独立可运行应用**，Phase 3~6 逐个新增并按需挂载。
+父 POM `<modules>` 挂载 `common` 与 `starter`；`examples/*`、`projects/*` 为**独立可运行应用**（以本仓库为 parent，不强制挂入父 modules）。
 
-### 1.4 全局约定（Phase 3+ 必须遵守）
+### 1.4 全局约定（全仓必须遵守）
 
 - **包根**：`com.flywhl.saa`（作者标识 `@author flywhl`）。
 - **端口**：Demo 工程 `examples/NN-xxx` → 端口 `180NN`（如 example 29 → 18029）。一个 Server/Client 配对时，Client 用 `+100` 偏移（如 example 34 Server 18034 / Client 18134）。已用端口见 `examples/README.md` 与各章 Demo。
@@ -78,71 +83,74 @@ spring-ai-alibaba-learning/
 
 ---
 
-## 2. 已交付成果盘点
+## 2. 已交付成果盘点（v1.0）
 
 ### Phase 1（脚手架/调研）✅
-父 `pom.xml`、`common` 模块（含单测）、`docker/docker-compose.yml`（5 组 profile：Redis/Postgres+pgvector/MySQL/MinIO/Milvus+etcd/Kafka/RabbitMQ/ES/Nacos）、`scripts/`、`docs/00-overview/`（4 份，含 ADR-001~006）、`examples/README.md`（Demo 目录清单）、`projects/README.md`（三项目蓝图）、根 `README.md`。
+父 `pom.xml`、`common`、`docker/docker-compose.yml`（profiles）、`scripts/`、`docs/00-overview/`（含 ADR）、Demo/项目清单与根 `README.md`。
 
 ### Phase 2（教程正文 + starter + QA）✅
-- **22 章教程**（`docs/tutorial/01~22`，约 25 万字），全部通过 15 项骨架小节检查、代码围栏配对、版本一致性、端口无冲突、`下一章预告` 链条 1→22 连续。
-- **starter 模块完整实现**（`starter/src/main/java/com/flywhl/saa/starter/`）：
-  - `autoconfigure/SaaLearningProperties`（record，前缀 `saa.learning`）+ `SaaLearningAutoConfiguration`（`@ConditionalOnMissingBean` / `@ConditionalOnBean` / `@ConditionalOnProperty` 三原则）
-  - `advisor/AdvisorOrder`（顺序常量）+ `AuditLoggingAdvisor`（脱敏审计，`CallAdvisor+StreamAdvisor`）
-  - `routing/ModelRouter` + `FallbackModelRouter`（无锁熔断降级，`AtomicReference`+不可变 State record）+ 4 例单测
-  - `metrics/CostRecorder` + `LoggingCostRecorder` + `CostTrackingObservationHandler`（基于 `gen_ai.usage.*`）
-  - `META-INF/spring/...AutoConfiguration.imports`
-- **两个 QA 脚本**：`scripts/version-audit.sh`（BOM 对齐自检）、`scripts/spring-ai-2-readiness.sh`（2.0 破坏点扫描）。
+- **22 章教程**（`docs/tutorial/01~22`）；**starter** 完整实现（装配 / 审计 Advisor / `FallbackModelRouter` / 成本采集）并参与构建。
+- QA 脚本：`version-audit.sh`、`spring-ai-2-readiness.sh`。
 
-> ⚠️ 沙箱内无 Maven/网络，starter 仅做过**括号配对 + 包声明 + API 对照官方文档**校验，**尚未真正 `mvn compile`**。Claude Code 落地后**第一件事应是编译验证**（见第 5.1 节）。
+### Phase 3（48 Demo）✅
+`examples/01`～`48` 全部可独立运行；UAT 48/48（`scripts/uat-phase3.sh`）。清单 SSOT：`examples/README.md`。
+
+### Phase 4～6（三企业项目）✅
+| 项目 | 目录 | 端口 | 验收 |
+|---|---|---|---|
+| 知识库问答 | `projects/knowledge-qa-platform` | 19100 | `uat-knowledge-qa.sh` |
+| 办公 Agent | `projects/office-agent-assistant` | 19200 | `uat-office-agent.sh` |
+| 智能客服 | `projects/smart-cs-platform` | 19300 | HUMAN-UAT 5/5 + REVIEW-FIX |
+
+### Phase 7（生产化）✅
+`quality-gate.sh`、CI 工作流、Compose 部署路径、`docs/00-overview/05`～`06`。归档：`.planning/milestones/v1.0-*.md`。
 
 ---
 
-## 3. 下一阶段：Phase 3 任务定义
+## 3. 维护约定与 Demo 验收标准（仍有效）
 
-**目标**：把教程每一章的核心 API 落成 40~60 个可独立 `mvn spring-boot:run` 的最小 Demo，全部挂在 `examples/` 下，目录清单见 `examples/README.md`（已列 ~48 条，编号/端口/对应章已规划）。
+新增/修改 Demo 或企业项目时仍须满足：
 
-**每个 Demo 的验收标准**：
-1. 独立 `pom.xml`（`parent` 指向本仓库父 POM，继承版本管理）。
-2. 端口遵循 `180NN` 约定，与既有 Demo 不冲突。
-3. 依赖真实中间件的，用对应 `docker compose` profile 一键起（`bash scripts/infra.sh up <profiles>`）。
-4. `application.yml` 用 `${AI_DASHSCOPE_API_KEY}` 注入密钥，绝不硬编码。
-5. 至少一个 REST 入口 + 明确的 `curl` 验证命令 + 预期输出（与对应章节 Demo 一致）。
-6. 涉及模型调用的集成测试用 `@EnabledIfEnvironmentVariable(named="AI_DASHSCOPE_API_KEY", matches=".+")` 跳过无 Key 环境；涉及中间件的用 Testcontainers。
-7. 复用 `saa-learning-common` 与 `saa-learning-starter`，不重复造轮子。
+1. 独立 `pom.xml`（`parent` 指向本仓库父 POM）。
+2. 端口：Demo `180NN`；企业项目 19100/19200/19300，不冲突。
+3. 中间件用 `bash scripts/infra.sh up <profiles>`（或项目 compose override）。
+4. 密钥仅环境变量，绝不硬编码。
+5. REST + `curl` / `.http` + 预期输出与对应教程章一致。
+6. 模型 IT：`@EnabledIfEnvironmentVariable`；中间件：Testcontainers。
+7. 复用 `saa-learning-common` 与 `saa-learning-starter`。
 
-**优先级建议**（可作为 GSD 子阶段切分）：先做 01~08 章对应的基础 Demo（quickstart / autoconfig / chatclient / prompt-nacos / advisor / tool / memory），再做 09~12 的 RAG/Embedding/VectorStore/MCP，再做 13~18 的 Agent/Graph/MultiAgent/结构化/流式/可观测，最后 19~22 的最佳实践与迁移类。
-
-**后续阶段**（Phase 4-6 = `projects/`）：企业项目一"AI 知识库问答平台" / 项目二"AI Agent 办公助手" / 项目三"智能客服 Agent 平台"；Phase 7 = 统一测试/CI-CD/部署/调优。
+**下一里程碑候选**（未锁定，见 `.planning/PROJECT.md`）：远程 CI 首次绿、deploy-smoke 全量、HITL 持久化、SAA/Spring AI 2.0 就绪跟踪。
 
 ---
 
 ## 4. Claude Code 环境准备
 
-### 4.1 落地首检清单（Phase 3 动手前先跑一遍）
+### 4.1 环境首检清单（改代码 / 开新里程碑前建议跑一遍）
 
 ```bash
-# 1. 工具链（目标机：MacBook M5 Pro arm64 / OrbStack）
+# 1. 工具链（目标机：MacBook arm64 / OrbStack）
 java -version            # 需 21
-mvn -version             # 或 ./mvnw
-docker version           # OrbStack 提供
+mvn -version
+docker version
 
 # 2. 密钥（复制模板后填值，勿提交）
-cp scripts/setup-env.example.sh scripts/setup-env.sh   # 若尚未创建
-source scripts/setup-env.sh
-bash scripts/env-check.sh    # 校验 AI_DASHSCOPE_API_KEY 等是否就位
+cp scripts/setup-env.example.sh scripts/setup-env.local.sh   # 若尚未创建
+source scripts/setup-env.local.sh
+bash scripts/env-check.sh
 
-# 3. 编译既有模块（关键：验证 Phase 2 的 starter 真能编过）
+# 3. 编译公共底座
 mvn -q -pl common,starter -am clean install
-mvn -pl starter test          # 跑 FallbackModelRouterTest 4 个用例
+mvn -pl starter test
 
-# 4. BOM 对齐自检
+# 4. BOM / 质量门禁
 bash scripts/version-audit.sh
+bash scripts/quality-gate.sh    # 按需；耗时更长
 ```
 
-若 `starter` 编译报错，**先修 starter 再开 Phase 3**——它是三个企业项目的公共底座，不能带病进入下一阶段。
+`common` / `starter` 是三企业项目公共底座，编译失败时优先修复再改业务模块。
 
 ### 4.2 项目记忆
-根目录 `CLAUDE.md`（本次一并生成）是 Claude Code 每次会话自动加载的"常驻上下文"，已提炼版本锁定、约定、禁用 API、当前阶段。无需手动引用。
+根目录 `CLAUDE.md` 为 Claude Code 常驻上下文（版本锁定、约定、禁用 API、v1.0 状态）。学习路径见根 `README.md`。
 
 ---
 
@@ -163,69 +171,59 @@ GSD 的标准相位闭环（每相位建议开新上下文窗口）：
 （若你的版本有 /gsd-next 与 /gsd-ship，用它们在相位间推进与收口）
 ```
 
-把本项目的宏观 Phase 直接喂给 GSD 的相位循环：
+v1.0 相位（1～7）已全部走完并归档。后续新里程碑仍用同一闭环：
 
-| 本项目 Phase | GSD 相位动作 | 产出 |
-|---|---|---|
-| Phase 3（40~60 Demo） | 对每一批 Demo 走 discuss→research→plan→execute→verify | `examples/NN-*` 各工程 + 规划工件 |
-| Phase 4/5/6（三个企业项目） | 每个项目独立走完整相位循环 | `projects/*` |
-| Phase 7（测试/CI-CD/部署） | 单相位 execute + verify | 流水线与部署脚本 |
+```
+/gsd-new-milestone → discuss → research → plan → execute → verify → ship
+```
 
-> **要点**：本仓库不是"从零新建"，而是"已完成 Phase 1-2 的存量项目"。因此 `/gsd-init` 的作用是**建立 GSD 规划工作区并登记既有路线图**（本文件 + `docs/00-overview/` 就是现成的 requirements/roadmap 输入），而不是重新做需求。
+> **要点**：本仓库是 **v1.0 已交付的存量项目**。不要重做 Phase 1～7 需求；新工作从 `/gsd-new-milestone` 登记范围开始。历史相位工件仍在 `.planning/phases/`（可用 `/gsd-cleanup` 后续归档）。
 
 ### 5.3 建议的规划工件与技能配置
 
 - **规划目录**：`/gsd-init` 会创建 GSD 的规划工作区（视版本为 `.planning/` 或 `.claude/get-shit-done/` 下的工件）。让它 scaffold 后不要手动改目录名。
-- **项目技能（强烈建议）**：在 `.claude/skills/` 下新建一个项目级 skill（如 `saa-conventions/SKILL.md`），把第 1.4 节的"全局约定 + 禁用 API + 端口规则"固化进去。GSD 的 project-skills discovery 会在后续会话自动加载它，确保每个 Demo 都遵循同一套约定，无需每次口述。
+- **项目技能（已落地）**：`.claude/skills/saa-conventions/SKILL.md` 固化第 1.4 节约定；GSD project-skills discovery 会自动加载。
 - **上下文注入**：GSD 命令用 `@path` 硬引用强制加载上下文。给 execute 相位喂入时，至少 `@HANDOFF-TO-CLAUDE-CODE.md`、`@docs/00-overview/03-总体架构与目录规划.md`、以及**对应章节**教程（如做 RAG Demo 就 `@docs/tutorial/09-RAG.md`）——每章 Demo 的源码位置、端口、预期输出都已写在章内，是最精确的实现规格。
 
-### 5.4 逐阶段操作序列（Phase 3 示例）
+### 5.4 新里程碑操作序列（示例）
 
 ```text
-# 会话 A —— 初始化 + 登记路线图（一次性）
-/gsd-init
-  当 GSD 提问时，指向本文件与 docs/00-overview/ 作为需求与路线图输入，
-  声明"Phase 1-2 已完成，从 Phase 3 起接管"。
+# 会话 A —— 开启下一里程碑
+/gsd-new-milestone
+  参考 .planning/PROJECT.md「Next Milestone Goals」与 STATE.md Deferred Items，
+  确认范围后生成新 ROADMAP / REQUIREMENTS。
 
-# 会话 B —— 规划 Phase 3 第一批（01~08 章基础 Demo）
-/gsd-discuss-phase   # 明确这一批要做哪几个 Demo、验收标准（引用第 3 节）
-/gsd-research-phase  # 需要时核验 SAA 1.1.2.2 具体 API（教程已给出，多数无需再查）
-/gsd-plan-phase      # 产出每个 Demo 的任务分解（模块/端口/接口/curl/预期输出）
-
-# 会话 C —— 执行 + 验收
-/gsd-execute-phase   # 自动建模块、写码、编译、提交；每个 Demo 完成即 mvn spring-boot:run 自测
-/gsd-verify-phase    # 对照第 3 节验收标准逐条核验，记录缺口
-
-# 后续每一批 Demo 重复 B、C。企业项目（Phase 4-6）同法，每个项目一整轮。
+# 会话 B —— 相位闭环
+/gsd-discuss-phase → /gsd-research-phase → /gsd-plan-phase
+/gsd-execute-phase → /gsd-verify-phase
+# 需要时 /gsd-ship
 ```
 
 ---
 
-## 6. 可直接粘贴的 GSD Kickoff Prompt
+## 6. 可直接粘贴的 GSD Kickoff Prompt（v1.0 之后）
 
 > 在装好 open-gsd 的 Claude Code 里，`cd` 到本仓库后粘贴：
 
 ```
-这是一个名为 spring-ai-alibaba-learning 的存量项目：7 阶段规划，Phase 1（脚手架）与
-Phase 2（22 章教程 + starter 模块 + QA）已完成，现从 Phase 3（40~60 个独立 Demo）接管。
+这是 spring-ai-alibaba-learning：v1.0 Full Delivery 已于 2026-07-18 归档
+（Phase 1～7：22 章教程 + 48 Demo + 3 企业项目 + 生产化）。
 
-请先 Read 以下文件建立上下文：
-  @HANDOFF-TO-CLAUDE-CODE.md
+请先 Read：
+  @README.md
   @CLAUDE.md
-  @docs/00-overview/03-总体架构与目录规划.md
-  @docs/00-overview/04-技术选型ADR.md
-  @examples/README.md
+  @HANDOFF-TO-CLAUDE-CODE.md
+  @.planning/STATE.md
+  @.planning/PROJECT.md
 
 然后：
-1. 先执行 HANDOFF 第 4.1 节的落地首检（编译 common+starter、跑 starter 单测、version-audit）。
-   若 starter 编译失败，先修复再继续。
-2. 用 open-gsd 接管后续开发：/gsd-init 登记既有路线图（不重做 Phase 1-2 需求），
-   随后按相位循环推进 Phase 3 第一批（01~08 章对应的基础 Demo）。
-3. 每个 Demo 严格遵守 HANDOFF 第 1.4 节约定（包根 com.flywhl.saa、端口 180NN、
-   双 BOM、禁用已废弃 API、密钥走环境变量）与第 3 节验收标准。
-4. 建议先创建项目级 skill `.claude/skills/saa-conventions/SKILL.md` 固化这些约定。
+1. 跑 HANDOFF §4.1 环境首检（common+starter 编译、starter 单测、version-audit）。
+2. 用 /gsd-new-milestone 开启下一里程碑；不要重做 v1.0 已交付范围。
+3. 遵守 HANDOFF §1.4 约定与 §3 验收标准；工程约定见
+   @.claude/skills/saa-conventions/SKILL.md
+4. 候选方向见 PROJECT.md Next Milestone Goals（CI 绿、deploy-smoke、HITL 持久化、2.0 跟踪等）。
 
-先给我一份 Phase 3 第一批（基础 Demo）的执行计划与相位切分，确认后再动手。
+先给出下一里程碑范围建议与相位切分，确认后再动手。
 ```
 
 ---
@@ -245,13 +243,13 @@ Phase 2（22 章教程 + starter 模块 + QA）已完成，现从 Phase 3（40~6
 
 ## 8. 风险与注意事项
 
-1. **starter 未真机编译**：落地第一步必须补编译验证（第 4.1 节），这是 Phase 2 沙箱限制留下的唯一"欠账"。
-2. **Milvus 冷启动慢**：依赖 etcd+MinIO 健康检查，30~60 秒才可用；Demo 启动脚本要等 `service_healthy`（见 `docker/docker-compose.yml`）。
-3. **Redis 向量/记忆需 Redis Stack**：普通 `redis:7.4-alpine` 缺 RedisJSON/RediSearch，涉及 Redis VectorStore 或 RedisChatMemory 的 Demo 要换 `redis/redis-stack-server`（教程第 08/11 章已标注）。
-4. **Nacos 3.0.x 注册行为**：MCP/Prompt 类 Demo 注意 SAA 与 Nacos 版本对齐（版本调研报告已锁 Nacos 3.0.x）。
-5. **GSD 命令名以 `/gsd-help` 为准**：本文件给的是主流版本命名，你的 open-gsd 可能有增删。
-6. **Boot 3.5 已 EOL**：新 CVE 无免费补丁，长期需关注（教程第 22 章给了商业支持过渡方案），但**不因此仓促迁 2.0**（SAA 尚无对齐版）。
+1. **Milvus 冷启动慢**：依赖 etcd+MinIO 健康检查，30~60 秒才可用；等 `service_healthy`（见 `docker/docker-compose.yml`）。
+2. **Redis 向量/记忆需 Redis Stack**：普通 redis 缺 RedisJSON/RediSearch（教程第 08/11 章已标注）。
+3. **Nacos 3.0.x**：MCP/Prompt Demo 注意与 SAA 版本对齐。
+4. **GSD 命令名以 `/gsd-help` 为准**。
+5. **Boot 3.5 已 EOL**：不因此仓促迁 2.0（SAA 尚无对齐版）；见教程第 22 章。
+6. **v1.0 tech_debt**（不阻塞）：远程 Actions 首次绿、deploy-smoke 全量、HITL pending 进程内 Map、kqa 上传全路径压测——见 `.planning/STATE.md`。
 
 ---
 
-*交接人：对话式生成会话（Claude）。接管方：Claude Code + open-gsd。核验日期 2026-07-04。*
+*初版交接：2026-07-04。交付状态对齐：2026-07-18（v1.0 Full Delivery）。*
