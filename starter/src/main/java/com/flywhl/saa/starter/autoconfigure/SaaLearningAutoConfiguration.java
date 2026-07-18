@@ -1,5 +1,6 @@
 package com.flywhl.saa.starter.autoconfigure;
 
+import com.flywhl.saa.common.exception.AccessDeniedExceptionHandler;
 import com.flywhl.saa.common.exception.GlobalExceptionHandler;
 import com.flywhl.saa.starter.advisor.AuditLoggingAdvisor;
 import com.flywhl.saa.starter.metrics.CostRecorder;
@@ -10,6 +11,7 @@ import com.flywhl.saa.starter.routing.ModelRouter;
 import org.springframework.ai.chat.model.ChatModel;
 import org.springframework.boot.autoconfigure.AutoConfigureAfter;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
@@ -26,7 +28,9 @@ import org.springframework.context.annotation.Import;
  *       {@link ChatModel} Bean 时才装配（{@code @ConditionalOnBean}，见第 04 章多模型 Demo）；</li>
  *   <li>{@link AuditLoggingAdvisor}：默认审计 Advisor，受 {@code saa.learning.audit-enabled} 开关控制；</li>
  *   <li>{@link CostTrackingObservationHandler}：成本采集，受 {@code saa.learning.cost-tracking.enabled} 开关控制；</li>
- *   <li>{@link GlobalExceptionHandler}：复用 common 模块的统一异常处理器。</li>
+ *   <li>{@link GlobalExceptionHandler}：复用 common 模块的统一异常处理器；</li>
+ *   <li>{@link AccessDeniedExceptionHandler}：classpath 存在 Spring Security 时条件装配，
+ *       AccessDenied → HTTP 403（字符串 {@code @ConditionalOnClass}，避免 starter 编译依赖 security）。</li>
  * </ul>
  * 所有 Bean 均遵循 {@code @ConditionalOnMissingBean}，业务方可随时用自定义实现覆盖默认行为。
  *
@@ -41,6 +45,16 @@ import org.springframework.context.annotation.Import;
 @EnableConfigurationProperties(SaaLearningProperties.class)
 @Import(GlobalExceptionHandler.class)
 public class SaaLearningAutoConfiguration {
+
+    /**
+     * 仅当应用 classpath 含 Spring Security 时导入 AccessDenied→403 handler。
+     * 使用 {@code name=} 字符串形式，starter 模块本身无需声明 security 依赖。
+     */
+    @Configuration(proxyBeanMethods = false)
+    @ConditionalOnClass(name = "org.springframework.security.access.AccessDeniedException")
+    @Import(AccessDeniedExceptionHandler.class)
+    static class AccessDeniedExceptionHandlerConfiguration {
+    }
 
     @Bean
     @ConditionalOnMissingBean

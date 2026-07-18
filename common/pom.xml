@@ -33,5 +33,11 @@
             <artifactId>spring-boot-starter-validation</artifactId>
             <optional>true</optional>
         </dependency>
+        <!-- AccessDeniedExceptionHandler：optional，由引入 Security 的应用提供 classpath -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-security</artifactId>
+            <optional>true</optional>
+        </dependency>
     </dependencies>
 </project>

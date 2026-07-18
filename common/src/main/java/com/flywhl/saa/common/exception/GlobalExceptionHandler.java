@@ -25,6 +25,9 @@ import java.util.stream.Collectors;
  *   <li>其余未捕获异常 → {@code 9000 INTERNAL_ERROR}，HTTP 500，且不向调用方泄露堆栈细节</li>
  * </ul>
  *
+ * <p>{@code AccessDeniedException} / {@code AuthorizationDeniedException} 由 sibling
+ * {@link AccessDeniedExceptionHandler} 映射为 HTTP 403，不进入本类 catch-all。
+ *
  * @author flywhl
  * @since 1.0.0
  */
