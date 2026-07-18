@@ -144,10 +144,11 @@ else
     bad "POST /api/qa/ask — HTTP ${code}"
   fi
 
-  # 3. SSE stream
+  # 3. SSE stream（中文 query 必须 URL 编码，否则 Tomcat 拒收）
+  STREAM_Q=$(python3 -c 'import urllib.parse; print(urllib.parse.quote("智能网关如何恢复出厂设置"))')
   sse=$(curl -sS --max-time 120 -H "Authorization: Bearer ${USER_TOKEN}" \
     -H 'Accept: text/event-stream' \
-    "${HOST}/api/qa/stream?conversationId=uat-conv-001&question=智能网关如何恢复出厂设置")
+    "${HOST}/api/qa/stream?conversationId=uat-conv-001&question=${STREAM_Q}")
   if echo "$sse" | grep -q 'event:message' && echo "$sse" | grep -qE 'event:done|event: done'; then
     ok "GET /api/qa/stream — message + done 事件"
   else

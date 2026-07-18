@@ -20,7 +20,7 @@ VALUES ('qa-system', 1,
         '问答系统提示词（带引用约束）', 'PUBLISHED', now(),
         (SELECT id FROM sys_user WHERE username = 'admin')),
        ('query-rewrite', 1,
-        '将用户问题改写为适合向量检索的独立查询语句，保留关键实体与限定词，输出改写后的查询本身，不要解释。原问题：{query}',
+        E'将用户问题改写为适合查询 {target} 的独立检索语句，保留关键实体与限定词，输出改写后的查询本身，不要解释。\n\n原问题：\n{query}',
         '检索前置的查询改写模板', 'PUBLISHED', now(),
         (SELECT id FROM sys_user WHERE username = 'admin')),
        ('qa-system', 2,
@@ -28,6 +28,11 @@ VALUES ('qa-system', 1,
         '问答系统提示词 V2（灰度草稿）', 'DRAFT', NULL,
         (SELECT id FROM sys_user WHERE username = 'admin'))
 ON CONFLICT (template_key, version) DO NOTHING;
+
+-- 幂等修复：已有库 ON CONFLICT 不会刷新 content；缺 {target} 时补齐（RewriteQueryTransformer 强制占位符）
+UPDATE prompt_template
+SET content = E'将用户问题改写为适合查询 {target} 的独立检索语句，保留关键实体与限定词，输出改写后的查询本身，不要解释。\n\n原问题：\n{query}'
+WHERE template_key = 'query-rewrite' AND content NOT LIKE '%{target}%';
 
 -- 知识文档元数据示例（对应 MinIO 中的演示文件；INDEXED 表示已完成向量化）
 INSERT INTO kb_document (title, category, file_name, content_type, file_size, minio_object, status, chunk_count, uploaded_by)
